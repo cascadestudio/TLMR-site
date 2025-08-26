@@ -1,5 +1,6 @@
 const EservicesData = [
   {
+    id: "protection",
     title: "Protection des créations",
     description: [
       "Deep Block, éditeur et opérateur de solutions Blockchain, fournit un Service permettant à l’Utilisateur d’enregistrer l’empreinte unique d’un fichier de son choix dans la Blockchain privée BigBlock©. Le fichier n’est pas stocké, seule son empreinte numérique cryptée l’est.",
@@ -21,6 +22,7 @@ const EservicesData = [
     imgPath: "",
   },
   {
+    id: "signature",
     title: "Signature électronique",
     description: [
       "Vous permettre de sécuriser vos engagements fait partie de notre mission quotidienne.  C’est pourquoi notre cabinet vous vous permet d’accéder directement à la meilleure solution de signature électronique du marché qu’il a cocréé pour ses besoins et ceux de ses clients : <b>Vitalsign.</b>",
@@ -44,6 +46,7 @@ const EservicesData = [
     imgPath: "",
   },
   {
+    id: "design",
     title: "Legal design",
     description: [
       "Vous accompagner dans la construction de vos projets le plus en amont possible est une manière de vous apporter plus de sécurité et d’efficacité. Grace à ses compétences juridiques et sa maîtrise des environnements techniques et numériques, le Cabinet Touati La Motte Rouge offre à ses clients des accompagnements de pointe en matière de Legal Design. On entend ici le Legal Design dans son sens original anglo-saxon (conception). De fait, la prise en compte des questions d'ordre juridique dès la conception des services permet de réduire les risques de violation de la loi et de gagner un temps précieux dans le développement des projets, notamment web et applicatifs.",
@@ -58,6 +61,7 @@ const EservicesData = [
     imgPath: "",
   },
   {
+    id: "politique",
     title: "Générateur de politique de confidentialité conforme RGPD",
     description: [
       "Le présent outil est mis à votre disposition gratuitement. L’outil se base sur des informations fondées sur l’analyse professionnelle du cabinet en matière de conformité RGPD. Toutefois, la conformité étant un processus dynamique et toute situation étant particulière, les informations transmises doivent être adaptées et ne peuvent en aucun cas être considérées comme exhaustives ou exactes.",
@@ -72,6 +76,7 @@ const EservicesData = [
     imgPath: "",
   },
   {
+    id: "consultation",
     title: "Consultation juridique",
     description: [
       "<b>Vous avez une question ou un problème juridique ?</b></br>Bienvenue dans notre solution de consultation juridique qui vous permettra d’obtenir la réponse et le conseil personnalisé d’un avocat de haut niveau. Le cabinet est classé parmi les meilleurs cabinets français (classements Leaders League / Le Point).",

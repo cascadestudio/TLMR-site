@@ -90,8 +90,8 @@ const Eservices = () => {
           />
           <StyledEserviceContainer>
             {EservicesData.map(
-              ({ title, description, points, btns, imgPath }) => (
-                <StyledElement key={title} name={title} id={title}>
+              ({ id, title, description, points, btns, imgPath }) => (
+                <StyledElement key={id} name={title} id={title}>
                   <Eservice
                     title={title}
                     description={description}
