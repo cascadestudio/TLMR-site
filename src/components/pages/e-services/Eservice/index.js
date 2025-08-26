@@ -245,8 +245,9 @@ const Eservice = ({
           )}
           {title === "Signature électronique" && (
             <aside className="vitalsign">
-              Vitalsign est une Solution de la Societé DeepBlock, LegalTech
-              française qui vous garantit un haut niveau de confidentialité.
+              Signature Minute est une Solution de la Societé DeepBlock,
+              LegalTech française qui vous garantit un haut niveau de
+              confidentialité.
             </aside>
           )}
         </div>

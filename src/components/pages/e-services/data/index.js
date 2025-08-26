@@ -25,7 +25,7 @@ const EservicesData = [
     id: "signature",
     title: "Signature électronique",
     description: [
-      "Vous permettre de sécuriser vos engagements fait partie de notre mission quotidienne.  C’est pourquoi notre cabinet vous vous permet d’accéder directement à la meilleure solution de signature électronique du marché qu’il a cocréé pour ses besoins et ceux de ses clients : <b>Vitalsign.</b>",
+      "Vous permettre de sécuriser vos engagements fait partie de notre mission quotidienne. C'est pourquoi notre cabinet vous permet d'accéder directement à la meilleure solution de signature électronique du marché que nous avons co-créée pour ses besoins et ceux de ses clients : <b>Signature Minute.</b>",
     ],
     points: [
       "Simplifier votre processus de vente.",
@@ -34,8 +34,8 @@ const EservicesData = [
     ],
     btns: [
       {
-        name: "Accéder à VitalSign",
-        link: "https://www.vitalsign.fr/",
+        name: "Accéder à Signature Minute",
+        link: "https://www.deepblock.eu/services?signature-minute",
         externlink: true,
       },
       {
