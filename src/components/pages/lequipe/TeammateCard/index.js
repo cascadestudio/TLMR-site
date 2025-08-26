@@ -86,6 +86,13 @@ const TeammateCard = ({
           aspectRatio={1}
         />
       )}
+      {imgName === "emmeline" && (
+        <StaticImage
+          src={basePath + "emmeline.png"}
+          alt={name}
+          aspectRatio={1}
+        />
+      )}
       <h3>{name}</h3>
       <aside>{post}</aside>
       <Paragraph>{description}</Paragraph>

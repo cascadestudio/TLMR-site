@@ -141,6 +141,27 @@ const lequipeData = [
     ],
     linkedinUrl: "https://fr.linkedin.com/in/evanthia-revel-08409679",
   },
+  {
+    imgName: "emmeline",
+    name: "Emmeline Rideau",
+    post: "Avocate à la Cour",
+    description:
+      "Emmeline voit le droit comme un outil au service de solutions concrètes pour les justiciables. Exigeante et rigoureuse, elle mobilise ses compétences pour identifier des stratégies claires, efficaces et adaptées à chaque situation. Diplômée du Master 2 Propriété littéraire, artistique et industrielle de l'Université Paris 2 Panthéon-Assas, après un double cursus en droit et histoire de l'art à Paris 1 Panthéon-Sorbonne, elle s'est formée à l'excellence juridique auprès de maisons de luxe, d'études de vente aux enchères, de cabinets de CPI et de cabinets d'avocats parisiens de référence, où elle a cultivé la rigueur et l'attention aux détails, couplée à une approche proactive des dossiers. Elle a rejoint le cabinet TLMR pour mettre son engagement, son sens de l'humain et sa créativité juridique au service des clients, en particulier des membres Bouclier 360 Infolawyers.",
+    experiences: [
+      "M2 Propriété littéraire, artistique et industrielle de l’Université Paris 2 Panthéon-Assas",
+      "Double licence en droit et histoire de l’art de l’Université Paris 1 Panthéon-Sorbonne",
+      "Louis Vuitton",
+      "Tajan",
+      "Dune",
+      "FTPA Avocats",
+    ],
+    engagements: [
+      "Membre de l’association « En Répliques »",
+      "Chargée de travaux dirigés en droit des contrats et responsabilité civile à Paris 2",
+      "Intervenante en Propriété intellectuelle pour le M1 Droit du numérique de l’UPEC",
+    ],
+    linkedinUrl: "https://www.linkedin.com/in/emmeline-rideau-68ba92119/",
+  },
 ];
 
 export default lequipeData;
