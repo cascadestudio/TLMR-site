@@ -6,6 +6,7 @@ import styled from "styled-components";
 import Grid from "components/global/Grid";
 import { PortableText } from "@portabletext/react";
 import nbspPonctuation from "components/utils/nbspPonctuation";
+import FAQSection from "components/seo/FAQSection";
 
 const StyledContainer = styled.div`
   padding-top: 40px;
@@ -331,8 +332,12 @@ const MoneyPage = ({ data }) => {
             )}
           </StyledContentContainer>
 
+          {/* FAQ Section */}
+          {page.faqItems && page.faqItems.length > 0 && (
+            <FAQSection items={page.faqItems} />
+          )}
+
           {/* Placeholder sections for components we'll build next */}
-          {/* TODO: Add FAQ Section Component */}
           {/* TODO: Add Related Specialties Component */}
           {/* TODO: Add Team Section Component */}
           {/* TODO: Add Google Reviews Component */}
