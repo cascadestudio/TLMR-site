@@ -13,17 +13,36 @@ exports.createSchemaCustomization = ({ actions }) => {
     }
     
     type SanityMoneyPage implements Node {
+      title: String
+      slug: SanitySlug
       customTitle: String
       customH1: String
       metaDescription: String
       canonicalUrl: String
+      _rawMainContent: JSON
+      showGoogleReviews: Boolean
+      showUpdateDate: Boolean
+      enableCustomHTML: Boolean
+      customHTML: String
+      faqItems: [SanityMoneyPageFaqItem]
+      relatedSpecialties: [SanityMoneyPage]
+      teamMembers: [SanityTeamMember]
+    }
+    
+    type SanityMoneyPageFaqItem {
+      question: String
+      _rawAnswer: JSON
     }
     
     type SanityTeamMember implements Node {
-      customTitle: String
-      customH1: String
-      metaDescription: String
-      canonicalUrl: String
+      teamType: String
+      name: String
+      role: String
+      photo: SanityImage
+      bio: JSON
+      experience: [String]
+      engagements: [String]
+      linkedIn: String
     }
   `;
 
@@ -155,6 +174,43 @@ exports.createPages = async ({ graphql, actions, reporter }) => {
         component: Article,
         context: {
           slug: article.slug.current,
+        },
+      });
+    });
+  }
+
+  // Money Pages
+  const MoneyPage = path.resolve("./src/templates/MoneyPage/index.js");
+
+  const moneyPageQuery = await graphql(`
+    query {
+      allSanityMoneyPage {
+        nodes {
+          slug {
+            current
+          }
+        }
+      }
+    }
+  `);
+
+  if (moneyPageQuery.errors) {
+    reporter.panicOnBuild(
+      `There was an error loading Sanity Money Pages`,
+      moneyPageQuery.errors
+    );
+    return;
+  }
+
+  const moneyPages = moneyPageQuery.data.allSanityMoneyPage.nodes;
+  if (moneyPages.length > 0) {
+    moneyPages.forEach((moneyPage) => {
+      const pagePath = `/expertises/${moneyPage.slug.current}`;
+      createPage({
+        path: pagePath,
+        component: MoneyPage,
+        context: {
+          slug: moneyPage.slug.current,
         },
       });
     });
