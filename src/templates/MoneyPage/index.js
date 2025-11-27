@@ -7,6 +7,8 @@ import Grid from "components/global/Grid";
 import { PortableText } from "@portabletext/react";
 import nbspPonctuation from "components/utils/nbspPonctuation";
 import FAQSection from "components/seo/FAQSection";
+import RelatedSpecialties from "components/seo/RelatedSpecialties";
+import TeamSection from "components/seo/TeamSection";
 
 const StyledContainer = styled.div`
   padding-top: 40px;
@@ -337,9 +339,17 @@ const MoneyPage = ({ data }) => {
             <FAQSection items={page.faqItems} />
           )}
 
+          {/* Related Specialties Section */}
+          {page.relatedSpecialties && page.relatedSpecialties.length > 0 && (
+            <RelatedSpecialties items={page.relatedSpecialties} />
+          )}
+
+          {/* Team Section */}
+          {page.teamMembers && page.teamMembers.length > 0 && (
+            <TeamSection members={page.teamMembers} />
+          )}
+
           {/* Placeholder sections for components we'll build next */}
-          {/* TODO: Add Related Specialties Component */}
-          {/* TODO: Add Team Section Component */}
           {/* TODO: Add Google Reviews Component */}
         </StyledContainer>
       </Layout>
