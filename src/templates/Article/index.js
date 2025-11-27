@@ -345,6 +345,11 @@ export const query = graphql`
           url
         }
       }
+      # SEO fields
+      customTitle
+      customH1
+      metaDescription
+      canonicalUrl
     }
   }
 `;
@@ -402,16 +407,33 @@ const myPortableTextComponents = {
 };
 
 const Article = ({ data, location }) => {
-  const { title, date, author, _rawContent, heroImg } = data.sanityArticle;
+  const {
+    title,
+    date,
+    author,
+    _rawContent,
+    heroImg,
+    customTitle,
+    customH1,
+    metaDescription,
+    canonicalUrl,
+  } = data.sanityArticle;
   const heroImage = getImage(heroImg.asset);
   const articleDescription = _rawContent[0].children[0].text;
+
+  // Use customH1 if available, fallback to title
+  const displayH1 = customH1 || title;
 
   return (
     <>
       <Seo
         pageTitle={title}
+        customTitle={customTitle}
         articleDescription={articleDescription}
+        customMetaDescription={metaDescription}
+        canonicalUrl={canonicalUrl}
         imageUrl={heroImg.asset.url}
+        article={true}
       />
       <myContext.Consumer>
         {(context) => (
@@ -436,7 +458,9 @@ const Article = ({ data, location }) => {
                   </div>
                 </StyledDesktopInfo>
                 <h1
-                  dangerouslySetInnerHTML={{ __html: nbspPonctuation(title) }}
+                  dangerouslySetInnerHTML={{
+                    __html: nbspPonctuation(displayH1),
+                  }}
                 ></h1>
               </StyledHeader>
               <StyledMobileInfo>

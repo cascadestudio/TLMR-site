@@ -18,22 +18,45 @@ const query = graphql`
   }
 `;
 
-const SEO = ({ pageTitle, articleDescription, imageUrl }) => {
+const SEO = ({
+  pageTitle,
+  customTitle,
+  articleDescription,
+  customMetaDescription,
+  canonicalUrl,
+  imageUrl,
+  article = false,
+}) => {
   const { site } = useStaticQuery(query);
   const { pathname } = useLocation();
 
   const { title, titleTemplate, description, lang, siteUrl } =
     site.siteMetadata;
 
-  const metaDescription = articleDescription || description;
+  // Priority: customTitle > pageTitle > default title
+  const finalTitle = customTitle || pageTitle || title;
+
+  // Priority: customMetaDescription > articleDescription > default description
+  const metaDescription =
+    customMetaDescription || articleDescription || description;
+
   const metaImage = imageUrl;
+
+  // Priority: canonicalUrl > current URL
+  const finalCanonical = canonicalUrl || `${siteUrl}${pathname}`;
 
   return (
     <Helmet
       defaultTitle={title}
-      title={pageTitle}
-      titleTemplate={titleTemplate}
+      title={customTitle || pageTitle || undefined} // Only set if we have a custom/page title
+      titleTemplate={customTitle ? null : titleTemplate} // Skip template if custom title is provided
       htmlAttributes={{ lang }}
+      link={[
+        {
+          rel: "canonical",
+          href: finalCanonical,
+        },
+      ]}
       meta={[
         {
           name: `google-site-verification`,
@@ -41,11 +64,11 @@ const SEO = ({ pageTitle, articleDescription, imageUrl }) => {
         },
         {
           name: `description`,
-          content: description,
+          content: metaDescription,
         },
         {
           property: `og:title`,
-          content: pageTitle,
+          content: finalTitle,
         },
         {
           property: `og:description`,
@@ -53,11 +76,11 @@ const SEO = ({ pageTitle, articleDescription, imageUrl }) => {
         },
         {
           property: `og:type`,
-          content: `website`,
+          content: article ? `article` : `website`,
         },
         {
           property: `og:url`,
-          content: siteUrl + pathname,
+          content: finalCanonical,
         },
         {
           property: `og:image`,
@@ -65,7 +88,7 @@ const SEO = ({ pageTitle, articleDescription, imageUrl }) => {
         },
         {
           name: `twitter:title`,
-          content: pageTitle,
+          content: finalTitle,
         },
         {
           name: `twitter:description`,
@@ -83,16 +106,20 @@ const SEO = ({ pageTitle, articleDescription, imageUrl }) => {
 export default SEO;
 
 SEO.propTypes = {
-  title: PropTypes.string,
-  titleTemplate: PropTypes.string,
-  description: PropTypes.string,
-  image: PropTypes.string,
+  pageTitle: PropTypes.string,
+  customTitle: PropTypes.string,
+  articleDescription: PropTypes.string,
+  customMetaDescription: PropTypes.string,
+  canonicalUrl: PropTypes.string,
+  imageUrl: PropTypes.string,
   article: PropTypes.bool,
 };
 SEO.defaultProps = {
-  title: null,
-  titleTemplate: null,
-  description: null,
-  image: null,
+  pageTitle: null,
+  customTitle: null,
+  articleDescription: null,
+  customMetaDescription: null,
+  canonicalUrl: null,
+  imageUrl: null,
   article: false,
 };

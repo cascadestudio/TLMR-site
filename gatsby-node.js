@@ -1,5 +1,35 @@
 const path = require("path");
 
+// Define GraphQL schema for optional SEO fields
+exports.createSchemaCustomization = ({ actions }) => {
+  const { createTypes } = actions;
+
+  const typeDefs = `
+    type SanityArticle implements Node {
+      customTitle: String
+      customH1: String
+      metaDescription: String
+      canonicalUrl: String
+    }
+    
+    type SanityMoneyPage implements Node {
+      customTitle: String
+      customH1: String
+      metaDescription: String
+      canonicalUrl: String
+    }
+    
+    type SanityTeamMember implements Node {
+      customTitle: String
+      customH1: String
+      metaDescription: String
+      canonicalUrl: String
+    }
+  `;
+
+  createTypes(typeDefs);
+};
+
 exports.createPages = async ({ graphql, actions, reporter }) => {
   const { createPage, createRedirect } = actions;
 
