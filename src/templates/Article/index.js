@@ -396,6 +396,15 @@ const myPortableTextComponents = {
       value.url && (
         <LiteYouTubeEmbed id={getYouTubeId(value.url)} poster="maxresdefault" />
       ),
+    customHTMLBlock: ({ value }) => {
+      if (!value?.html) return null;
+      return (
+        <div
+          dangerouslySetInnerHTML={{ __html: value.html }}
+          style={{ margin: "20px 0" }}
+        />
+      );
+    },
   },
   marks: {
     link: ({ value, children }) => (

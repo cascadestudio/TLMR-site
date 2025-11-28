@@ -201,6 +201,17 @@ const myPortableTextComponents = {
       </a>
     ),
   },
+  types: {
+    customHTMLBlock: ({ value }) => {
+      if (!value?.html) return null;
+      return (
+        <div
+          dangerouslySetInnerHTML={{ __html: value.html }}
+          style={{ margin: "20px 0" }}
+        />
+      );
+    },
+  },
 };
 
 // Component to display dynamic update date
