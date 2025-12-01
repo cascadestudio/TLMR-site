@@ -180,7 +180,68 @@ const StyledCustomHTML = styled.div`
   }
 `;
 
-// Portable Text components for rendering rich content
+const StyledTable = styled.table`
+  width: 100%;
+  margin: 40px 0;
+  border-collapse: collapse;
+  font-family: "Signifier Light";
+  font-size: 18px;
+  line-height: 28px;
+
+  @media ${(props) => props.theme.minWidth.sm} {
+    font-size: 20px;
+    line-height: 32px;
+  }
+
+  @media ${(props) => props.theme.minWidth.md} {
+    grid-column: 3 / span 8;
+  }
+
+  @media ${(props) => props.theme.minWidth.lg} {
+    grid-column: 4 / span 7;
+  }
+
+  thead {
+    background-color: #f5f5f5;
+  }
+
+  th {
+    padding: 16px;
+    text-align: left;
+    font-family: "Söhne Kräftig";
+    font-weight: normal;
+    border-bottom: 2px solid #000;
+    font-size: 18px;
+    line-height: 24px;
+
+    @media ${(props) => props.theme.minWidth.sm} {
+      padding: 20px;
+      font-size: 20px;
+      line-height: 26px;
+    }
+  }
+
+  td {
+    padding: 16px;
+    border-bottom: 1px solid #e0e0e0;
+    vertical-align: top;
+
+    @media ${(props) => props.theme.minWidth.sm} {
+      padding: 20px;
+    }
+  }
+
+  tbody tr:last-child td {
+    border-bottom: none;
+  }
+
+  tbody tr:hover {
+    background-color: #fafafa;
+  }
+`;
+
+// Dans MoneyPage.js - Remplace tout le bloc 'table' dans myPortableTextComponents
+
 const myPortableTextComponents = {
   block: {
     h2: ({ children }) => (
@@ -209,6 +270,34 @@ const myPortableTextComponents = {
           dangerouslySetInnerHTML={{ __html: value.html }}
           style={{ margin: "20px 0" }}
         />
+      );
+    },
+    table: ({ value }) => {
+      if (!value?.rows || value.rows.length === 0) return null;
+
+      const [headerRow, ...bodyRows] = value.rows;
+
+      return (
+        <StyledTable>
+          {headerRow?.cells && (
+            <thead>
+              <tr>
+                {headerRow.cells.map((cell, i) => (
+                  <th key={i}>{cell}</th>
+                ))}
+              </tr>
+            </thead>
+          )}
+          <tbody>
+            {bodyRows.map((row, rowIndex) => (
+              <tr key={rowIndex}>
+                {row.cells?.map((cell, cellIndex) => (
+                  <td key={cellIndex}>{cell}</td>
+                ))}
+              </tr>
+            ))}
+          </tbody>
+        </StyledTable>
       );
     },
   },
