@@ -11,6 +11,7 @@ import RelatedSpecialties from "components/Seo/RelatedSpecialties";
 import TeamSection from "components/Seo/TeamSection";
 import CTASection from "components/Seo/CTASection";
 import CTASticky from "components/Seo/CTASticky";
+import CTASidebarSticky from "components/Seo/CTASidebarSticky";
 import Breadcrumb from "components/Seo/Breadcrumb";
 
 const StyledContainer = styled.div`
@@ -594,6 +595,14 @@ const MoneyPage = ({ data }) => {
         {/* Sticky CTA - appears on mobile/tablet only */}
         <CTASticky
           text="Réservez un rendez-vous avec un avocat"
+          to="/contact"
+        />
+
+        {/* Sidebar Sticky CTA - appears on desktop only */}
+        <CTASidebarSticky
+          title="Besoin d'un avocat ?"
+          description="Contactez TLMR Avocats pour un premier échange confidentiel."
+          text="Réservez un rendez-vous"
           to="/contact"
         />
       </Layout>
