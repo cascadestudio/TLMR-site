@@ -10,6 +10,7 @@ import FAQSection from "components/Seo/FAQSection";
 import RelatedSpecialties from "components/Seo/RelatedSpecialties";
 import TeamSection from "components/Seo/TeamSection";
 import CTASection from "components/Seo/CTASection";
+import CTASticky from "components/Seo/CTASticky";
 
 const StyledContainer = styled.div`
   padding-top: 40px;
@@ -181,25 +182,34 @@ const StyledCustomHTML = styled.div`
   }
 `;
 
-const StyledTable = styled.table`
+const StyledTableWrapper = styled.div`
   width: 100%;
   margin: 40px 0;
+  overflow-x: auto;
+  -webkit-overflow-scrolling: touch;
+
+  @media ${(props) => props.theme.minWidth.md} {
+    overflow-x: visible;
+  }
+`;
+
+const StyledTable = styled.table`
+  min-width: 600px; /* Minimum width to maintain readability */
+  width: 100%;
   border-collapse: collapse;
   font-family: "Signifier Light";
-  font-size: 18px;
-  line-height: 28px;
+  font-size: 16px;
+  line-height: 24px;
 
   @media ${(props) => props.theme.minWidth.sm} {
-    font-size: 20px;
-    line-height: 32px;
+    font-size: 18px;
+    line-height: 28px;
   }
 
   @media ${(props) => props.theme.minWidth.md} {
-    grid-column: 3 / span 8;
-  }
-
-  @media ${(props) => props.theme.minWidth.lg} {
-    grid-column: 4 / span 7;
+    font-size: 20px;
+    line-height: 32px;
+    min-width: auto;
   }
 
   thead {
@@ -207,27 +217,39 @@ const StyledTable = styled.table`
   }
 
   th {
-    padding: 16px;
+    padding: 12px;
     text-align: left;
     font-family: "Söhne Kräftig";
     font-weight: normal;
     border-bottom: 2px solid #000;
-    font-size: 18px;
-    line-height: 24px;
+    font-size: 16px;
+    line-height: 22px;
+    white-space: nowrap;
 
     @media ${(props) => props.theme.minWidth.sm} {
+      padding: 16px;
+      font-size: 18px;
+      line-height: 24px;
+    }
+
+    @media ${(props) => props.theme.minWidth.md} {
       padding: 20px;
       font-size: 20px;
       line-height: 26px;
+      white-space: normal;
     }
   }
 
   td {
-    padding: 16px;
+    padding: 12px;
     border-bottom: 1px solid #e0e0e0;
     vertical-align: top;
 
     @media ${(props) => props.theme.minWidth.sm} {
+      padding: 16px;
+    }
+
+    @media ${(props) => props.theme.minWidth.md} {
       padding: 20px;
     }
   }
@@ -278,26 +300,28 @@ const createPortableTextComponents = (ctaMap) => ({
       const [headerRow, ...bodyRows] = value.rows;
 
       return (
-        <StyledTable>
-          {headerRow?.cells && (
-            <thead>
-              <tr>
-                {headerRow.cells.map((cell, i) => (
-                  <th key={i}>{cell}</th>
-                ))}
-              </tr>
-            </thead>
-          )}
-          <tbody>
-            {bodyRows.map((row, rowIndex) => (
-              <tr key={rowIndex}>
-                {row.cells?.map((cell, cellIndex) => (
-                  <td key={cellIndex}>{cell}</td>
-                ))}
-              </tr>
-            ))}
-          </tbody>
-        </StyledTable>
+        <StyledTableWrapper>
+          <StyledTable>
+            {headerRow?.cells && (
+              <thead>
+                <tr>
+                  {headerRow.cells.map((cell, i) => (
+                    <th key={i}>{cell}</th>
+                  ))}
+                </tr>
+              </thead>
+            )}
+            <tbody>
+              {bodyRows.map((row, rowIndex) => (
+                <tr key={rowIndex}>
+                  {row.cells?.map((cell, cellIndex) => (
+                    <td key={cellIndex}>{cell}</td>
+                  ))}
+                </tr>
+              ))}
+            </tbody>
+          </StyledTable>
+        </StyledTableWrapper>
       );
     },
     // Handle referenced CTAs from library
@@ -558,6 +582,12 @@ const MoneyPage = ({ data }) => {
           {/* Placeholder sections for components we'll build next */}
           {/* TODO: Add Google Reviews Component */}
         </StyledContainer>
+
+        {/* Sticky CTA - appears on mobile/tablet only */}
+        <CTASticky
+          text="Réservez un rendez-vous avec un avocat"
+          to="/contact"
+        />
       </Layout>
     </>
   );
