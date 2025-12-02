@@ -38,7 +38,13 @@ module.exports = {
     "gatsby-plugin-image",
     "gatsby-plugin-sharp",
     "gatsby-transformer-sharp",
-    "gatsby-plugin-styled-components",
+    {
+      resolve: "gatsby-plugin-styled-components",
+      options: {
+        displayName: true,
+        fileName: true,
+      },
+    },
     "gatsby-plugin-root-import",
     "gatsby-plugin-netlify",
     "gatsby-plugin-react-helmet",

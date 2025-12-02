@@ -6,9 +6,10 @@ import styled from "styled-components";
 import Grid from "components/global/Grid";
 import { PortableText } from "@portabletext/react";
 import nbspPonctuation from "components/utils/nbspPonctuation";
-import FAQSection from "components/seo/FAQSection";
-import RelatedSpecialties from "components/seo/RelatedSpecialties";
-import TeamSection from "components/seo/TeamSection";
+import FAQSection from "components/Seo/FAQSection";
+import RelatedSpecialties from "components/Seo/RelatedSpecialties";
+import TeamSection from "components/Seo/TeamSection";
+import CTASection from "components/Seo/CTASection";
 
 const StyledContainer = styled.div`
   padding-top: 40px;
@@ -240,9 +241,8 @@ const StyledTable = styled.table`
   }
 `;
 
-// Dans MoneyPage.js - Remplace tout le bloc 'table' dans myPortableTextComponents
-
-const myPortableTextComponents = {
+// Create Portable Text components with access to CTA map
+const createPortableTextComponents = (ctaMap) => ({
   block: {
     h2: ({ children }) => (
       <h2
@@ -300,8 +300,85 @@ const myPortableTextComponents = {
         </StyledTable>
       );
     },
+    // Handle referenced CTAs from library
+    // When a reference is resolved, it becomes the document itself
+    ctaSectionDocument: ({ value }) => {
+      // Debug in development
+      if (process.env.NODE_ENV === "development" && value) {
+        console.log(
+          "ctaSectionDocument value:",
+          JSON.stringify(value, null, 2)
+        );
+      }
+
+      if (!value?.buttonText || !value?.buttonLink) return null;
+
+      return (
+        <CTASection
+          heading={value.heading}
+          description={value.description}
+          buttonText={value.buttonText}
+          buttonLink={value.buttonLink}
+          style={value.style || "primary"}
+        />
+      );
+    },
+    // Handle reference type (when reference is in Portable Text array)
+    // In Portable Text, references can come through as type 'reference'
+    reference: ({ value }) => {
+      // Debug: log the reference structure
+      if (process.env.NODE_ENV === "development" && value) {
+        console.log("Reference type value:", JSON.stringify(value, null, 2));
+      }
+
+      // Check if it's a resolved CTA document reference
+      // When resolved, it should have the document fields directly
+      // OR it might have _type: 'ctaSectionDocument' when resolved
+      if (
+        value?._type === "ctaSectionDocument" ||
+        (value?.buttonText && value?.buttonLink)
+      ) {
+        return (
+          <CTASection
+            heading={value.heading}
+            description={value.description}
+            buttonText={value.buttonText}
+            buttonLink={value.buttonLink}
+            style={value.style || "primary"}
+          />
+        );
+      }
+
+      // If it's an unresolved reference, try to resolve it manually
+      if (value?._type === "reference" && value?._ref) {
+        const referencedCta = ctaMap.get(value._ref);
+        if (referencedCta) {
+          return (
+            <CTASection
+              heading={referencedCta.heading}
+              description={referencedCta.description}
+              buttonText={referencedCta.buttonText}
+              buttonLink={referencedCta.buttonLink}
+              style={referencedCta.style || "primary"}
+            />
+          );
+        }
+
+        if (process.env.NODE_ENV === "development") {
+          console.warn(
+            "Unresolved CTA reference:",
+            value._ref,
+            "Available CTAs:",
+            Array.from(ctaMap.keys())
+          );
+        }
+        return null;
+      }
+
+      return null;
+    },
   },
-};
+});
 
 // Component to display dynamic update date
 const UpdateDate = () => {
@@ -387,11 +464,40 @@ export const query = graphql`
       enableCustomHTML
       customHTML
     }
+
+    # Fetch all CTA documents for reference resolution
+    allSanityCtaSectionDocument {
+      nodes {
+        _id
+        name
+        heading
+        description
+        buttonText
+        buttonLink
+        style
+      }
+    }
   }
 `;
 
 const MoneyPage = ({ data }) => {
   const page = data.sanityMoneyPage;
+  const allCtaDocuments = data.allSanityCtaSectionDocument?.nodes || [];
+
+  // Create a map of CTA documents by _id for quick lookup
+  const ctaMap = new Map();
+  allCtaDocuments.forEach((cta) => {
+    ctaMap.set(cta._id, cta);
+  });
+
+  // Debug: log the raw content structure in development
+  if (process.env.NODE_ENV === "development" && page._rawMainContent) {
+    console.log(
+      "Raw main content structure:",
+      JSON.stringify(page._rawMainContent, null, 2)
+    );
+    console.log("Available CTA documents:", ctaMap);
+  }
 
   // Use customH1 if available, fallback to title
   const displayH1 = page.customH1 || page.title;
@@ -418,7 +524,7 @@ const MoneyPage = ({ data }) => {
               {page._rawMainContent && (
                 <PortableText
                   value={page._rawMainContent}
-                  components={myPortableTextComponents}
+                  components={createPortableTextComponents(ctaMap)}
                 />
               )}
             </StyledContent>
