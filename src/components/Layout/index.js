@@ -19,12 +19,13 @@ const StyledContainer = styled.div`
   }
 `;
 
-const Layout = ({ children }) => {
+const Layout = ({ children, breadcrumb }) => {
   return (
     <main>
       <ThemeProvider theme={theme}>
         <GlobalStyle />
         <Navigation />
+        {breadcrumb && <StyledContainer>{breadcrumb}</StyledContainer>}
         <StyledContainer>
           {children}
           <Footer />

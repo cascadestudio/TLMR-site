@@ -11,6 +11,7 @@ import RelatedSpecialties from "components/Seo/RelatedSpecialties";
 import TeamSection from "components/Seo/TeamSection";
 import CTASection from "components/Seo/CTASection";
 import CTASticky from "components/Seo/CTASticky";
+import Breadcrumb from "components/Seo/Breadcrumb";
 
 const StyledContainer = styled.div`
   padding-top: 40px;
@@ -526,6 +527,13 @@ const MoneyPage = ({ data }) => {
   // Use customH1 if available, fallback to title
   const displayH1 = page.customH1 || page.title;
 
+  // Generate breadcrumb items for Money Page
+  const breadcrumbItems = [
+    { label: "Accueil", url: "/" },
+    { label: "Expertises", url: "/expertises" },
+    { label: displayH1 }, // Current page, no URL - will be truncated if too long
+  ];
+
   return (
     <>
       <Seo
@@ -534,7 +542,7 @@ const MoneyPage = ({ data }) => {
         customMetaDescription={page.metaDescription}
         canonicalUrl={page.canonicalUrl}
       />
-      <Layout>
+      <Layout breadcrumb={<Breadcrumb items={breadcrumbItems} />}>
         <StyledContainer>
           <StyledHeader>
             <h1

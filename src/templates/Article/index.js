@@ -23,6 +23,7 @@ import getYouTubeId from "get-youtube-id";
 import LiteYouTubeEmbed from "react-lite-youtube-embed";
 import "react-lite-youtube-embed/dist/LiteYouTubeEmbed.css";
 import nbspPonctuation from "components/utils/nbspPonctuation";
+import Breadcrumb from "components/Seo/Breadcrumb";
 
 const StyledContainer = styled.div`
   & > .gatsby-image-wrapper {
@@ -397,6 +398,12 @@ export const query = graphql`
           url
         }
       }
+      categories {
+        title
+        slug {
+          current
+        }
+      }
       # SEO fields
       customTitle
       customH1
@@ -502,6 +509,7 @@ const Article = ({ data, location }) => {
     author,
     _rawContent,
     heroImg,
+    categories,
     customTitle,
     customH1,
     metaDescription,
@@ -512,6 +520,24 @@ const Article = ({ data, location }) => {
 
   // Use customH1 if available, fallback to title
   const displayH1 = customH1 || title;
+
+  // Generate breadcrumb items for Article
+  const breadcrumbItems = [
+    { label: "Accueil", url: "/" },
+    { label: "Blog", url: "/blog" },
+  ];
+
+  // Add category if available (use first category)
+  if (categories && categories.length > 0) {
+    const primaryCategory = categories[0];
+    breadcrumbItems.push({
+      label: primaryCategory.title,
+      url: `/blog/${primaryCategory.slug.current}`,
+    });
+  }
+
+  // Add current article (no URL)
+  breadcrumbItems.push({ label: displayH1 });
 
   return (
     <>
@@ -529,6 +555,7 @@ const Article = ({ data, location }) => {
           <Layout>
             <StyledContainer>
               <GatsbyImage image={heroImage} alt={title} />
+              <Breadcrumb items={breadcrumbItems} />
               <StyledHeader>
                 <StyledDesktopInfo>
                   <div>
