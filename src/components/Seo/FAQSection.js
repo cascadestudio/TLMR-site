@@ -1,5 +1,6 @@
 import React, { useState } from "react";
 import styled from "styled-components";
+import { Link } from "gatsby";
 import { PortableText } from "@portabletext/react";
 import nbspPonctuation from "components/utils/nbspPonctuation";
 
@@ -149,17 +150,57 @@ const Answer = styled.div`
 `;
 
 // Portable Text components for rendering answers
-const answerComponents = {
+const createAnswerComponents = (pageMap) => ({
   marks: {
     link: ({ value, children }) => (
       <a href={value.href} target="_blank" rel="noreferrer">
         {children}
       </a>
     ),
-  },
-};
+    internalLink: ({ value, children }) => {
+      // Handle internal links to other pages on the site
+      const { reference } = value;
 
-const FAQSection = ({ items, title = "Questions fréquentes" }) => {
+      // If reference is already resolved (has slug), use it directly
+      if (reference?.slug?.current) {
+        const slug = reference.slug.current;
+        const type = reference._type;
+
+        let path = "/";
+        if (type === "moneyPage") {
+          path = `/expertises/${slug}`;
+        } else if (type === "article") {
+          path = `/${slug}`;
+        }
+
+        return <Link to={path}>{children}</Link>;
+      }
+
+      // If reference is just an ID (_ref), resolve it from pageMap
+      if (reference?._ref && pageMap) {
+        const referencedPage = pageMap.get(reference._ref);
+        if (referencedPage?.slug?.current) {
+          const slug = referencedPage.slug.current;
+          const type = referencedPage._type;
+
+          let path = "/";
+          if (type === "moneyPage") {
+            path = `/expertises/${slug}`;
+          } else if (type === "article") {
+            path = `/${slug}`;
+          }
+
+          return <Link to={path}>{children}</Link>;
+        }
+      }
+
+      // Fallback: render as plain text if reference can't be resolved
+      return <span>{children}</span>;
+    },
+  },
+});
+
+const FAQSection = ({ items, title = "Questions fréquentes", pageMap }) => {
   const [openIndex, setOpenIndex] = useState(null);
   const [heights, setHeights] = useState({});
 
@@ -241,7 +282,7 @@ const FAQSection = ({ items, title = "Questions fréquentes" }) => {
                   {item._rawAnswer && (
                     <PortableText
                       value={item._rawAnswer}
-                      components={answerComponents}
+                      components={createAnswerComponents(pageMap)}
                     />
                   )}
                 </Answer>

@@ -1,5 +1,5 @@
 import React from "react";
-import { graphql } from "gatsby";
+import { graphql, Link } from "gatsby";
 import Layout from "components/Layout";
 import Seo from "components/Seo";
 import styled from "styled-components";
@@ -265,8 +265,8 @@ const StyledTable = styled.table`
   }
 `;
 
-// Create Portable Text components with access to CTA map
-const createPortableTextComponents = (ctaMap) => ({
+// Create Portable Text components with access to CTA map and page map
+const createPortableTextComponents = (ctaMap, pageMap) => ({
   block: {
     h2: ({ children }) => (
       <h2
@@ -285,6 +285,46 @@ const createPortableTextComponents = (ctaMap) => ({
         {children}
       </a>
     ),
+    internalLink: ({ value, children }) => {
+      // Handle internal links to other pages on the site
+      const { reference } = value;
+
+      // If reference is already resolved (has slug), use it directly
+      if (reference?.slug?.current) {
+        const slug = reference.slug.current;
+        const type = reference._type;
+
+        let path = "/";
+        if (type === "moneyPage") {
+          path = `/expertises/${slug}`;
+        } else if (type === "article") {
+          path = `/${slug}`;
+        }
+
+        return <Link to={path}>{children}</Link>;
+      }
+
+      // If reference is just an ID (_ref), resolve it from pageMap
+      if (reference?._ref && pageMap) {
+        const referencedPage = pageMap.get(reference._ref);
+        if (referencedPage?.slug?.current) {
+          const slug = referencedPage.slug.current;
+          const type = referencedPage._type;
+
+          let path = "/";
+          if (type === "moneyPage") {
+            path = `/expertises/${slug}`;
+          } else if (type === "article") {
+            path = `/${slug}`;
+          }
+
+          return <Link to={path}>{children}</Link>;
+        }
+      }
+
+      // Fallback: render as plain text if reference can't be resolved
+      return <span>{children}</span>;
+    },
   },
   types: {
     customHTMLBlock: ({ value }) => {
@@ -503,17 +543,50 @@ export const query = graphql`
         style
       }
     }
+
+    # Fetch all Money Pages for internal link resolution
+    allSanityMoneyPage {
+      nodes {
+        _id
+        _type
+        slug {
+          current
+        }
+      }
+    }
+
+    # Fetch all Articles for internal link resolution
+    allSanityArticle {
+      nodes {
+        _id
+        _type
+        slug {
+          current
+        }
+      }
+    }
   }
 `;
 
 const MoneyPage = ({ data }) => {
   const page = data.sanityMoneyPage;
   const allCtaDocuments = data.allSanityCtaSectionDocument?.nodes || [];
+  const allMoneyPages = data.allSanityMoneyPage?.nodes || [];
+  const allArticles = data.allSanityArticle?.nodes || [];
 
   // Create a map of CTA documents by _id for quick lookup
   const ctaMap = new Map();
   allCtaDocuments.forEach((cta) => {
     ctaMap.set(cta._id, cta);
+  });
+
+  // Create a map of all pages for internal link resolution
+  const pageMap = new Map();
+  allMoneyPages.forEach((page) => {
+    pageMap.set(page._id, page);
+  });
+  allArticles.forEach((article) => {
+    pageMap.set(article._id, article);
   });
 
   // Debug: log the raw content structure in development
@@ -557,7 +630,7 @@ const MoneyPage = ({ data }) => {
               {page._rawMainContent && (
                 <PortableText
                   value={page._rawMainContent}
-                  components={createPortableTextComponents(ctaMap)}
+                  components={createPortableTextComponents(ctaMap, pageMap)}
                 />
               )}
             </StyledContent>
@@ -575,7 +648,7 @@ const MoneyPage = ({ data }) => {
 
           {/* FAQ Section */}
           {page.faqItems && page.faqItems.length > 0 && (
-            <FAQSection items={page.faqItems} />
+            <FAQSection items={page.faqItems} pageMap={pageMap} />
           )}
 
           {/* Related Specialties Section */}

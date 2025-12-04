@@ -1,5 +1,5 @@
 import React from "react";
-import { graphql } from "gatsby";
+import { graphql, Link } from "gatsby";
 import Layout from "components/Layout";
 import Seo from "components/Seo";
 import Cta from "components/global/Cta";
@@ -391,7 +391,7 @@ export const query = graphql`
       title
       date
       author
-      _rawContent(resolveReferences: { maxDepth: 10 })
+      _rawContent
       heroImg {
         asset {
           gatsbyImageData
@@ -410,10 +410,32 @@ export const query = graphql`
       metaDescription
       canonicalUrl
     }
+
+    # Fetch all Money Pages for internal link resolution
+    allSanityMoneyPage {
+      nodes {
+        _id
+        _type
+        slug {
+          current
+        }
+      }
+    }
+
+    # Fetch all Articles for internal link resolution
+    allSanityArticle {
+      nodes {
+        _id
+        _type
+        slug {
+          current
+        }
+      }
+    }
   }
 `;
 
-const myPortableTextComponents = {
+const createArticlePortableTextComponents = (pageMap) => ({
   block: {
     h2: ({ children }) => (
       <h2
@@ -499,8 +521,48 @@ const myPortableTextComponents = {
         {children}
       </a>
     ),
+    internalLink: ({ value, children }) => {
+      // Handle internal links to other pages on the site
+      const { reference } = value;
+
+      // If reference is already resolved (has slug), use it directly
+      if (reference?.slug?.current) {
+        const slug = reference.slug.current;
+        const type = reference._type;
+
+        let path = "/";
+        if (type === "moneyPage") {
+          path = `/expertises/${slug}`;
+        } else if (type === "article") {
+          path = `/${slug}`;
+        }
+
+        return <Link to={path}>{children}</Link>;
+      }
+
+      // If reference is just an ID (_ref), resolve it from pageMap
+      if (reference?._ref && pageMap) {
+        const referencedPage = pageMap.get(reference._ref);
+        if (referencedPage?.slug?.current) {
+          const slug = referencedPage.slug.current;
+          const type = referencedPage._type;
+
+          let path = "/";
+          if (type === "moneyPage") {
+            path = `/expertises/${slug}`;
+          } else if (type === "article") {
+            path = `/${slug}`;
+          }
+
+          return <Link to={path}>{children}</Link>;
+        }
+      }
+
+      // Fallback: render as plain text if reference can't be resolved
+      return <span>{children}</span>;
+    },
   },
-};
+});
 
 const Article = ({ data, location }) => {
   const {
@@ -515,8 +577,20 @@ const Article = ({ data, location }) => {
     metaDescription,
     canonicalUrl,
   } = data.sanityArticle;
+  const allMoneyPages = data.allSanityMoneyPage?.nodes || [];
+  const allArticles = data.allSanityArticle?.nodes || [];
+
   const heroImage = getImage(heroImg.asset);
   const articleDescription = _rawContent[0].children[0].text;
+
+  // Create a map of all pages for internal link resolution
+  const pageMap = new Map();
+  allMoneyPages.forEach((page) => {
+    pageMap.set(page._id, page);
+  });
+  allArticles.forEach((article) => {
+    pageMap.set(article._id, article);
+  });
 
   // Use customH1 if available, fallback to title
   const displayH1 = customH1 || title;
@@ -611,7 +685,7 @@ const Article = ({ data, location }) => {
                 <StyledContent>
                   <PortableText
                     value={_rawContent}
-                    components={myPortableTextComponents}
+                    components={createArticlePortableTextComponents(pageMap)}
                   />
                 </StyledContent>
               </StyledContentContainer>
