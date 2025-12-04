@@ -675,7 +675,7 @@ const MoneyPage = ({ data }) => {
         <CTASidebarSticky
           title="Besoin d'un avocat ?"
           description="Contactez TLMR Avocats pour un premier échange confidentiel."
-          text="Réservez un rendez-vous"
+          text="Prendre rendez-vous"
           to="/contact"
         />
       </Layout>

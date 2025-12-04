@@ -5,7 +5,7 @@ import { Link } from "gatsby";
 const SidebarWrapper = styled.div`
   display: none;
 
-  @media ${(props) => props.theme.minWidth.xl} {
+  @media ${(props) => props.theme.minWidth.lg} {
     display: block;
     position: fixed;
     /* Align with grid columns 10, 11, 12 (last 3 columns):
@@ -13,19 +13,28 @@ const SidebarWrapper = styled.div`
        - Grid calculation: (viewport - 2*padding - 11*gap) / 12
        - Position from right: just the padding
     */
-    right: 45px;
+    right: 32px;
     top: 50%;
     transform: translateY(-50%);
     z-index: 100;
     transition: opacity 0.3s ease;
     opacity: ${(props) => (props.$isVisible ? "1" : "0")};
     pointer-events: ${(props) => (props.$isVisible ? "auto" : "none")};
-    /* Width spans 3 columns + 2 gaps:
-       - 3 columns: 3 * (100vw - 420px) / 12
-       - 2 gaps: 2 * 30px
-       - Total: (100vw - 420px) / 4 + 60px
-    */
-    width: calc((100vw - 420px) / 4 + 60px);
+    width: 100%;
+  }
+
+  @media ${(props) => props.theme.minWidth.lg} and (max-width: 1439px) {
+    /* Constrain to 2 grid columns so it does not overlap content */
+    max-width: calc(
+      ((100vw - 64px) - 11 * ${(props) => props.theme.columnGap.desktop}) / 6 +
+        ${(props) => props.theme.columnGap.desktop}
+    );
+  }
+
+  @media ${(props) => props.theme.minWidth.xl} {
+    /* At xl breakpoint: content is 6 cols, so more space for sidebar */
+    right: 45px;
+    max-width: calc((100vw - 420px) / 4 + 60px);
   }
 `;
 
@@ -62,10 +71,10 @@ const SidebarCTA = styled(Link)`
   text-decoration: none;
   font-family: "Signifier Light";
   font-size: 16px;
-  line-height: normal;
+  line-height: 1.4;
   text-align: center;
   transition: background-color 0.2s ease;
-  white-space: nowrap;
+  word-wrap: break-word;
 
   &:hover {
     background-color: ${(props) => props.theme.colors.grey};
@@ -75,7 +84,7 @@ const SidebarCTA = styled(Link)`
 const CTASidebarSticky = ({
   title,
   description,
-  text = "Réservez un rendez-vous",
+  text = "Prendre rendez-vous",
   to = "/contact",
 }) => {
   const [isVisible, setIsVisible] = useState(false);
