@@ -11,7 +11,7 @@ exports.createSchemaCustomization = ({ actions }) => {
       metaDescription: String
       canonicalUrl: String
     }
-    
+
     type SanityMoneyPage implements Node {
       title: String
       slug: SanitySlug
@@ -28,12 +28,23 @@ exports.createSchemaCustomization = ({ actions }) => {
       relatedSpecialties: [SanityMoneyPage]
       teamMembers: [SanityTeamMember]
     }
-    
+
+    type SanityCategory implements Node {
+      customH1: String!
+      slug: SanitySlug!
+      customTitle: String
+      metaDescription: String
+      canonicalUrl: String
+      mainContent: JSON
+      _rawMainContent: JSON
+    }
+
+
     type SanityMoneyPageFaqItem {
       question: String
       _rawAnswer: JSON
     }
-    
+
     type SanityTeamMember implements Node {
       teamType: String
       name: String
@@ -211,6 +222,45 @@ exports.createPages = async ({ graphql, actions, reporter }) => {
         component: MoneyPage,
         context: {
           slug: moneyPage.slug.current,
+        },
+      });
+    });
+  }
+
+  // Category Pages
+  const CategoryPage = path.resolve("./src/templates/CategoryPage/index.js");
+
+  const categoryPageQuery = await graphql(`
+    query {
+      allSanityCategory {
+        nodes {
+          _id
+          slug {
+            current
+          }
+        }
+      }
+    }
+  `);
+
+  if (categoryPageQuery.errors) {
+    reporter.panicOnBuild(
+      `There was an error loading Sanity Category Pages`,
+      categoryPageQuery.errors
+    );
+    return;
+  }
+
+  const categories = categoryPageQuery.data.allSanityCategory.nodes;
+  if (categories.length > 0) {
+    categories.forEach((category) => {
+      const pagePath = `/${category.slug.current}`;
+      createPage({
+        path: pagePath,
+        component: CategoryPage,
+        context: {
+          slug: category.slug.current,
+          categoryId: category._id,
         },
       });
     });

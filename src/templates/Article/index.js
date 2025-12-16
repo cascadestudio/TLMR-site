@@ -598,7 +598,7 @@ const Article = ({ data, location }) => {
   // Generate breadcrumb items for Article
   const breadcrumbItems = [
     { label: "Accueil", url: "/" },
-    { label: "Blog", url: "/blog" },
+    { label: "Actualités", url: "/actualites" },
   ];
 
   // Add category if available (use first category)
@@ -606,7 +606,7 @@ const Article = ({ data, location }) => {
     const primaryCategory = categories[0];
     breadcrumbItems.push({
       label: primaryCategory.title,
-      url: `/blog/${primaryCategory.slug.current}`,
+      url: `/actualites/${primaryCategory.slug.current}`,
     });
   }
 

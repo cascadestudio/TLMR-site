@@ -42,6 +42,7 @@ const BreadcrumbWrapper = styled.nav`
     display: inline-block;
     font-family: "Söhne Buch", sans-serif;
     vertical-align: bottom;
+    white-space: nowrap;
 
     &:hover {
       color: #000;
@@ -61,20 +62,8 @@ const BreadcrumbWrapper = styled.nav`
     color: #333;
     display: inline-block;
     font-family: "Söhne Buch", sans-serif;
-    max-width: 150px; /* Mobile: keep it short */
-    overflow: hidden;
-    text-overflow: ellipsis;
     white-space: nowrap;
     vertical-align: bottom;
-    flex-shrink: 1;
-
-    @media ${(props) => props.theme.minWidth.sm} {
-      max-width: 200px;
-    }
-
-    @media ${(props) => props.theme.minWidth.md} {
-      max-width: 100%; /* Will be constrained by parent grid column */
-    }
   }
 `;
 
@@ -84,13 +73,18 @@ const Breadcrumb = ({ items }) => {
 
   if (!items || items.length === 0) return null;
 
+  // Filter out items without labels to prevent empty slots
+  const validItems = items.filter(item => item && item.label && item.label.trim() !== '');
+
+  if (validItems.length === 0) return null;
+
   const siteUrl = "https://www.tlmr-avocats.com";
 
   // Generate Schema.org BreadcrumbList structured data
   const breadcrumbSchema = {
     "@context": "https://schema.org",
     "@type": "BreadcrumbList",
-    itemListElement: items.map((item, index) => ({
+    itemListElement: validItems.map((item, index) => ({
       "@type": "ListItem",
       position: index + 1,
       name: item.label,
@@ -108,7 +102,7 @@ const Breadcrumb = ({ items }) => {
       {/* Visual breadcrumb navigation */}
       <BreadcrumbContainer>
         <BreadcrumbWrapper aria-label="Fil d'Ariane">
-          {items.map((item, index) => (
+          {validItems.map((item, index) => (
             <React.Fragment key={index}>
               {index > 0 && <span aria-hidden="true">/</span>}
               {item.url ? (

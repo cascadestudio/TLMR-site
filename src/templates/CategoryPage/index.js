@@ -4,14 +4,12 @@ import Layout from "components/Layout";
 import Seo from "components/Seo";
 import styled from "styled-components";
 import Grid from "components/global/Grid";
+import Paragraph from "components/global/Paragraph";
 import { PortableText } from "@portabletext/react";
+import { GatsbyImage, getImage } from "gatsby-plugin-image";
 import nbspPonctuation from "components/utils/nbspPonctuation";
-import FAQSection from "components/Seo/FAQSection";
-import RelatedSpecialties from "components/Seo/RelatedSpecialties";
-import TeamSection from "components/Seo/TeamSection";
-import CTASection from "components/Seo/CTASection";
-import CTASidebarSticky from "components/Seo/CTASidebarSticky";
 import Breadcrumb from "components/Seo/Breadcrumb";
+import CTASection from "components/Seo/CTASection";
 
 const StyledContainer = styled.div`
   padding-top: 40px;
@@ -65,9 +63,11 @@ const StyledContentContainer = styled(Grid)`
 
 const StyledContent = styled.section`
   line-height: 28px;
+  margin-bottom: 60px;
   @media ${(props) => props.theme.minWidth.md} {
     grid-column: 3 / span 8;
     line-height: 32px;
+    margin-bottom: 80px;
   }
   @media ${(props) => props.theme.minWidth.lg} {
     grid-column: 4 / span 7;
@@ -159,30 +159,6 @@ const StyledContent = styled.section`
   }
 `;
 
-const StyledUpdateDate = styled.p`
-  font-size: 14px;
-  color: #666;
-  font-style: italic;
-  margin: 30px 0;
-  text-align: center;
-  @media ${(props) => props.theme.minWidth.md} {
-    grid-column: 3 / span 8;
-  }
-  @media ${(props) => props.theme.minWidth.lg} {
-    grid-column: 4 / span 7;
-  }
-`;
-
-const StyledCustomHTML = styled.div`
-  margin: 40px 0;
-  @media ${(props) => props.theme.minWidth.md} {
-    grid-column: 3 / span 8;
-  }
-  @media ${(props) => props.theme.minWidth.lg} {
-    grid-column: 4 / span 7;
-  }
-`;
-
 const StyledTableWrapper = styled.div`
   width: 100%;
   margin: 40px 0;
@@ -195,7 +171,7 @@ const StyledTableWrapper = styled.div`
 `;
 
 const StyledTable = styled.table`
-  min-width: 600px; /* Minimum width to maintain readability */
+  min-width: 600px;
   width: 100%;
   border-collapse: collapse;
   font-family: "Signifier Light";
@@ -264,6 +240,59 @@ const StyledTable = styled.table`
   }
 `;
 
+const StyledArticlesSection = styled.div`
+  padding: 60px 0 40px;
+  @media ${(props) => props.theme.minWidth.md} {
+    padding: 80px 0 60px;
+  }
+`;
+
+const StyledArticlesGrid = styled(Grid)`
+  @media ${(props) => props.theme.minWidth.sm} {
+    grid-template-columns: repeat(2, 1fr);
+  }
+  @media ${(props) => props.theme.minWidth.md} {
+    grid-template-columns: repeat(3, 1fr);
+  }
+`;
+
+const StyledArticleCard = styled(Link)`
+  margin-bottom: 30px;
+  display: block;
+  text-decoration: none;
+  color: inherit;
+
+  & > div {
+    overflow: hidden;
+  }
+
+  .gatsby-image-wrapper {
+    transition: transform 0.3s ${(props) => props.theme.cubicBezier.base};
+    aspect-ratio: 1.6;
+    @media ${(props) => props.theme.minWidth.md} {
+      aspect-ratio: 1;
+    }
+  }
+
+  &:hover {
+    .gatsby-image-wrapper {
+      transform: scale(1.05);
+    }
+  }
+
+  @media ${(props) => props.theme.minWidth.md} {
+    margin-bottom: 50px;
+  }
+
+  p {
+    margin: 7px 0 5px;
+    &.date {
+      font-size: 12px;
+      color: #666;
+    }
+  }
+`;
+
 // Create Portable Text components with access to CTA map and page map
 const createPortableTextComponents = (ctaMap, pageMap) => ({
   block: {
@@ -285,10 +314,8 @@ const createPortableTextComponents = (ctaMap, pageMap) => ({
       </a>
     ),
     internalLink: ({ value, children }) => {
-      // Handle internal links to other pages on the site
       const { reference } = value;
 
-      // If reference is already resolved (has slug), use it directly
       if (reference?.slug?.current) {
         const slug = reference.slug.current;
         const type = reference._type;
@@ -303,7 +330,6 @@ const createPortableTextComponents = (ctaMap, pageMap) => ({
         return <Link to={path}>{children}</Link>;
       }
 
-      // If reference is just an ID (_ref), resolve it from pageMap
       if (reference?._ref && pageMap) {
         const referencedPage = pageMap.get(reference._ref);
         if (referencedPage?.slug?.current) {
@@ -321,20 +347,10 @@ const createPortableTextComponents = (ctaMap, pageMap) => ({
         }
       }
 
-      // Fallback: render as plain text if reference can't be resolved
       return <span>{children}</span>;
     },
   },
   types: {
-    customHTMLBlock: ({ value }) => {
-      if (!value?.html) return null;
-      return (
-        <div
-          dangerouslySetInnerHTML={{ __html: value.html }}
-          style={{ margin: "20px 0" }}
-        />
-      );
-    },
     table: ({ value }) => {
       if (!value?.rows || value.rows.length === 0) return null;
 
@@ -365,17 +381,7 @@ const createPortableTextComponents = (ctaMap, pageMap) => ({
         </StyledTableWrapper>
       );
     },
-    // Handle referenced CTAs from library
-    // When a reference is resolved, it becomes the document itself
     ctaSectionDocument: ({ value }) => {
-      // Debug in development
-      if (process.env.NODE_ENV === "development" && value) {
-        console.log(
-          "ctaSectionDocument value:",
-          JSON.stringify(value, null, 2)
-        );
-      }
-
       if (!value?.buttonText || !value?.buttonLink) return null;
 
       return (
@@ -388,17 +394,7 @@ const createPortableTextComponents = (ctaMap, pageMap) => ({
         />
       );
     },
-    // Handle reference type (when reference is in Portable Text array)
-    // In Portable Text, references can come through as type 'reference'
     reference: ({ value }) => {
-      // Debug: log the reference structure
-      if (process.env.NODE_ENV === "development" && value) {
-        console.log("Reference type value:", JSON.stringify(value, null, 2));
-      }
-
-      // Check if it's a resolved CTA document reference
-      // When resolved, it should have the document fields directly
-      // OR it might have _type: 'ctaSectionDocument' when resolved
       if (
         value?._type === "ctaSectionDocument" ||
         (value?.buttonText && value?.buttonLink)
@@ -414,7 +410,6 @@ const createPortableTextComponents = (ctaMap, pageMap) => ({
         );
       }
 
-      // If it's an unresolved reference, try to resolve it manually
       if (value?._type === "reference" && value?._ref) {
         const referencedCta = ctaMap.get(value._ref);
         if (referencedCta) {
@@ -428,86 +423,18 @@ const createPortableTextComponents = (ctaMap, pageMap) => ({
             />
           );
         }
-
-        if (process.env.NODE_ENV === "development") {
-          console.warn(
-            "Unresolved CTA reference:",
-            value._ref,
-            "Available CTAs:",
-            Array.from(ctaMap.keys())
-          );
-        }
-        return null;
       }
 
       return null;
     },
-    // Handle FAQ Block
-    faqBlock: ({ value }) => {
-      if (!value?.items || value.items.length === 0) return null;
-      return (
-        <FAQSection
-          items={value.items}
-          pageMap={pageMap}
-          sectionTitle={value.sectionTitle}
-        />
-      );
-    },
-    // Handle Team Block
-    teamBlock: ({ value }) => {
-      if (!value?.members || value.members.length === 0) return null;
-      return (
-        <TeamSection
-          members={value.members}
-          sectionTitle={value.sectionTitle}
-        />
-      );
-    },
-    // Handle Related Specialties Block
-    relatedSpecialtiesBlock: ({ value }) => {
-      if (!value?.pages || value.pages.length === 0) return null;
-      return (
-        <RelatedSpecialties
-          items={value.pages}
-          sectionTitle={value.sectionTitle}
-        />
-      );
-    },
   },
 });
 
-// Component to display dynamic update date
-const UpdateDate = () => {
-  const currentDate = new Date();
-  const months = [
-    "janvier",
-    "février",
-    "mars",
-    "avril",
-    "mai",
-    "juin",
-    "juillet",
-    "août",
-    "septembre",
-    "octobre",
-    "novembre",
-    "décembre",
-  ];
-
-  const month = months[currentDate.getMonth()];
-  const year = currentDate.getFullYear();
-
-  return (
-    <StyledUpdateDate>
-      Page mise à jour en {month} {year}
-    </StyledUpdateDate>
-  );
-};
-
 // GraphQL Query
 export const query = graphql`
-  query MoneyPageBySlug($slug: String!) {
-    sanityMoneyPage(slug: { current: { eq: $slug } }) {
+  query CategoryPageBySlug($slug: String!, $categoryId: String!) {
+    sanityCategory(slug: { current: { eq: $slug } }) {
+      _id
       slug {
         current
       }
@@ -519,45 +446,27 @@ export const query = graphql`
       canonicalUrl
 
       # Main content
+      mainContent
       _rawMainContent
+    }
 
-      # FAQ Section
-      faqItems {
-        question
-        _rawAnswer
-      }
-
-      # Related Specialties
-      relatedSpecialties {
+    # Fetch articles filtered by category
+    allSanityArticle(
+      filter: { categories: { elemMatch: { _id: { eq: $categoryId } } } }
+      sort: { date: DESC }
+    ) {
+      nodes {
         title
-        customH1
+        date
         slug {
           current
         }
-      }
-
-      # Team Members
-      teamMembers {
-        teamType
-        name
-        role
-        photo {
+        heroImg {
           asset {
-            gatsbyImageData(width: 300, placeholder: BLURRED)
-            url
+            gatsbyImageData(width: 600, placeholder: BLURRED)
           }
         }
-        bio
-        experience
-        engagements
-        linkedIn
       }
-
-      # Options
-      showGoogleReviews
-      showUpdateDate
-      enableCustomHTML
-      customHTML
     }
 
     # Fetch all CTA documents for reference resolution
@@ -585,7 +494,7 @@ export const query = graphql`
     }
 
     # Fetch all Articles for internal link resolution
-    allSanityArticle {
+    allArticlesForLinks: allSanityArticle {
       nodes {
         _id
         _type
@@ -597,11 +506,17 @@ export const query = graphql`
   }
 `;
 
-const MoneyPage = ({ data }) => {
-  const page = data.sanityMoneyPage;
+const CategoryPage = ({ data }) => {
+  const page = data.sanityCategory;
+  const articles = data.allSanityArticle?.nodes || [];
+
+  // Debug logging
+  console.log('CategoryPage - page data:', page);
+  console.log('CategoryPage - mainContent:', page?.mainContent);
+  console.log('CategoryPage - _rawMainContent:', page?._rawMainContent);
   const allCtaDocuments = data.allSanityCtaSectionDocument?.nodes || [];
   const allMoneyPages = data.allSanityMoneyPage?.nodes || [];
-  const allArticles = data.allSanityArticle?.nodes || [];
+  const allArticles = data.allArticlesForLinks?.nodes || [];
 
   // Create a map of CTA documents by _id for quick lookup
   const ctaMap = new Map();
@@ -611,29 +526,20 @@ const MoneyPage = ({ data }) => {
 
   // Create a map of all pages for internal link resolution
   const pageMap = new Map();
-  allMoneyPages.forEach((page) => {
-    pageMap.set(page._id, page);
+  allMoneyPages.forEach((moneyPage) => {
+    pageMap.set(moneyPage._id, moneyPage);
   });
   allArticles.forEach((article) => {
     pageMap.set(article._id, article);
   });
 
-  // Debug: log the raw content structure in development
-  if (process.env.NODE_ENV === "development" && page._rawMainContent) {
-    console.log(
-      "Raw main content structure:",
-      JSON.stringify(page._rawMainContent, null, 2)
-    );
-    console.log("Available CTA documents:", ctaMap);
-  }
-
   const displayH1 = page.customH1;
 
-  // Generate breadcrumb items for Money Page
+  // Generate breadcrumb items for Category Page
   const breadcrumbItems = [
-    { label: "Accueil", url: "/" },
-    { label: "Expertises", url: "/expertises" },
-    { label: displayH1 }, // Current page, no URL - will be truncated if too long
+    { label: "Cabinet TLMR : avocats à Paris", url: "/" },
+    { label: "Actualités", url: "/actualites" },
+    { label: displayH1 },
   ];
 
   return (
@@ -655,52 +561,53 @@ const MoneyPage = ({ data }) => {
           <StyledContentContainer>
             <StyledContent>
               {/* Main Content */}
-              {page._rawMainContent && (
+              {page.mainContent && (
                 <PortableText
-                  value={page._rawMainContent}
+                  value={page.mainContent}
                   components={createPortableTextComponents(ctaMap, pageMap)}
                 />
               )}
             </StyledContent>
-
-            {/* Dynamic Update Date */}
-            {page.showUpdateDate && <UpdateDate />}
-
-            {/* Custom HTML Block */}
-            {page.enableCustomHTML && page.customHTML && (
-              <StyledCustomHTML
-                dangerouslySetInnerHTML={{ __html: page.customHTML }}
-              />
-            )}
           </StyledContentContainer>
 
-          {/* DEPRECATED: These sections now render through mainContent PortableText blocks */}
-          {/* Keeping these as fallback for backward compatibility during migration */}
-          {page.faqItems && page.faqItems.length > 0 && (
-            <FAQSection items={page.faqItems} pageMap={pageMap} />
-          )}
-
-          {page.relatedSpecialties && page.relatedSpecialties.length > 0 && (
-            <RelatedSpecialties items={page.relatedSpecialties} />
-          )}
-
-          {page.teamMembers && page.teamMembers.length > 0 && (
-            <TeamSection members={page.teamMembers} />
-          )}
-
-          {/* TODO: Add Google Reviews Component */}
+          {/* Articles Grid */}
+          <StyledArticlesSection>
+            <StyledArticlesGrid>
+              {articles.map((article) => {
+                const thumbImg = getImage(article.heroImg?.asset);
+                return (
+                  <StyledArticleCard
+                    key={article.slug.current}
+                    to={`/${article.slug.current}`}
+                  >
+                    {thumbImg && (
+                      <div>
+                        <GatsbyImage image={thumbImg} alt={article.title} />
+                      </div>
+                    )}
+                    <Paragraph className="date" size="sm">
+                      {new Date(article.date).toLocaleDateString("fr-FR", {
+                        year: "numeric",
+                        month: "long",
+                        day: "numeric",
+                      })}
+                    </Paragraph>
+                    <Paragraph
+                      size="lg"
+                      as="h3"
+                      html={{
+                        __html: nbspPonctuation(article.title),
+                      }}
+                    ></Paragraph>
+                  </StyledArticleCard>
+                );
+              })}
+            </StyledArticlesGrid>
+          </StyledArticlesSection>
         </StyledContainer>
-
-        {/* Sidebar Sticky CTA - appears on desktop only */}
-        <CTASidebarSticky
-          title="Besoin d'un avocat ?"
-          description="Contactez TLMR Avocats pour un premier échange confidentiel."
-          text="Prendre rendez-vous"
-          to="/contact"
-        />
       </Layout>
     </>
   );
 };
 
-export default MoneyPage;
+export default CategoryPage;

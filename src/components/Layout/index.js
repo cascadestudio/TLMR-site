@@ -4,6 +4,7 @@ import theme from "styles/theme";
 import GlobalStyle from "styles/globalStyle";
 import Navigation from "./Navigation";
 import Footer from "./Footer";
+import CTASticky from "components/Seo/CTASticky";
 
 const StyledContainer = styled.div`
   position: relative;
@@ -30,6 +31,12 @@ const Layout = ({ children, breadcrumb }) => {
           {children}
           <Footer />
         </StyledContainer>
+
+        {/* Global Sticky CTA - appears on mobile/tablet only, on all pages */}
+        <CTASticky
+          text="Réservez un rendez-vous avec un avocat"
+          to="/contact"
+        />
       </ThemeProvider>
     </main>
   );
