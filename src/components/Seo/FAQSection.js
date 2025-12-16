@@ -216,23 +216,26 @@ const FAQSection = ({ items, sectionTitle, pageMap }) => {
   const faqSchema = {
     "@context": "https://schema.org",
     "@type": "FAQPage",
-    mainEntity: items.map((item) => ({
-      "@type": "Question",
-      name: item.question,
-      acceptedAnswer: {
-        "@type": "Answer",
-        text: item._rawAnswer
-          ? item._rawAnswer
-              .map((block) => {
-                if (block._type === "block" && block.children) {
-                  return block.children.map((child) => child.text).join("");
-                }
-                return "";
-              })
-              .join(" ")
-          : "",
-      },
-    })),
+    mainEntity: items.map((item) => {
+      const answerContent = item._rawAnswer || item.answer;
+      return {
+        "@type": "Question",
+        name: item.question,
+        acceptedAnswer: {
+          "@type": "Answer",
+          text: answerContent
+            ? answerContent
+                .map((block) => {
+                  if (block._type === "block" && block.children) {
+                    return block.children.map((child) => child.text).join("");
+                  }
+                  return "";
+                })
+                .join(" ")
+            : "",
+        },
+      };
+    }),
   };
 
   // Measure answer height for smooth animation
@@ -281,9 +284,9 @@ const FAQSection = ({ items, sectionTitle, pageMap }) => {
                   id={`faq-answer-${index}`}
                   ref={(el) => measureHeight(index, el)}
                 >
-                  {item._rawAnswer && (
+                  {(item._rawAnswer || item.answer) && (
                     <PortableText
-                      value={item._rawAnswer}
+                      value={item._rawAnswer || item.answer}
                       components={createAnswerComponents(pageMap)}
                     />
                   )}

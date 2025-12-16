@@ -73,11 +73,12 @@ const SidebarCTA = styled(Link)`
   font-size: 16px;
   line-height: 1.4;
   text-align: center;
-  transition: background-color 0.2s ease;
+  transition: background-color 0.2s ease, color 0.2s ease;
   word-wrap: break-word;
 
   &:hover {
     background-color: ${(props) => props.theme.colors.grey};
+    color: ${(props) => props.theme.colors.black};
   }
 `;
 
