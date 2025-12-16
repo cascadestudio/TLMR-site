@@ -5,57 +5,49 @@ import { Link } from "gatsby";
 const SidebarWrapper = styled.div`
   display: none;
 
-  @media ${(props) => props.theme.minWidth.lg} {
+  @media ${(props) => props.theme.minWidth.md} {
     display: block;
     position: fixed;
-    /* Align with grid columns 10, 11, 12 (last 3 columns):
-       - Container padding: 45px
-       - Grid calculation: (viewport - 2*padding - 11*gap) / 12
-       - Position from right: just the padding
-    */
-    right: 32px;
+    left: 24px;
     top: 50%;
     transform: translateY(-50%);
     z-index: 100;
     transition: opacity 0.3s ease;
     opacity: ${(props) => (props.$isVisible ? "1" : "0")};
     pointer-events: ${(props) => (props.$isVisible ? "auto" : "none")};
-    width: 100%;
+    width: auto;
+    max-width: 120px;
   }
 
-  @media ${(props) => props.theme.minWidth.lg} and (max-width: 1439px) {
-    /* Constrain to 2 grid columns so it does not overlap content */
-    max-width: calc(
-      ((100vw - 64px) - 11 * ${(props) => props.theme.columnGap.desktop}) / 6 +
-        ${(props) => props.theme.columnGap.desktop}
-    );
+  @media ${(props) => props.theme.minWidth.lg} {
+    left: 32px;
+    max-width: 140px;
   }
 
   @media ${(props) => props.theme.minWidth.xl} {
-    /* At xl breakpoint: content is 6 cols, so more space for sidebar */
-    right: 45px;
-    max-width: calc((100vw - 420px) / 4 + 60px);
+    left: 45px;
+    max-width: 160px;
   }
 `;
 
 const SidebarContent = styled.div`
   display: flex;
   flex-direction: column;
-  gap: 16px;
+  gap: 10px;
   text-align: center;
 `;
 
 const SidebarTitle = styled.h3`
   font-family: "Söhne Kräftig";
   font-size: 18px;
-  line-height: 24px;
+  line-height: 22px;
   color: ${(props) => props.theme.colors.black};
   margin: 0;
 `;
 
 const SidebarDescription = styled.p`
   font-family: "Signifier Light";
-  font-size: 14px;
+  font-size: 16px;
   line-height: 20px;
   color: ${(props) => props.theme.colors.black};
   margin: 0;
@@ -64,7 +56,7 @@ const SidebarDescription = styled.p`
 
 const SidebarCTA = styled(Link)`
   display: inline-block;
-  padding: 8px 20px 9px;
+  padding: 8px 16px 9px;
   border-radius: 100px;
   background-color: ${(props) => props.theme.colors.blackLight};
   color: white;
