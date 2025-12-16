@@ -443,6 +443,37 @@ const createPortableTextComponents = (ctaMap, pageMap) => ({
 
       return null;
     },
+    // Handle FAQ Block
+    faqBlock: ({ value }) => {
+      if (!value?.items || value.items.length === 0) return null;
+      return (
+        <FAQSection
+          items={value.items}
+          pageMap={pageMap}
+          sectionTitle={value.sectionTitle}
+        />
+      );
+    },
+    // Handle Team Block
+    teamBlock: ({ value }) => {
+      if (!value?.members || value.members.length === 0) return null;
+      return (
+        <TeamSection
+          members={value.members}
+          sectionTitle={value.sectionTitle}
+        />
+      );
+    },
+    // Handle Related Specialties Block
+    relatedSpecialtiesBlock: ({ value }) => {
+      if (!value?.pages || value.pages.length === 0) return null;
+      return (
+        <RelatedSpecialties
+          items={value.pages}
+          sectionTitle={value.sectionTitle}
+        />
+      );
+    },
   },
 });
 
@@ -646,22 +677,20 @@ const MoneyPage = ({ data }) => {
             )}
           </StyledContentContainer>
 
-          {/* FAQ Section */}
+          {/* DEPRECATED: These sections now render through mainContent PortableText blocks */}
+          {/* Keeping these as fallback for backward compatibility during migration */}
           {page.faqItems && page.faqItems.length > 0 && (
             <FAQSection items={page.faqItems} pageMap={pageMap} />
           )}
 
-          {/* Related Specialties Section */}
           {page.relatedSpecialties && page.relatedSpecialties.length > 0 && (
             <RelatedSpecialties items={page.relatedSpecialties} />
           )}
 
-          {/* Team Section */}
           {page.teamMembers && page.teamMembers.length > 0 && (
             <TeamSection members={page.teamMembers} />
           )}
 
-          {/* Placeholder sections for components we'll build next */}
           {/* TODO: Add Google Reviews Component */}
         </StyledContainer>
 

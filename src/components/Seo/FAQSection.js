@@ -200,7 +200,9 @@ const createAnswerComponents = (pageMap) => ({
   },
 });
 
-const FAQSection = ({ items, title = "Questions fréquentes", pageMap }) => {
+const FAQSection = ({ items, sectionTitle, pageMap }) => {
+  // Use sectionTitle if provided, otherwise default to "Questions fréquentes"
+  const title = sectionTitle || "Questions fréquentes";
   const [openIndex, setOpenIndex] = useState(null);
   const [heights, setHeights] = useState({});
 

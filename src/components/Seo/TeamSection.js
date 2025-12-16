@@ -147,9 +147,11 @@ const ViewAllWrapper = styled.div`
 
 const TeamSection = ({
   members,
-  title = "Notre équipe",
+  sectionTitle,
   showViewAllLink = true,
 }) => {
+  // Use sectionTitle if provided, otherwise default to "Notre équipe"
+  const title = sectionTitle || "Notre équipe";
   if (!members || members.length === 0) return null;
 
   // Filter to only show core team members (those with photos)

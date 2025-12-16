@@ -123,7 +123,9 @@ const CardTitle = styled.h3`
   }
 `;
 
-const RelatedSpecialties = ({ items, title = "Nos autres expertises" }) => {
+const RelatedSpecialties = ({ items, sectionTitle }) => {
+  // Use sectionTitle if provided, otherwise default to "Nos autres expertises"
+  const title = sectionTitle || "Nos autres expertises";
   if (!items || items.length === 0) return null;
 
   return (
