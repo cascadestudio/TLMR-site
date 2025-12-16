@@ -597,7 +597,7 @@ const Article = ({ data, location }) => {
 
   // Generate breadcrumb items for Article
   const breadcrumbItems = [
-    { label: "Accueil", url: "/" },
+    { label: "Cabinet TLMR : avocats à Paris", url: "/" },
     { label: "Actualités", url: "/actualites" },
   ];
 

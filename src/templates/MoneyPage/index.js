@@ -631,7 +631,7 @@ const MoneyPage = ({ data }) => {
 
   // Generate breadcrumb items for Money Page
   const breadcrumbItems = [
-    { label: "Accueil", url: "/" },
+    { label: "Cabinet TLMR : avocats à Paris", url: "/" },
     { label: "Expertises", url: "/expertises" },
     { label: displayH1 }, // Current page, no URL - will be truncated if too long
   ];
