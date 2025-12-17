@@ -10,7 +10,6 @@ import FAQSection from "components/Seo/FAQSection";
 import RelatedSpecialties from "components/Seo/RelatedSpecialties";
 import TeamSection from "components/Seo/TeamSection";
 import CTASection from "components/Seo/CTASection";
-import CTASidebarSticky from "components/Seo/CTASidebarSticky";
 import Breadcrumb from "components/Seo/Breadcrumb";
 
 const StyledContainer = styled.div`
@@ -60,6 +59,66 @@ const StyledContentContainer = styled(Grid)`
   @media ${(props) => props.theme.minWidth.md} {
     display: grid;
     margin-top: 40px;
+  }
+`;
+
+const StyledSidebarInfo = styled.div`
+  display: none;
+  @media ${(props) => props.theme.minWidth.md} {
+    display: block;
+    grid-column: 11 / span 2;
+  }
+  @media ${(props) => props.theme.minWidth.lg} {
+    grid-column: 11 / span 2;
+  }
+`;
+
+const StyledSidebarSticky = styled.div`
+  position: sticky;
+  top: ${({ theme }) => theme.headerHeight}px;
+`;
+
+const StyledSidebarContent = styled.div`
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+  text-align: center;
+  padding: 20px;
+`;
+
+const StyledSidebarTitle = styled.h3`
+  font-family: "Söhne Kräftig";
+  font-size: 18px;
+  line-height: 22px;
+  color: ${(props) => props.theme.colors.black};
+  margin: 0;
+`;
+
+const StyledSidebarDescription = styled.p`
+  font-family: "Signifier Light";
+  font-size: 16px;
+  line-height: 20px;
+  color: ${(props) => props.theme.colors.black};
+  margin: 0;
+  opacity: 0.9;
+`;
+
+const StyledSidebarCTA = styled(Link)`
+  display: inline-block;
+  padding: 8px 16px 9px;
+  border-radius: 100px;
+  background-color: ${(props) => props.theme.colors.blackLight};
+  color: white;
+  text-decoration: none;
+  font-family: "Signifier Light";
+  font-size: 16px;
+  line-height: 1.4;
+  text-align: center;
+  transition: background-color 0.2s ease;
+  word-wrap: break-word;
+
+  &:hover {
+    background-color: ${(props) => props.theme.colors.black};
   }
 `;
 
@@ -663,6 +722,21 @@ const MoneyPage = ({ data }) => {
               )}
             </StyledContent>
 
+            {/* Sidebar on the right - desktop only */}
+            <StyledSidebarInfo>
+              <StyledSidebarSticky>
+                <StyledSidebarContent>
+                  <StyledSidebarTitle>Besoin d'un avocat ?</StyledSidebarTitle>
+                  <StyledSidebarDescription>
+                    Contactez TLMR Avocats pour un premier échange confidentiel.
+                  </StyledSidebarDescription>
+                  <StyledSidebarCTA to="/contact">
+                    Prendre<br />rendez-vous
+                  </StyledSidebarCTA>
+                </StyledSidebarContent>
+              </StyledSidebarSticky>
+            </StyledSidebarInfo>
+
             {/* Dynamic Update Date */}
             {page.showUpdateDate && <UpdateDate />}
 
@@ -690,14 +764,6 @@ const MoneyPage = ({ data }) => {
 
           {/* TODO: Add Google Reviews Component */}
         </StyledContainer>
-
-        {/* Sidebar Sticky CTA - appears on desktop only */}
-        <CTASidebarSticky
-          title="Besoin d'un avocat ?"
-          description="Contactez TLMR Avocats pour un premier échange confidentiel."
-          text="Prendre rendez-vous"
-          to="/contact"
-        />
       </Layout>
     </>
   );
