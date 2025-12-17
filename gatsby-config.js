@@ -50,5 +50,32 @@ module.exports = {
     "gatsby-plugin-react-helmet",
     "gatsby-adapter-netlify",
     "gatsby-plugin-client-side-redirect",
+    {
+      resolve: "gatsby-plugin-sitemap",
+      options: {
+        query: `
+          {
+            site {
+              siteMetadata {
+                siteUrl
+              }
+            }
+            allSitePage {
+              nodes {
+                path
+              }
+            }
+          }
+        `,
+      },
+    },
+    {
+      resolve: "gatsby-plugin-robots-txt",
+      options: {
+        host: "https://www.tlmr-avocats.com",
+        sitemap: "https://www.tlmr-avocats.com/sitemap-index.xml",
+        policy: [{ userAgent: "*", allow: "/" }],
+      },
+    },
   ],
 };
