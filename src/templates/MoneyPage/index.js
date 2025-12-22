@@ -5,6 +5,7 @@ import Seo from "components/Seo";
 import styled from "styled-components";
 import Grid from "components/global/Grid";
 import { PortableText } from "@portabletext/react";
+import SanityImg from "gatsby-plugin-sanity-image";
 import nbspPonctuation from "components/utils/nbspPonctuation";
 import FAQSection from "components/Seo/FAQSection";
 import RelatedSpecialties from "components/Seo/RelatedSpecialties";
@@ -323,19 +324,23 @@ const StyledTable = styled.table`
   }
 `;
 
+// Helper to safely apply nbspPonctuation
+const safeNbspPonctuation = (text) => {
+  if (typeof text === "string") {
+    return nbspPonctuation(text);
+  }
+  return text;
+};
+
 // Create Portable Text components with access to CTA map and page map
 const createPortableTextComponents = (ctaMap, pageMap) => ({
   block: {
-    h2: ({ children }) => (
-      <h2
-        dangerouslySetInnerHTML={{ __html: nbspPonctuation(children[0]) }}
-      ></h2>
-    ),
-    h3: ({ children }) => (
-      <h3
-        dangerouslySetInnerHTML={{ __html: nbspPonctuation(children[0]) }}
-      ></h3>
-    ),
+    h2: ({ children }) => <h2>{children.map((child, i) =>
+      typeof child === "string" ? <span key={i} dangerouslySetInnerHTML={{ __html: safeNbspPonctuation(child) }} /> : child
+    )}</h2>,
+    h3: ({ children }) => <h3>{children.map((child, i) =>
+      typeof child === "string" ? <span key={i} dangerouslySetInnerHTML={{ __html: safeNbspPonctuation(child) }} /> : child
+    )}</h3>,
   },
   marks: {
     link: ({ value, children }) => (
@@ -385,6 +390,15 @@ const createPortableTextComponents = (ctaMap, pageMap) => ({
     },
   },
   types: {
+    image: ({ value }) =>
+      value.asset && (
+        <SanityImg
+          asset={value.asset}
+          alt={value.alt || ""}
+          width={value.asset.width}
+          style={{ width: "100%", maxWidth: value.asset.width, margin: "30px 0" }}
+        />
+      ),
     customHTMLBlock: ({ value }) => {
       if (!value?.html) return null;
       return (
