@@ -392,12 +392,30 @@ const createPortableTextComponents = (ctaMap, pageMap) => ({
   types: {
     image: ({ value }) =>
       value.asset && (
-        <SanityImg
-          asset={value.asset}
-          alt={value.alt || ""}
-          width={value.asset.width}
-          style={{ width: "100%", maxWidth: value.asset.width, margin: "30px 0" }}
-        />
+        <figure style={{ margin: "30px 0" }}>
+          <SanityImg
+            asset={value.asset}
+            alt={value.alt || ""}
+            width={800}
+            loading="lazy"
+            config={{
+              quality: 75,
+              fit: "max",
+            }}
+            style={{ width: "100%", height: "auto" }}
+          />
+          {value.caption && (
+            <figcaption style={{
+              fontSize: "14px",
+              color: "#666",
+              marginTop: "8px",
+              fontStyle: "italic",
+              textAlign: "center"
+            }}>
+              {value.caption}
+            </figcaption>
+          )}
+        </figure>
       ),
     customHTMLBlock: ({ value }) => {
       if (!value?.html) return null;
