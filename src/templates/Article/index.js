@@ -24,6 +24,7 @@ import LiteYouTubeEmbed from "react-lite-youtube-embed";
 import "react-lite-youtube-embed/dist/LiteYouTubeEmbed.css";
 import nbspPonctuation from "components/utils/nbspPonctuation";
 import Breadcrumb from "components/Seo/Breadcrumb";
+import CTASection from "components/Seo/CTASection";
 
 const StyledContainer = styled.div`
   & > .gatsby-image-wrapper {
@@ -432,10 +433,23 @@ export const query = graphql`
         }
       }
     }
+
+    # Fetch all CTA documents for reference resolution
+    allSanityCtaSectionDocument {
+      nodes {
+        _id
+        name
+        heading
+        description
+        buttonText
+        buttonLink
+        style
+      }
+    }
   }
 `;
 
-const createArticlePortableTextComponents = (pageMap) => ({
+const createArticlePortableTextComponents = (ctaMap, pageMap) => ({
   block: {
     h2: ({ children }) => (
       <h2
@@ -514,6 +528,56 @@ const createArticlePortableTextComponents = (pageMap) => ({
         </StyledTable>
       );
     },
+    // Handle referenced CTAs from library
+    ctaSectionDocument: ({ value }) => {
+      if (!value?.buttonText || !value?.buttonLink) return null;
+
+      return (
+        <CTASection
+          heading={value.heading}
+          description={value.description}
+          buttonText={value.buttonText}
+          buttonLink={value.buttonLink}
+          style={value.style || "primary"}
+        />
+      );
+    },
+    // Handle reference type (when reference is in Portable Text array)
+    reference: ({ value }) => {
+      // Check if it's a resolved CTA document reference
+      if (
+        value?._type === "ctaSectionDocument" ||
+        (value?.buttonText && value?.buttonLink)
+      ) {
+        return (
+          <CTASection
+            heading={value.heading}
+            description={value.description}
+            buttonText={value.buttonText}
+            buttonLink={value.buttonLink}
+            style={value.style || "primary"}
+          />
+        );
+      }
+
+      // If it's an unresolved reference, try to resolve it manually
+      if (value?._type === "reference" && value?._ref) {
+        const referencedCta = ctaMap.get(value._ref);
+        if (referencedCta) {
+          return (
+            <CTASection
+              heading={referencedCta.heading}
+              description={referencedCta.description}
+              buttonText={referencedCta.buttonText}
+              buttonLink={referencedCta.buttonLink}
+              style={referencedCta.style || "primary"}
+            />
+          );
+        }
+      }
+
+      return null;
+    },
   },
   marks: {
     link: ({ value, children }) => (
@@ -579,9 +643,16 @@ const Article = ({ data, location }) => {
   } = data.sanityArticle;
   const allMoneyPages = data.allSanityMoneyPage?.nodes || [];
   const allArticles = data.allSanityArticle?.nodes || [];
+  const allCtaDocuments = data.allSanityCtaSectionDocument?.nodes || [];
 
   const heroImage = getImage(heroImg.asset);
   const articleDescription = _rawContent[0].children[0].text;
+
+  // Create a map of CTA documents by _id for quick lookup
+  const ctaMap = new Map();
+  allCtaDocuments.forEach((cta) => {
+    ctaMap.set(cta._id, cta);
+  });
 
   // Create a map of all pages for internal link resolution
   const pageMap = new Map();
@@ -685,7 +756,7 @@ const Article = ({ data, location }) => {
                 <StyledContent>
                   <PortableText
                     value={_rawContent}
-                    components={createArticlePortableTextComponents(pageMap)}
+                    components={createArticlePortableTextComponents(ctaMap, pageMap)}
                   />
                 </StyledContent>
               </StyledContentContainer>
