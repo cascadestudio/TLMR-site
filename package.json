@@ -4,6 +4,9 @@
   "private": true,
   "description": "tlmr",
   "author": "AdrienLapasset",
+  "engines": {
+    "node": ">=20.12.2"
+  },
   "keywords": [
     "gatsby"
   ],
