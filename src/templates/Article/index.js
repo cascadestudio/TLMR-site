@@ -388,6 +388,12 @@ const ShareBlock = ({ articleUrl }) => {
 
 export const query = graphql`
   query ArticleBySlug($slug: String!) {
+    site {
+      siteMetadata {
+        siteUrl
+      }
+    }
+
     sanityArticle(slug: { current: { eq: $slug } }) {
       title
       date
@@ -629,6 +635,7 @@ const createArticlePortableTextComponents = (ctaMap, pageMap) => ({
 });
 
 const Article = ({ data, location }) => {
+  const siteUrl = data?.site?.siteMetadata?.siteUrl;
   const {
     title,
     date,
@@ -645,8 +652,8 @@ const Article = ({ data, location }) => {
   const allArticles = data.allSanityArticle?.nodes || [];
   const allCtaDocuments = data.allSanityCtaSectionDocument?.nodes || [];
 
-  const heroImage = getImage(heroImg.asset);
-  const articleDescription = _rawContent[0].children[0].text;
+  const heroImage = heroImg?.asset ? getImage(heroImg.asset) : null;
+  const articleDescription = _rawContent?.[0]?.children?.[0]?.text || "";
 
   // Create a map of CTA documents by _id for quick lookup
   const ctaMap = new Map();
@@ -665,6 +672,12 @@ const Article = ({ data, location }) => {
 
   // Use customH1 if available, fallback to title
   const displayH1 = customH1 || title;
+
+  const shareUrl =
+    (siteUrl && location?.pathname ? `${siteUrl}${location.pathname}` : null) ||
+    location?.href ||
+    siteUrl ||
+    "";
 
   // Generate breadcrumb items for Article
   const breadcrumbItems = [
@@ -692,14 +705,14 @@ const Article = ({ data, location }) => {
         articleDescription={articleDescription}
         customMetaDescription={metaDescription}
         canonicalUrl={canonicalUrl}
-        imageUrl={heroImg.asset.url}
+        imageUrl={heroImg?.asset?.url}
         article={true}
       />
       <myContext.Consumer>
         {(context) => (
           <Layout>
             <StyledContainer>
-              <GatsbyImage image={heroImage} alt={title} />
+              {heroImage && <GatsbyImage image={heroImage} alt={title} />}
               <Breadcrumb items={breadcrumbItems} />
               <StyledHeader>
                 <StyledDesktopInfo>
@@ -739,7 +752,7 @@ const Article = ({ data, location }) => {
                   <StyledInfoLabel size="sm">Par</StyledInfoLabel>
                   <StyledInfo size="sm">{author}</StyledInfo>
                 </div>
-                <ShareBlock articleUrl={location.href} />
+                <ShareBlock articleUrl={shareUrl} />
                 <div>
                   <Cta to="/contact">Nous contacter</Cta>
                 </div>
@@ -747,7 +760,7 @@ const Article = ({ data, location }) => {
               <StyledContentContainer>
                 <StyledDesktopContentInfo isNavHidden={context?.isNavHidden}>
                   <StyledDesktopShareBlock>
-                    <ShareBlock articleUrl={location.href} />
+                    <ShareBlock articleUrl={shareUrl} />
                     <div>
                       <Cta to="/contact">Nous contacter</Cta>
                     </div>
@@ -756,7 +769,10 @@ const Article = ({ data, location }) => {
                 <StyledContent>
                   <PortableText
                     value={_rawContent}
-                    components={createArticlePortableTextComponents(ctaMap, pageMap)}
+                    components={createArticlePortableTextComponents(
+                      ctaMap,
+                      pageMap
+                    )}
                   />
                 </StyledContent>
               </StyledContentContainer>

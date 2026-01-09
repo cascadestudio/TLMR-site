@@ -5,7 +5,6 @@ import PageHero from "components/global/PageHero";
 import AnchorNavBar from "components/global/AnchorNavBar";
 import EservicesData from "components/pages/e-services/data";
 import Eservice from "components/pages/e-services/Eservice";
-import { Element } from "react-scroll";
 import ALaUne from "components/pages/home/sections/ALaUne";
 import TwoPointsSection from "components/global/TwoPointsSection";
 import Seo from "components/Seo";
@@ -22,7 +21,7 @@ const StyledPageHero = styled(PageHero)`
     padding: 210px 0 95px;
   }
 `;
-const StyledElement = styled(Element)`
+const StyledElement = styled.div`
   @media ${(props) => props.theme.minWidth.sm} {
     padding-top: 90px;
     margin-bottom: 0;
@@ -45,12 +44,23 @@ const StyledTwoPointsSection = styled(TwoPointsSection)`
 `;
 
 const Eservices = () => {
+  const [ScrollElement, setScrollElement] = useState(null);
   const [isDeepBlockModalModal, setIsDeepBlockModalModal] = useState(false);
   const [isSeraphinLegalModal, setIsSeraphinLegalModal] = useState(false);
   const [isConsultationModal, setIsConsultationModal] = useState(false);
   const [isContactModal, setIsContactModal] = useState(false);
   const [modalFrom, setModalFrom] = useState("");
   const twoPointsSectionRef = useRef(null);
+
+  useEffect(() => {
+    import("react-scroll")
+      .then((mod) => {
+        setScrollElement(() => mod.Element);
+      })
+      .catch(() => {
+        setScrollElement(null);
+      });
+  }, []);
 
   useEffect(() => {
     if (isDeepBlockModalModal || isSeraphinLegalModal || isConsultationModal) {
@@ -91,7 +101,12 @@ const Eservices = () => {
           <StyledEserviceContainer>
             {EservicesData.map(
               ({ id, title, description, points, btns, imgPath }) => (
-                <StyledElement key={id} name={title} id={title}>
+                <StyledElement
+                  as={ScrollElement || "div"}
+                  key={id}
+                  name={title}
+                  id={title}
+                >
                   <Eservice
                     title={title}
                     description={description}

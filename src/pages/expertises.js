@@ -1,9 +1,8 @@
-import React, { useRef } from "react";
+import React, { useEffect, useRef, useState } from "react";
 import styled from "styled-components";
 import Layout from "components/Layout";
 import Expertise from "components/pages/expertises/Expertise";
 import ExpertisesData from "components/pages/expertises/data";
-import { Element } from "react-scroll";
 import TwoPointsSection from "components/global/TwoPointsSection";
 import PageHero from "components/global/PageHero";
 import AnchorNavBar from "components/global/AnchorNavBar";
@@ -18,7 +17,7 @@ const StyledPageHero = styled(PageHero)`
     padding: 210px 0 95px;
   }
 `;
-const StyledElement = styled(Element)`
+const StyledElement = styled.div`
   padding-top: 30px;
   margin-bottom: 35px;
   @media ${(props) => props.theme.minWidth.sm} {
@@ -31,7 +30,19 @@ const StyledElement = styled(Element)`
 `;
 
 const ExpertisesPage = () => {
+  const [ScrollElement, setScrollElement] = useState(null);
   const twoPointsSectionRef = useRef(null);
+
+  useEffect(() => {
+    import("react-scroll")
+      .then((mod) => {
+        setScrollElement(() => mod.Element);
+      })
+      .catch(() => {
+        setScrollElement(null);
+      });
+  }, []);
+
   return (
     <>
       <Seo pageTitle="Expertises" />
@@ -54,6 +65,7 @@ const ExpertisesPage = () => {
           />
           {ExpertisesData.map((expertise, index) => (
             <StyledElement
+              as={ScrollElement || "div"}
               key={index}
               name={expertise.title}
               id={expertise.title}
