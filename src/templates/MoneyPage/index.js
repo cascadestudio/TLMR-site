@@ -336,12 +336,34 @@ const safeNbspPonctuation = (text) => {
 // Create Portable Text components with access to CTA map and page map
 const createPortableTextComponents = (ctaMap, pageMap) => ({
   block: {
-    h2: ({ children }) => <h2>{children.map((child, i) =>
-      typeof child === "string" ? <span key={i} dangerouslySetInnerHTML={{ __html: safeNbspPonctuation(child) }} /> : child
-    )}</h2>,
-    h3: ({ children }) => <h3>{children.map((child, i) =>
-      typeof child === "string" ? <span key={i} dangerouslySetInnerHTML={{ __html: safeNbspPonctuation(child) }} /> : child
-    )}</h3>,
+    h2: ({ children }) => (
+      <h2>
+        {children.map((child, i) =>
+          typeof child === "string" ? (
+            <span
+              key={i}
+              dangerouslySetInnerHTML={{ __html: safeNbspPonctuation(child) }}
+            />
+          ) : (
+            child
+          )
+        )}
+      </h2>
+    ),
+    h3: ({ children }) => (
+      <h3>
+        {children.map((child, i) =>
+          typeof child === "string" ? (
+            <span
+              key={i}
+              dangerouslySetInnerHTML={{ __html: safeNbspPonctuation(child) }}
+            />
+          ) : (
+            child
+          )
+        )}
+      </h3>
+    ),
   },
   marks: {
     link: ({ value, children }) => (
@@ -406,13 +428,15 @@ const createPortableTextComponents = (ctaMap, pageMap) => ({
             style={{ width: "100%", height: "auto" }}
           />
           {value.caption && (
-            <figcaption style={{
-              fontSize: "14px",
-              color: "#666",
-              marginTop: "8px",
-              fontStyle: "italic",
-              textAlign: "center"
-            }}>
+            <figcaption
+              style={{
+                fontSize: "14px",
+                color: "#666",
+                marginTop: "8px",
+                fontStyle: "italic",
+                textAlign: "center",
+              }}
+            >
               {value.caption}
             </figcaption>
           )}
@@ -506,7 +530,7 @@ const createPortableTextComponents = (ctaMap, pageMap) => ({
         );
       }
 
-      // If it's an unresolved reference, try to resolve it manually
+      // If it's an unresolved reference, try to resolve it manually and see if it works
       if (value?._type === "reference" && value?._ref) {
         const referencedCta = ctaMap.get(value._ref);
         if (referencedCta) {
@@ -764,7 +788,9 @@ const MoneyPage = ({ data }) => {
                     Contactez TLMR Avocats pour un premier échange confidentiel.
                   </StyledSidebarDescription>
                   <StyledSidebarCTA to="/contact">
-                    Prendre<br />rendez-vous
+                    Prendre
+                    <br />
+                    rendez-vous
                   </StyledSidebarCTA>
                 </StyledSidebarContent>
               </StyledSidebarSticky>
