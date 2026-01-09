@@ -1,7 +1,6 @@
 import React, { useState, useEffect, useRef } from "react";
 import styled from "styled-components";
 import Grid from "components/global/Grid";
-import { Link } from "react-scroll";
 import Dot from "components/global/Dot";
 import { myContext } from "provider";
 import { useLocation } from "@reach/router";
@@ -41,7 +40,7 @@ const StyledGrid = styled(Grid)`
     }
   }
 `;
-const StyledNavLink = styled(Link)`
+const StyledNavLink = styled.a`
   text-align: left;
   display: flex;
   align-items: first baseline;
@@ -66,11 +65,22 @@ const StyledNavLink = styled(Link)`
 `;
 
 const AnchorNavBar = ({ data, eservices, twoPointsSectionRef }) => {
+  const [ScrollLink, setScrollLink] = useState(null);
   const [isPageChange, setIsPageChange] = useState(false);
   const [isHidden, setIsHidden] = useState(false);
   const [isScrollToAnchorNav, setIsScrollToAnchorNav] = useState(false);
   const anchorNavRef = useRef(null);
   const location = useLocation();
+
+  useEffect(() => {
+    import("react-scroll")
+      .then((mod) => {
+        setScrollLink(() => mod.Link);
+      })
+      .catch(() => {
+        setScrollLink(null);
+      });
+  }, []);
 
   useEffect(() => {
     setIsPageChange(true);
@@ -121,11 +131,16 @@ const AnchorNavBar = ({ data, eservices, twoPointsSectionRef }) => {
             {data.map(({ title }, index) => (
               <StyledNavLink
                 key={index}
-                offset={-40}
-                to={title}
-                activeClass="active"
-                smooth
-                spy
+                as={ScrollLink || "a"}
+                {...(ScrollLink
+                  ? {
+                      offset: -40,
+                      to: title,
+                      activeClass: "active",
+                      smooth: true,
+                      spy: true,
+                    }
+                  : { href: `#${title}` })}
               >
                 <Dot square={eservices} />
                 <p dangerouslySetInnerHTML={{ __html: title }}></p>

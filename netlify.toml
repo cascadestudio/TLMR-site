@@ -1,0 +1,14 @@
+[build]
+  command = "gatsby build"
+  publish = "public"
+  functions = "netlify/functions"
+
+[functions]
+  node_bundler = "esbuild"
+
+# Environment variables are set in Netlify dashboard
+# Required for Google Reviews:
+# - GOOGLE_CLIENT_ID
+# - GOOGLE_CLIENT_SECRET
+# - GOOGLE_REFRESH_TOKEN
+# - GMB_LOCATION_ID
