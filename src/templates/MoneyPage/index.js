@@ -207,7 +207,7 @@ const StyledContent = styled.section`
   }
 
   ul {
-    margin: -35px 0 35px;
+    margin: 15px 0 35px;
     padding-left: 20px;
     li {
       font-family: "Signifier Light";
@@ -217,6 +217,9 @@ const StyledContent = styled.section`
         font-family: "Signifier Light Italic";
       }
     }
+  }
+  p + ul {
+    margin-top: -35px;
   }
 `;
 

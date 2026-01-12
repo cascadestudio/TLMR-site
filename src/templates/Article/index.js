@@ -254,7 +254,7 @@ const StyledContent = styled.section`
     }
   }
   ul {
-    margin: -35px 0 35px;
+    margin: 15px 0 35px;
     padding-left: 20px;
     li {
       font-family: "Signifier Light";
@@ -264,6 +264,9 @@ const StyledContent = styled.section`
         font-family: "Signifier Light Italic";
       }
     }
+  }
+  p + ul {
+    margin-top: -35px;
   }
   img {
     max-width: 100%;
@@ -458,19 +461,46 @@ export const query = graphql`
 const createArticlePortableTextComponents = (ctaMap, pageMap) => ({
   block: {
     h2: ({ children }) => (
-      <h2
-        dangerouslySetInnerHTML={{ __html: nbspPonctuation(children[0]) }}
-      ></h2>
+      <h2>
+        {children.map((child, i) =>
+          typeof child === "string" ? (
+            <span
+              key={i}
+              dangerouslySetInnerHTML={{ __html: nbspPonctuation(child) }}
+            />
+          ) : (
+            child
+          )
+        )}
+      </h2>
     ),
     h3: ({ children }) => (
-      <h3
-        dangerouslySetInnerHTML={{ __html: nbspPonctuation(children[0]) }}
-      ></h3>
+      <h3>
+        {children.map((child, i) =>
+          typeof child === "string" ? (
+            <span
+              key={i}
+              dangerouslySetInnerHTML={{ __html: nbspPonctuation(child) }}
+            />
+          ) : (
+            child
+          )
+        )}
+      </h3>
     ),
     h4: ({ children }) => (
-      <h4
-        dangerouslySetInnerHTML={{ __html: nbspPonctuation(children[0]) }}
-      ></h4>
+      <h4>
+        {children.map((child, i) =>
+          typeof child === "string" ? (
+            <span
+              key={i}
+              dangerouslySetInnerHTML={{ __html: nbspPonctuation(child) }}
+            />
+          ) : (
+            child
+          )
+        )}
+      </h4>
     ),
   },
   types: {
