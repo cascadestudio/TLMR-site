@@ -51,100 +51,39 @@ async function refreshAccessToken() {
   });
 }
 
-// Make HTTPS request helper
-function makeRequest(options) {
+// Fetch reviews from Google My Business API v4
+async function fetchGoogleReviews(accessToken, locationId) {
   return new Promise((resolve, reject) => {
+    const options = {
+      hostname: 'mybusiness.googleapis.com',
+      path: `/v4/accounts/-/locations/${locationId}/reviews`,
+      method: 'GET',
+      headers: {
+        'Authorization': `Bearer ${accessToken}`,
+        'Content-Type': 'application/json',
+      },
+    };
+
     const req = https.request(options, (res) => {
       let data = '';
       res.on('data', (chunk) => (data += chunk));
       res.on('end', () => {
         try {
           const parsed = JSON.parse(data);
-          resolve({ data: parsed, statusCode: res.statusCode });
+          if (parsed.error) {
+            reject(new Error(`GMB API error: ${parsed.error.message || JSON.stringify(parsed.error)}`));
+          } else {
+            resolve(parsed);
+          }
         } catch (e) {
-          reject(new Error(`Failed to parse response: ${data}`));
+          reject(new Error(`Failed to parse GMB response: ${data}`));
         }
       });
     });
+
     req.on('error', reject);
     req.end();
   });
-}
-
-// Get the account name first
-async function getAccountName(accessToken) {
-  const response = await makeRequest({
-    hostname: 'mybusinessaccountmanagement.googleapis.com',
-    path: '/v1/accounts',
-    method: 'GET',
-    headers: {
-      'Authorization': `Bearer ${accessToken}`,
-      'Content-Type': 'application/json',
-    },
-  });
-
-  if (response.data.error) {
-    throw new Error(`Account API error: ${response.data.error.message || JSON.stringify(response.data.error)}`);
-  }
-
-  if (!response.data.accounts || response.data.accounts.length === 0) {
-    throw new Error('No Google Business accounts found');
-  }
-
-  // Return the account name (format: accounts/123456789)
-  return response.data.accounts[0].name;
-}
-
-// Get location name using Business Information API
-async function getLocationName(accessToken, accountName, locationId) {
-  // First try to list locations to find the correct one
-  const response = await makeRequest({
-    hostname: 'mybusinessbusinessinformation.googleapis.com',
-    path: `/v1/${accountName}/locations?readMask=name`,
-    method: 'GET',
-    headers: {
-      'Authorization': `Bearer ${accessToken}`,
-      'Content-Type': 'application/json',
-    },
-  });
-
-  if (response.data.error) {
-    // If listing fails, try direct location access
-    return `${accountName}/locations/${locationId}`;
-  }
-
-  // Find the location matching our ID
-  if (response.data.locations) {
-    for (const loc of response.data.locations) {
-      if (loc.name && loc.name.includes(locationId)) {
-        return loc.name;
-      }
-    }
-  }
-
-  // Default to constructed path
-  return `${accountName}/locations/${locationId}`;
-}
-
-// Fetch reviews from Google My Business API
-async function fetchGoogleReviews(accessToken, locationName) {
-  // The reviews endpoint uses the v4 API with the full location name
-  // Format: accounts/{accountId}/locations/{locationId}/reviews
-  const response = await makeRequest({
-    hostname: 'mybusiness.googleapis.com',
-    path: `/v4/${locationName}/reviews`,
-    method: 'GET',
-    headers: {
-      'Authorization': `Bearer ${accessToken}`,
-      'Content-Type': 'application/json',
-    },
-  });
-
-  if (response.data.error) {
-    throw new Error(`Reviews API error: ${response.data.error.message || JSON.stringify(response.data.error)}`);
-  }
-
-  return response.data;
 }
 
 // Transform GMB review data to our frontend format
@@ -227,16 +166,8 @@ exports.handler = async (event) => {
     // Get fresh access token
     const accessToken = await refreshAccessToken();
 
-    // Get account name using Account Management API
-    const accountName = await getAccountName(accessToken);
-    console.log('Account name:', accountName);
-
-    // Get location name using Business Information API
-    const locationName = await getLocationName(accessToken, accountName, locationId);
-    console.log('Location name:', locationName);
-
-    // Fetch reviews
-    const gmbData = await fetchGoogleReviews(accessToken, locationName);
+    // Fetch reviews from GMB API v4
+    const gmbData = await fetchGoogleReviews(accessToken, locationId);
 
     // Transform to frontend format
     const reviewData = transformReviews(gmbData);

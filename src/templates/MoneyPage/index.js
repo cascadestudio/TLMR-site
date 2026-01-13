@@ -12,7 +12,7 @@ import RelatedSpecialties from "components/Seo/RelatedSpecialties";
 import TeamSection from "components/Seo/TeamSection";
 import CTASection from "components/Seo/CTASection";
 import Breadcrumb from "components/Seo/Breadcrumb";
-// import GoogleReviews from "components/Seo/GoogleReviews"; // Temporarily disabled until Google API approval
+import GoogleReviews from "components/Seo/GoogleReviews";
 
 const StyledContainer = styled.div`
   padding-top: 40px;
@@ -824,8 +824,8 @@ const MoneyPage = ({ data }) => {
             <TeamSection members={page.teamMembers} />
           )}
 
-          {/* Google Reviews Section - Temporarily hidden until Google API approval */}
-          {/* {page.showGoogleReviews && <GoogleReviews />} */}
+          {/* Google Reviews Section */}
+          {page.showGoogleReviews && <GoogleReviews />}
         </StyledContainer>
       </Layout>
     </>

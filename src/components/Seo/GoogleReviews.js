@@ -205,14 +205,6 @@ const LoadingState = styled.div`
   color: #666;
 `;
 
-const ErrorState = styled.div`
-  text-align: center;
-  padding: 40px 20px;
-  font-family: "Signifier Light";
-  font-size: 16px;
-  color: #999;
-`;
-
 // Render star icons
 const Stars = ({ rating, size = "normal" }) => {
   const StarComponent = size === "small" ? SmallStar : StarIcon;
@@ -259,6 +251,17 @@ const getInitials = (name) => {
     .slice(0, 2);
 };
 
+// Remove "(Translated by Google)" and the translation from comments
+const cleanComment = (comment) => {
+  if (!comment) return "";
+  // Remove everything after "(Translated by Google)" including the translation
+  const translatedIndex = comment.indexOf("(Translated by Google)");
+  if (translatedIndex > 0) {
+    return comment.substring(0, translatedIndex).trim();
+  }
+  return comment;
+};
+
 // Google "G" logo SVG
 const GoogleLogo = () => (
   <svg viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
@@ -280,67 +283,6 @@ const GoogleLogo = () => (
     />
   </svg>
 );
-
-// Mock data for development/fallback
-const MOCK_REVIEWS = {
-  reviews: [
-    {
-      reviewId: "mock-1",
-      starRating: 5,
-      comment:
-        "Cabinet exceptionnel. Maître Touati a su gérer notre dossier avec une grande expertise et un professionnalisme remarquable. Je recommande vivement.",
-      createTime: "2024-11-15T10:30:00Z",
-      reviewer: { displayName: "Marie D.", profilePhotoUrl: null },
-      reviewReply: {
-        comment:
-          "Merci beaucoup pour votre confiance. Nous sommes ravis d'avoir pu vous accompagner.",
-        updateTime: "2024-11-16T09:00:00Z",
-      },
-    },
-    {
-      reviewId: "mock-2",
-      starRating: 5,
-      comment:
-        "Très satisfait de l'accompagnement du cabinet TLMR dans notre litige commercial. Réactivité et compétence au rendez-vous.",
-      createTime: "2024-10-20T14:15:00Z",
-      reviewer: { displayName: "Philippe M.", profilePhotoUrl: null },
-    },
-    {
-      reviewId: "mock-3",
-      starRating: 5,
-      comment:
-        "Une équipe à l'écoute et très compétente en droit du numérique. Merci pour votre aide précieuse.",
-      createTime: "2024-09-08T11:45:00Z",
-      reviewer: { displayName: "Sophie L.", profilePhotoUrl: null },
-    },
-    {
-      reviewId: "mock-4",
-      starRating: 4,
-      comment:
-        "Bon cabinet, conseils pertinents et suivi régulier du dossier. Je recommande.",
-      createTime: "2024-08-25T16:20:00Z",
-      reviewer: { displayName: "Jean-Pierre R.", profilePhotoUrl: null },
-    },
-    {
-      reviewId: "mock-5",
-      starRating: 5,
-      comment:
-        "Excellente expérience avec le cabinet TLMR. Maîtrise parfaite des enjeux tech et startup.",
-      createTime: "2024-07-12T09:30:00Z",
-      reviewer: { displayName: "Thomas B.", profilePhotoUrl: null },
-    },
-    {
-      reviewId: "mock-6",
-      starRating: 5,
-      comment:
-        "Cabinet très professionnel, disponible et efficace. Un grand merci pour votre accompagnement.",
-      createTime: "2024-06-05T13:00:00Z",
-      reviewer: { displayName: "Caroline F.", profilePhotoUrl: null },
-    },
-  ],
-  averageRating: 4.9,
-  totalReviewCount: 47,
-};
 
 const GoogleReviews = ({ sectionTitle }) => {
   const [reviewData, setReviewData] = useState(null);
@@ -367,10 +309,7 @@ const GoogleReviews = ({ sectionTitle }) => {
         setReviewData(data);
       } catch (err) {
         console.error("Error fetching reviews:", err);
-        // Use mock data as fallback when API is unavailable
-        console.log("Using fallback mock data for reviews");
-        setReviewData(MOCK_REVIEWS);
-        setError(null); // Clear error since we have fallback data
+        setError(err.message);
       } finally {
         setLoading(false);
       }
@@ -410,7 +349,7 @@ const GoogleReviews = ({ sectionTitle }) => {
           name: review.reviewer.displayName,
         },
         datePublished: review.createTime,
-        reviewBody: review.comment,
+        reviewBody: cleanComment(review.comment),
         reviewRating: {
           "@type": "Rating",
           ratingValue: review.starRating.toString(),
@@ -423,11 +362,13 @@ const GoogleReviews = ({ sectionTitle }) => {
     return schema;
   };
 
-  // Don't render anything while loading (to avoid layout shift)
+  // Show loading state
   if (loading) {
     return (
       <ReviewsWrapper>
-        <ReviewsTitle dangerouslySetInnerHTML={{ __html: nbspPonctuation(title) }} />
+        <ReviewsTitle
+          dangerouslySetInnerHTML={{ __html: nbspPonctuation(title) }}
+        />
         <LoadingState>Chargement des avis...</LoadingState>
       </ReviewsWrapper>
     );
@@ -435,33 +376,29 @@ const GoogleReviews = ({ sectionTitle }) => {
 
   // Don't render section if there's an error or no reviews
   if (error || !reviewData || reviewData.reviews.length === 0) {
-    // Optionally show a subtle message in development
-    if (process.env.NODE_ENV === "development" && error) {
-      return (
-        <ReviewsWrapper>
-          <ReviewsTitle dangerouslySetInnerHTML={{ __html: nbspPonctuation(title) }} />
-          <ErrorState>
-            Impossible de charger les avis Google.
-            <br />
-            <small>({error})</small>
-          </ErrorState>
-        </ReviewsWrapper>
-      );
-    }
     return null;
   }
 
   const schemaMarkup = generateSchemaMarkup();
 
+  // Filter reviews to only show those with comments (non-empty)
+  const reviewsWithComments = reviewData.reviews.filter(
+    (review) => review.comment && cleanComment(review.comment).length > 0
+  );
+
   return (
     <>
       {/* Schema.org JSON-LD */}
       {schemaMarkup && (
-        <script type="application/ld+json">{JSON.stringify(schemaMarkup)}</script>
+        <script type="application/ld+json">
+          {JSON.stringify(schemaMarkup)}
+        </script>
       )}
 
       <ReviewsWrapper>
-        <ReviewsTitle dangerouslySetInnerHTML={{ __html: nbspPonctuation(title) }} />
+        <ReviewsTitle
+          dangerouslySetInnerHTML={{ __html: nbspPonctuation(title) }}
+        />
 
         <ReviewsSummary>
           <StarsContainer>
@@ -472,7 +409,7 @@ const GoogleReviews = ({ sectionTitle }) => {
             Basé sur {reviewData.totalReviewCount} avis Google
           </ReviewCount>
           <GoogleAttribution
-            href="https://www.google.com/maps/place/TLMR+Avocats/@48.8765,2.2840"
+            href="https://g.page/r/CZ7gkwT2bQdkEAE/review"
             target="_blank"
             rel="noopener noreferrer"
           >
@@ -482,7 +419,7 @@ const GoogleReviews = ({ sectionTitle }) => {
         </ReviewsSummary>
 
         <ReviewsList>
-          {reviewData.reviews.slice(0, 6).map((review, index) => (
+          {reviewsWithComments.slice(0, 6).map((review, index) => (
             <ReviewCard key={review.reviewId || index}>
               <ReviewHeader>
                 <ReviewerAvatar $photoUrl={review.reviewer.profilePhotoUrl}>
@@ -501,9 +438,7 @@ const GoogleReviews = ({ sectionTitle }) => {
                 <Stars rating={review.starRating} size="small" />
               </ReviewStars>
 
-              {review.comment && (
-                <ReviewComment>{review.comment}</ReviewComment>
-              )}
+              <ReviewComment>{cleanComment(review.comment)}</ReviewComment>
 
               {review.reviewReply && (
                 <ReviewReply>
