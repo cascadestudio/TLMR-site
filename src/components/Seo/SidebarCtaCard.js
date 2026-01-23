@@ -15,51 +15,22 @@ const shineAnimation = keyframes`
   }
 `;
 
-const SidebarWrapper = styled.div`
-  display: none;
-
-  @media ${(props) => props.theme.minWidth.md} {
-    display: block;
-    position: fixed;
-    left: 24px;
-    top: 50%;
-    transform: translateY(-50%);
-    z-index: 100;
-    transition: opacity 0.3s ease;
-    opacity: ${(props) => (props.$isVisible ? "1" : "0")};
-    pointer-events: ${(props) => (props.$isVisible ? "auto" : "none")};
-    width: auto;
-    max-width: 180px;
-  }
-
-  @media ${(props) => props.theme.minWidth.lg} {
-    left: 32px;
-    max-width: 200px;
-  }
-
-  @media ${(props) => props.theme.minWidth.xl} {
-    left: 45px;
-    max-width: 220px;
-  }
-`;
-
-const SidebarContent = styled.div`
-  display: flex;
-  flex-direction: column;
-  gap: 14px;
-  text-align: center;
+const CardWrapper = styled.div`
   background-color: ${(props) => props.theme.colors.blackLight};
   border-radius: 12px;
   box-shadow: 0 8px 30px rgba(0, 0, 0, 0.25);
-  padding: 20px 16px;
+  padding: 20px;
+  display: flex;
+  flex-direction: column;
+  gap: 14px;
 `;
 
 const GoogleReviewsSection = styled.div`
   display: flex;
   align-items: center;
   justify-content: center;
-  gap: 8px;
-  padding-bottom: 12px;
+  gap: 10px;
+  padding-bottom: 14px;
   border-bottom: 1px solid rgba(255, 255, 255, 0.15);
 `;
 
@@ -70,47 +41,51 @@ const StarsContainer = styled.div`
 
 const StarIcon = styled.span`
   color: ${(props) => (props.$filled ? "#fbbc04" : "rgba(255, 255, 255, 0.3)")};
-  font-size: 12px;
+  font-size: 14px;
 `;
 
 const ReviewInfo = styled.div`
   display: flex;
   flex-direction: column;
   align-items: flex-start;
-  gap: 1px;
+  gap: 2px;
 `;
 
 const RatingText = styled.span`
   font-family: "Söhne Kräftig";
-  font-size: 12px;
+  font-size: 13px;
   color: white;
 `;
 
 const ReviewCount = styled.span`
   font-family: "Signifier Light";
-  font-size: 10px;
+  font-size: 11px;
   color: rgba(255, 255, 255, 0.7);
 `;
 
-const SidebarTitle = styled.h3`
-  font-family: "Söhne Kräftig";
-  font-size: 16px;
-  line-height: 20px;
-  color: white;
-  margin: 0;
+const ContentSection = styled.div`
+  text-align: center;
 `;
 
-const SidebarDescription = styled.p`
+const CardTitle = styled.h3`
+  font-family: "Söhne Kräftig";
+  font-size: 17px;
+  line-height: 22px;
+  color: white;
+  margin: 0 0 8px;
+`;
+
+const CardDescription = styled.p`
   font-family: "Signifier Light";
   font-size: 14px;
-  line-height: 18px;
+  line-height: 19px;
   color: rgba(255, 255, 255, 0.85);
   margin: 0;
 `;
 
-const SidebarCTA = styled(Link)`
+const CtaButton = styled(Link)`
   display: block;
-  padding: 10px 16px;
+  padding: 12px 16px;
   border-radius: 100px;
   background-color: white;
   color: ${(props) => props.theme.colors.blackLight};
@@ -158,36 +133,14 @@ const Stars = ({ rating }) => {
   );
 };
 
-const CTASidebarSticky = ({
+const SidebarCtaCard = ({
   title = "Besoin d'un avocat ?",
   description = "Contactez TLMR Avocats pour un premier echange confidentiel.",
-  text = "Prendre rendez-vous",
-  to = "/contact",
+  buttonText = "Prendre rendez-vous",
+  buttonLink = "/contact",
   showGoogleReviews = true,
 }) => {
-  const [isVisible, setIsVisible] = useState(false);
   const [reviewData, setReviewData] = useState(null);
-
-  useEffect(() => {
-    const handleScroll = () => {
-      const scrollY = window.scrollY;
-      const windowHeight = window.innerHeight;
-      const documentHeight = document.documentElement.scrollHeight;
-
-      // Show after scrolling down 300px
-      const shouldShow = scrollY > 300;
-
-      // Hide when near footer (within 200px of bottom)
-      const nearBottom = scrollY + windowHeight > documentHeight - 200;
-
-      setIsVisible(shouldShow && !nearBottom);
-    };
-
-    window.addEventListener("scroll", handleScroll);
-    handleScroll(); // Initial check
-
-    return () => window.removeEventListener("scroll", handleScroll);
-  }, []);
 
   useEffect(() => {
     if (showGoogleReviews) {
@@ -201,7 +154,7 @@ const CTASidebarSticky = ({
             }
           }
         } catch (err) {
-          console.error("Error fetching reviews for CTA:", err);
+          console.error("Error fetching reviews for sidebar CTA:", err);
         }
       };
       fetchReviews();
@@ -209,23 +162,23 @@ const CTASidebarSticky = ({
   }, [showGoogleReviews]);
 
   return (
-    <SidebarWrapper $isVisible={isVisible}>
-      <SidebarContent>
-        {showGoogleReviews && reviewData && (
-          <GoogleReviewsSection>
-            <Stars rating={Math.round(reviewData.averageRating)} />
-            <ReviewInfo>
-              <RatingText>{reviewData.averageRating}/5</RatingText>
-              <ReviewCount>{reviewData.totalReviewCount} avis</ReviewCount>
-            </ReviewInfo>
-          </GoogleReviewsSection>
-        )}
-        {title && <SidebarTitle>{title}</SidebarTitle>}
-        {description && <SidebarDescription>{description}</SidebarDescription>}
-        <SidebarCTA to={to}>{text}</SidebarCTA>
-      </SidebarContent>
-    </SidebarWrapper>
+    <CardWrapper>
+      {showGoogleReviews && reviewData && (
+        <GoogleReviewsSection>
+          <Stars rating={Math.round(reviewData.averageRating)} />
+          <ReviewInfo>
+            <RatingText>{reviewData.averageRating}/5</RatingText>
+            <ReviewCount>{reviewData.totalReviewCount} avis Google</ReviewCount>
+          </ReviewInfo>
+        </GoogleReviewsSection>
+      )}
+      <ContentSection>
+        <CardTitle>{title}</CardTitle>
+        <CardDescription>{description}</CardDescription>
+      </ContentSection>
+      <CtaButton to={buttonLink}>{buttonText}</CtaButton>
+    </CardWrapper>
   );
 };
 
-export default CTASidebarSticky;
+export default SidebarCtaCard;
