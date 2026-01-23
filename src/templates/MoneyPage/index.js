@@ -611,12 +611,11 @@ export const query = graphql`
       customTitle
       metaDescription
       canonicalUrl
-      # ogImage - uncomment after deploying Sanity schema
-      # ogImage {
-      #   asset {
-      #     url
-      #   }
-      # }
+      ogImage {
+        asset {
+          url
+        }
+      }
 
       # Main content
       _rawMainContent

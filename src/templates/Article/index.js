@@ -341,7 +341,7 @@ export const query = graphql`
         }
       }
       categories {
-        title
+        customH1
         slug {
           current
         }
@@ -657,7 +657,7 @@ const Article = ({ data }) => {
   if (categories && categories.length > 0) {
     const primaryCategory = categories[0];
     breadcrumbItems.push({
-      label: primaryCategory.title,
+      label: primaryCategory.customH1,
       url: `/actualites/${primaryCategory.slug.current}`,
     });
   }
