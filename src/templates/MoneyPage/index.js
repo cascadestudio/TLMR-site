@@ -295,6 +295,22 @@ const safeNbspPonctuation = (text) => {
   return text;
 };
 
+const getSanityAssetWidth = (asset) => {
+  const metaWidth = asset?.metadata?.dimensions?.width;
+  if (typeof metaWidth === "number" && metaWidth > 0) return metaWidth;
+
+  const assetWidth = asset?.width;
+  if (typeof assetWidth === "number" && assetWidth > 0) return assetWidth;
+
+  const ref = asset?._ref || asset?._id;
+  if (typeof ref === "string") {
+    const match = ref.match(/-(\d+)x(\d+)-/);
+    if (match && match[1]) return Number(match[1]);
+  }
+
+  return null;
+};
+
 // Create Portable Text components with access to CTA map and page map
 const createPortableTextComponents = (ctaMap, pageMap) => ({
   block: {
@@ -308,7 +324,7 @@ const createPortableTextComponents = (ctaMap, pageMap) => ({
             />
           ) : (
             child
-          )
+          ),
         )}
       </h2>
     ),
@@ -322,7 +338,7 @@ const createPortableTextComponents = (ctaMap, pageMap) => ({
             />
           ) : (
             child
-          )
+          ),
         )}
       </h3>
     ),
@@ -378,22 +394,32 @@ const createPortableTextComponents = (ctaMap, pageMap) => ({
     image: ({ value }) =>
       value.asset && (
         <figure style={{ margin: "30px 0", textAlign: "center" }}>
-          <SanityImg
-            asset={value.asset}
-            alt={value.alt || ""}
-            width={800}
-            loading="lazy"
-            config={{
-              quality: 75,
-              fit: "max",
-            }}
-            style={{
-              maxWidth: "100%",
-              width: "auto",
-              height: "auto",
-              display: "inline-block",
-            }}
-          />
+          {(() => {
+            const originalWidth = getSanityAssetWidth(value.asset);
+            const requestedWidth = originalWidth
+              ? Math.min(originalWidth, 1200)
+              : 800;
+
+            return (
+              <SanityImg
+                asset={value.asset}
+                alt={value.alt || ""}
+                width={requestedWidth}
+                loading="lazy"
+                config={{
+                  quality: 75,
+                  fit: "max",
+                }}
+                style={{
+                  maxWidth: originalWidth ? `${originalWidth}px` : "100%",
+                  width: "100%",
+                  height: "auto",
+                  display: "block",
+                  margin: "0 auto",
+                }}
+              />
+            );
+          })()}
           {value.caption && (
             <figcaption
               style={{
@@ -455,7 +481,7 @@ const createPortableTextComponents = (ctaMap, pageMap) => ({
       if (process.env.NODE_ENV === "development" && value) {
         console.log(
           "ctaSectionDocument value:",
-          JSON.stringify(value, null, 2)
+          JSON.stringify(value, null, 2),
         );
       }
 
@@ -517,7 +543,7 @@ const createPortableTextComponents = (ctaMap, pageMap) => ({
             "Unresolved CTA reference:",
             value._ref,
             "Available CTAs:",
-            Array.from(ctaMap.keys())
+            Array.from(ctaMap.keys()),
           );
         }
         return null;
@@ -723,7 +749,7 @@ const MoneyPage = ({ data }) => {
   if (process.env.NODE_ENV === "development" && page._rawMainContent) {
     console.log(
       "Raw main content structure:",
-      JSON.stringify(page._rawMainContent, null, 2)
+      JSON.stringify(page._rawMainContent, null, 2),
     );
     console.log("Available CTA documents:", ctaMap);
   }

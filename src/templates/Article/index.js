@@ -18,6 +18,22 @@ import CTASection from "components/Seo/CTASection";
 import CTASticky from "components/Seo/CTASticky";
 import SidebarCtaCard from "components/Seo/SidebarCtaCard";
 
+const getSanityAssetWidth = (asset) => {
+  const metaWidth = asset?.metadata?.dimensions?.width;
+  if (typeof metaWidth === "number" && metaWidth > 0) return metaWidth;
+
+  const assetWidth = asset?.width;
+  if (typeof assetWidth === "number" && assetWidth > 0) return assetWidth;
+
+  const ref = asset?._ref || asset?._id;
+  if (typeof ref === "string") {
+    const match = ref.match(/-(\d+)x(\d+)-/);
+    if (match && match[1]) return Number(match[1]);
+  }
+
+  return null;
+};
+
 const StyledContainer = styled.div`
   & > .gatsby-image-wrapper {
     width: 100%;
@@ -86,9 +102,14 @@ const StyledMobileInfo = styled.div`
 const StyledDesktopInfo = styled.div`
   display: none;
   @media ${(props) => props.theme.minWidth.md} {
-    display: flex;
-    gap: 40px;
-    padding-top: 15px;
+    display: contents;
+  }
+`;
+const StyledDesktopInfoItem = styled.div`
+  @media ${(props) => props.theme.minWidth.md} {
+    grid-column: ${(props) => props.$gridColumn};
+    padding-top: 25px;
+    padding-bottom: 8px;
   }
 `;
 const StyledInfoLabel = styled(Paragraph)`
@@ -123,15 +144,16 @@ const StyledContentContainer = styled(Grid)`
   padding-top: 15px;
   margin-top: 10px;
   @media ${(props) => props.theme.minWidth.lg} {
-    margin-top: 20px;
+    margin-top: 12px;
   }
   @media ${(props) => props.theme.minWidth.md} {
     display: grid;
-    margin-top: 20px;
+    margin-top: 12px;
     padding: 25px 0;
   }
   @media ${(props) => props.theme.minWidth.lg} {
-    margin-top: 30px;
+    margin-top: 12px;
+    padding: 25px 0;
   }
 `;
 const StyledContent = styled.section`
@@ -402,7 +424,7 @@ const createArticlePortableTextComponents = (ctaMap, pageMap) => ({
             />
           ) : (
             child
-          )
+          ),
         )}
       </h2>
     ),
@@ -416,7 +438,7 @@ const createArticlePortableTextComponents = (ctaMap, pageMap) => ({
             />
           ) : (
             child
-          )
+          ),
         )}
       </h3>
     ),
@@ -430,7 +452,7 @@ const createArticlePortableTextComponents = (ctaMap, pageMap) => ({
             />
           ) : (
             child
-          )
+          ),
         )}
       </h4>
     ),
@@ -439,33 +461,40 @@ const createArticlePortableTextComponents = (ctaMap, pageMap) => ({
     image: ({ value }) =>
       value.asset && (
         <figure style={{ margin: "30px 0", textAlign: "center" }}>
-          {value.link ? (
-            <a href={value.link} target="_blank" rel="noreferrer">
+          {(() => {
+            const originalWidth = getSanityAssetWidth(value.asset);
+            const requestedWidth = originalWidth
+              ? Math.min(originalWidth, 1200)
+              : 800;
+
+            const img = (
               <SanityImg
                 asset={value.asset}
                 alt={value.asset.filename || ""}
-                width={value.asset.width}
+                width={requestedWidth}
+                loading="lazy"
+                config={{
+                  quality: 75,
+                  fit: "max",
+                }}
                 style={{
-                  maxWidth: "100%",
-                  width: "auto",
+                  maxWidth: originalWidth ? `${originalWidth}px` : "100%",
+                  width: "100%",
                   height: "auto",
-                  display: "inline-block",
+                  display: "block",
+                  margin: "0 auto",
                 }}
               />
-            </a>
-          ) : (
-            <SanityImg
-              asset={value.asset}
-              alt={value.asset.filename || ""}
-              width={value.asset.width}
-              style={{
-                maxWidth: "100%",
-                width: "auto",
-                height: "auto",
-                display: "inline-block",
-              }}
-            />
-          )}
+            );
+
+            return value.link ? (
+              <a href={value.link} target="_blank" rel="noreferrer">
+                {img}
+              </a>
+            ) : (
+              img
+            );
+          })()}
         </figure>
       ),
     youtube: ({ value }) =>
@@ -681,8 +710,13 @@ const Article = ({ data }) => {
           {heroImage && <GatsbyImage image={heroImage} alt={title} />}
           <Breadcrumb items={breadcrumbItems} />
           <StyledHeader>
+            <h1
+              dangerouslySetInnerHTML={{
+                __html: nbspPonctuation(displayH1),
+              }}
+            ></h1>
             <StyledDesktopInfo>
-              <div>
+              <StyledDesktopInfoItem $gridColumn="1 / span 2">
                 <StyledInfoLabel size="sm">Date</StyledInfoLabel>
                 <StyledInfo size="sm">
                   {new Date(date).toLocaleDateString("fr-FR", {
@@ -691,17 +725,12 @@ const Article = ({ data }) => {
                     day: "numeric",
                   })}
                 </StyledInfo>
-              </div>
-              <div>
+              </StyledDesktopInfoItem>
+              <StyledDesktopInfoItem $gridColumn="3 / span 2">
                 <StyledInfoLabel size="sm">Par</StyledInfoLabel>
                 <StyledInfo size="sm">{author}</StyledInfo>
-              </div>
+              </StyledDesktopInfoItem>
             </StyledDesktopInfo>
-            <h1
-              dangerouslySetInnerHTML={{
-                __html: nbspPonctuation(displayH1),
-              }}
-            ></h1>
           </StyledHeader>
           <StyledMobileInfo>
             <div>
@@ -725,7 +754,7 @@ const Article = ({ data }) => {
                 value={_rawContent}
                 components={createArticlePortableTextComponents(
                   ctaMap,
-                  pageMap
+                  pageMap,
                 )}
               />
             </StyledContent>
