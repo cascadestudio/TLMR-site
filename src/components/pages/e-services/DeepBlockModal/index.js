@@ -62,11 +62,15 @@ const StyledModal = styled.div`
 
 const DeepBlockModal = ({ isVisible, handleModal }) => {
   useEffect(() => {
-    document.body.style.overflow = "hidden";
+    if (isVisible) {
+      document.body.style.overflow = "hidden";
+    } else {
+      document.body.style.overflow = "scroll";
+    }
     return () => {
       document.body.style.overflow = "scroll";
     };
-  });
+  }, [isVisible]);
 
   return (
     <StyledContainer isVisible={isVisible}>
