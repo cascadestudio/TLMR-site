@@ -1,66 +1,56 @@
 import React from "react";
-import styled from "styled-components";
+import styled, { keyframes } from "styled-components";
 import { Link } from "gatsby";
 import nbspPonctuation from "components/utils/nbspPonctuation";
 
+// Shine animation for the button (matching sidebar CTA)
+const shineAnimation = keyframes`
+  0% {
+    left: -100%;
+  }
+  20% {
+    left: 100%;
+  }
+  100% {
+    left: 100%;
+  }
+`;
+
 const CTAWrapper = styled.div`
   margin: 50px 0;
-  padding: 36px 0;
-  border-top: ${(props) => props.theme.border.black};
-  border-bottom: ${(props) => props.theme.border.black};
+  padding: 28px 24px;
+  background-color: ${(props) => props.theme.colors.blackLight};
+  border-radius: 16px;
+  box-shadow: 0 8px 30px rgba(0, 0, 0, 0.25);
   text-align: center;
-  transition: border-color 0.2s ease;
 
   @media ${(props) => props.theme.minWidth.sm} {
-    padding: 40px 0;
+    padding: 32px 32px;
   }
 
   @media ${(props) => props.theme.minWidth.md} {
-    padding: 48px 0;
+    padding: 40px 48px;
     margin: 60px 0;
   }
-
-  /* Style variants - matching e-services page style */
-  ${(props) =>
-    props.$variant === "primary" &&
-    `
-    background: transparent;
-    color: #000;
-  `}
-
-  ${(props) =>
-    props.$variant === "secondary" &&
-    `
-    background: transparent;
-    color: #000;
-  `}
-
-  ${(props) =>
-    props.$variant === "subtle" &&
-    `
-    background: transparent;
-    color: #000;
-    border-top: 1px solid #e0e0e0;
-    border-bottom: 1px solid #e0e0e0;
-  `}
 `;
 
 const CTAHeading = styled.h3`
   font-size: 20px;
   line-height: 26px;
-  margin-bottom: ${(props) => (props.$hasDescription ? "12px" : "24px")};
+  margin-bottom: ${(props) => (props.$hasDescription ? "12px" : "20px")};
   font-family: "Söhne Kräftig";
+  color: white;
 
   @media ${(props) => props.theme.minWidth.sm} {
     font-size: 22px;
     line-height: 28px;
-    margin-bottom: ${(props) => (props.$hasDescription ? "14px" : "26px")};
+    margin-bottom: ${(props) => (props.$hasDescription ? "14px" : "22px")};
   }
 
   @media ${(props) => props.theme.minWidth.md} {
     font-size: 24px;
     line-height: 30px;
-    margin-bottom: ${(props) => (props.$hasDescription ? "16px" : "28px")};
+    margin-bottom: ${(props) => (props.$hasDescription ? "16px" : "24px")};
   }
 `;
 
@@ -72,7 +62,7 @@ const CTADescription = styled.p`
   max-width: 520px;
   margin-left: auto;
   margin-right: auto;
-  opacity: 0.9;
+  color: rgba(255, 255, 255, 0.85);
 
   @media ${(props) => props.theme.minWidth.sm} {
     font-size: 16px;
@@ -91,43 +81,51 @@ const CTAButton = styled(Link)`
   &&& {
     width: 100%;
     border-radius: 100px;
-    padding: 5px 15px 6px;
+    padding: 12px 24px;
     text-align: center;
-    font-size: 18px;
+    font-size: 16px;
     text-decoration: none;
     display: inline-block;
-    max-width: 500px;
-    font-family: "Signifier Light";
-    line-height: normal;
+    max-width: 320px;
+    font-family: "Söhne Kräftig";
+    line-height: 1.4;
+    background-color: white;
+    color: ${(props) => props.theme.colors.blackLight};
+    position: relative;
+    overflow: hidden;
+    transition: background-color 0.2s ease, transform 0.2s ease;
 
     @media ${(props) => props.theme.minWidth.sm} {
-      font-size: 20px;
+      font-size: 17px;
+      padding: 14px 28px;
     }
 
-    @media ${(props) => props.theme.minWidth.xl} {
-      font-size: 22px;
+    @media ${(props) => props.theme.minWidth.md} {
+      font-size: 18px;
+      padding: 14px 32px;
     }
 
-    /* Primary variant (default) - matches :nth-child(1) from e-services */
-    background-color: ${(props) => props.theme.colors.blackLight};
-    color: white;
+    /* Shine animation */
+    &::before {
+      content: "";
+      position: absolute;
+      top: 0;
+      left: -100%;
+      width: 100%;
+      height: 100%;
+      background: linear-gradient(
+        90deg,
+        transparent,
+        rgba(255, 255, 255, 0.5),
+        transparent
+      );
+      animation: ${shineAnimation} 3s infinite;
+    }
 
     &:hover {
-      background-color: ${(props) => props.theme.colors.grey};
+      background-color: #f0f0f0;
+      transform: scale(1.02);
     }
-
-    /* Secondary/Subtle variants - matches :nth-child(2) from e-services */
-    ${(props) =>
-      (props.$variant === "secondary" || props.$variant === "subtle") &&
-      `
-      background-color: ${(props) => props.theme.colors.greyLightest};
-      color: #000;
-
-      &:hover {
-        color: white;
-        background-color: ${(props) => props.theme.colors.grey};
-      }
-    `}
   }
 `;
 
@@ -141,7 +139,7 @@ const CTASection = ({
   if (!buttonText || !buttonLink) return null;
 
   return (
-    <CTAWrapper $variant={style}>
+    <CTAWrapper>
       {heading && (
         <CTAHeading
           $hasDescription={!!description}
@@ -155,7 +153,7 @@ const CTASection = ({
         />
       )}
 
-      <CTAButton to={buttonLink} $variant={style}>
+      <CTAButton to={buttonLink}>
         {buttonText}
       </CTAButton>
     </CTAWrapper>
