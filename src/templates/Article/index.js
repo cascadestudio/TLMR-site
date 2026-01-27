@@ -2,29 +2,37 @@ import React from "react";
 import { graphql, Link } from "gatsby";
 import Layout from "components/Layout";
 import Seo from "components/Seo";
-import Cta from "components/global/Cta";
 import Paragraph from "components/global/Paragraph";
 import Grid from "components/global/Grid";
 import ALaUne from "components/pages/home/sections/ALaUne";
 import { GatsbyImage, getImage } from "gatsby-plugin-image";
 import styled from "styled-components";
-import linkedinLogo from "assets/logos/linkedin.svg";
-import facebookLogo from "assets/logos/facebook.svg";
-import twitterLogo from "assets/logos/twitter.svg";
 import { PortableText } from "@portabletext/react";
 import SanityImg from "gatsby-plugin-sanity-image";
-import { myContext } from "provider";
-import {
-  LinkedinShareButton,
-  TwitterShareButton,
-  FacebookShareButton,
-} from "react-share";
 import getYouTubeId from "get-youtube-id";
 import LiteYouTubeEmbed from "react-lite-youtube-embed";
 import "react-lite-youtube-embed/dist/LiteYouTubeEmbed.css";
 import nbspPonctuation from "components/utils/nbspPonctuation";
 import Breadcrumb from "components/Seo/Breadcrumb";
 import CTASection from "components/Seo/CTASection";
+import CTASticky from "components/Seo/CTASticky";
+import SidebarCtaCard from "components/Seo/SidebarCtaCard";
+
+const getSanityAssetWidth = (asset) => {
+  const metaWidth = asset?.metadata?.dimensions?.width;
+  if (typeof metaWidth === "number" && metaWidth > 0) return metaWidth;
+
+  const assetWidth = asset?.width;
+  if (typeof assetWidth === "number" && assetWidth > 0) return assetWidth;
+
+  const ref = asset?._ref || asset?._id;
+  if (typeof ref === "string") {
+    const match = ref.match(/-(\d+)x(\d+)-/);
+    if (match && match[1]) return Number(match[1]);
+  }
+
+  return null;
+};
 
 const StyledContainer = styled.div`
   & > .gatsby-image-wrapper {
@@ -60,12 +68,12 @@ const StyledHeader = styled(Grid)`
       line-height: 45px;
     }
     @media ${(props) => props.theme.minWidth.md} {
-      grid-column: 3 / span 10;
+      grid-column: 2 / span 11;
       font-size: 40px;
       line-height: 50px;
     }
     @media ${(props) => props.theme.minWidth.lg} {
-      grid-column: 4 / span 9;
+      grid-column: 2 / span 11;
       font-size: 45px;
       line-height: 55px;
     }
@@ -81,50 +89,27 @@ const StyledHeader = styled(Grid)`
 `;
 const StyledMobileInfo = styled.div`
   margin-top: 25px;
-  display: grid;
-  grid-template-columns: repeat(2, 1fr);
-  grid-column-gap: ${(props) => props.theme.columnGap.mobile};
+  display: flex;
+  gap: 20px;
   @media ${(props) => props.theme.minWidth.sm} {
-    grid-template-columns: repeat(3, 1fr);
+    gap: 30px;
     margin-top: 30px;
   }
   @media ${(props) => props.theme.minWidth.md} {
     display: none;
   }
-  @media ${(props) => props.theme.minWidth.xl} {
-    grid-column-gap: ${(props) => props.theme.columnGap.desktop};
-  }
-  & > div {
-    &:nth-child(3) {
-      @media ${(props) => props.theme.minWidth.sm} {
-        grid-row: 2;
-      }
-    }
-    &:nth-child(4) {
-      @media ${(props) => props.theme.minWidth.sm} {
-        grid-row: 2;
-      }
-    }
-  }
-  img {
-    height: 18px;
-    margin: 5px 5px 0 0;
-    @media ${(props) => props.theme.minWidth.sm} {
-      height: 20px;
-    }
-  }
-  a {
-    font-size: 14px;
-    @media ${(props) => props.theme.minWidth.sm} {
-      font-size: 16px;
-    }
-  }
 `;
 const StyledDesktopInfo = styled.div`
   display: none;
   @media ${(props) => props.theme.minWidth.md} {
-    display: block;
-    padding-top: 15px;
+    display: contents;
+  }
+`;
+const StyledDesktopInfoItem = styled.div`
+  @media ${(props) => props.theme.minWidth.md} {
+    grid-column: ${(props) => props.$gridColumn};
+    padding-top: 25px;
+    padding-bottom: 8px;
   }
 `;
 const StyledInfoLabel = styled(Paragraph)`
@@ -141,18 +126,14 @@ const StyledDesktopContentInfo = styled.div`
   display: none;
   @media ${(props) => props.theme.minWidth.md} {
     display: block;
-    grid-column: 1 / span 2;
+    grid-column: 10 / span 3;
   }
   @media ${(props) => props.theme.minWidth.lg} {
-    grid-column: 1 / span 3;
-  }
-  img {
-    height: 25px;
-    margin: 7px 7px 0 0;
+    grid-column: 10 / span 3;
   }
 `;
 const StyledInfo = styled(Paragraph)`
-  margin: 5px 0 20px;
+  margin: 5px 0 0;
   @media ${(props) => props.theme.minWidth.lg} {
     font-size: 15px;
   }
@@ -163,29 +144,30 @@ const StyledContentContainer = styled(Grid)`
   padding-top: 15px;
   margin-top: 10px;
   @media ${(props) => props.theme.minWidth.lg} {
-    margin-top: 20px;
+    margin-top: 12px;
   }
   @media ${(props) => props.theme.minWidth.md} {
     display: grid;
-    margin-top: 20px;
+    margin-top: 12px;
     padding: 25px 0;
   }
   @media ${(props) => props.theme.minWidth.lg} {
-    margin-top: 30px;
+    margin-top: 12px;
+    padding: 25px 0;
   }
 `;
 const StyledContent = styled.section`
   line-height: 25px;
   @media ${(props) => props.theme.minWidth.md} {
-    grid-column: 3 / span 8;
+    grid-column: 2 / span 7;
     line-height: 28px;
   }
   @media ${(props) => props.theme.minWidth.lg} {
     line-height: 32px;
-    grid-column: 4 / span 7;
+    grid-column: 2 / span 7;
   }
   @media ${(props) => props.theme.minWidth.xl} {
-    grid-column: 4 / span 6;
+    grid-column: 2 / span 6;
   }
   & > :first-child {
     margin-top: 0;
@@ -304,16 +286,9 @@ const StyledContent = styled.section`
     }
   }
 `;
-const StyledDesktopShareBlock = styled.div`
-  transition: top ${(props) => props.theme.transitionTime}s;
+const StyledSidebarSticky = styled.div`
   position: sticky;
-  top: ${({ theme, isNavHidden }) => (isNavHidden ? 30 : theme.headerHeight)}px;
-`;
-const StyledShareBlock = styled.div`
-  margin-bottom: 30px;
-  button {
-    display: inline-block;
-  }
+  top: ${({ theme }) => theme.headerHeight + 20}px;
 `;
 
 const StyledTable = styled.table`
@@ -367,27 +342,6 @@ const StyledTable = styled.table`
     background-color: #fafafa;
   }
 `;
-
-const ShareBlock = ({ articleUrl }) => {
-  return (
-    <StyledShareBlock>
-      <StyledInfoLabel size="sm">Partager</StyledInfoLabel>
-      <FacebookShareButton url={articleUrl}>
-        <img src={facebookLogo} alt="Facebook logo" />
-      </FacebookShareButton>
-      <TwitterShareButton url={articleUrl}>
-        <img
-          src={twitterLogo}
-          alt="Twitter logo"
-          style={{ transform: "translateY(1px)" }}
-        />
-      </TwitterShareButton>
-      <LinkedinShareButton url={articleUrl}>
-        <img src={linkedinLogo} alt="Linkedin logo" />
-      </LinkedinShareButton>
-    </StyledShareBlock>
-  );
-};
 
 export const query = graphql`
   query ArticleBySlug($slug: String!) {
@@ -470,7 +424,7 @@ const createArticlePortableTextComponents = (ctaMap, pageMap) => ({
             />
           ) : (
             child
-          )
+          ),
         )}
       </h2>
     ),
@@ -484,7 +438,7 @@ const createArticlePortableTextComponents = (ctaMap, pageMap) => ({
             />
           ) : (
             child
-          )
+          ),
         )}
       </h3>
     ),
@@ -498,31 +452,51 @@ const createArticlePortableTextComponents = (ctaMap, pageMap) => ({
             />
           ) : (
             child
-          )
+          ),
         )}
       </h4>
     ),
   },
   types: {
     image: ({ value }) =>
-      value.asset &&
-      (value.link ? (
-        <a href={value.link} target="_blank" rel="noreferrer">
-          <SanityImg
-            asset={value.asset}
-            alt={value.asset.filename}
-            width={value.asset.width}
-            style={{ width: value.asset.width }}
-          />
-        </a>
-      ) : (
-        <SanityImg
-          asset={value.asset}
-          alt={value.asset.filename}
-          width={value.asset.width}
-          style={{ width: value.asset.width }}
-        />
-      )),
+      value.asset && (
+        <figure style={{ margin: "30px 0", textAlign: "center" }}>
+          {(() => {
+            const originalWidth = getSanityAssetWidth(value.asset);
+            const requestedWidth = originalWidth
+              ? Math.min(originalWidth, 1200)
+              : 800;
+
+            const img = (
+              <SanityImg
+                asset={value.asset}
+                alt={value.asset.filename || ""}
+                width={requestedWidth}
+                loading="lazy"
+                config={{
+                  quality: 75,
+                  fit: "max",
+                }}
+                style={{
+                  maxWidth: originalWidth ? `${originalWidth}px` : "100%",
+                  width: "100%",
+                  height: "auto",
+                  display: "block",
+                  margin: "0 auto",
+                }}
+              />
+            );
+
+            return value.link ? (
+              <a href={value.link} target="_blank" rel="noreferrer">
+                {img}
+              </a>
+            ) : (
+              img
+            );
+          })()}
+        </figure>
+      ),
     youtube: ({ value }) =>
       value.url && (
         <LiteYouTubeEmbed id={getYouTubeId(value.url)} poster="maxresdefault" />
@@ -664,8 +638,7 @@ const createArticlePortableTextComponents = (ctaMap, pageMap) => ({
   },
 });
 
-const Article = ({ data, location }) => {
-  const siteUrl = data?.site?.siteMetadata?.siteUrl;
+const Article = ({ data }) => {
   const {
     title,
     date,
@@ -703,12 +676,6 @@ const Article = ({ data, location }) => {
   // Use customH1 if available, fallback to title
   const displayH1 = customH1 || title;
 
-  const shareUrl =
-    (siteUrl && location?.pathname ? `${siteUrl}${location.pathname}` : null) ||
-    location?.href ||
-    siteUrl ||
-    "";
-
   // Generate breadcrumb items for Article
   const breadcrumbItems = [
     { label: "Cabinet TLMR : avocats à Paris", url: "/" },
@@ -738,79 +705,71 @@ const Article = ({ data, location }) => {
         imageUrl={heroImg?.asset?.url}
         article={true}
       />
-      <myContext.Consumer>
-        {(context) => (
-          <Layout>
-            <StyledContainer>
-              {heroImage && <GatsbyImage image={heroImage} alt={title} />}
-              <Breadcrumb items={breadcrumbItems} />
-              <StyledHeader>
-                <StyledDesktopInfo>
-                  <div>
-                    <StyledInfoLabel size="sm">Date</StyledInfoLabel>
-                    <StyledInfo size="sm">
-                      {new Date(date).toLocaleDateString("fr-FR", {
-                        year: "numeric",
-                        month: "long",
-                        day: "numeric",
-                      })}
-                    </StyledInfo>
-                  </div>
-                  <div>
-                    <StyledInfoLabel size="sm">Par</StyledInfoLabel>
-                    <StyledInfo size="sm">{author}</StyledInfo>
-                  </div>
-                </StyledDesktopInfo>
-                <h1
-                  dangerouslySetInnerHTML={{
-                    __html: nbspPonctuation(displayH1),
-                  }}
-                ></h1>
-              </StyledHeader>
-              <StyledMobileInfo>
-                <div>
-                  <StyledInfoLabel size="sm">Date</StyledInfoLabel>
-                  <StyledInfo size="sm">
-                    {new Date(date).toLocaleDateString("fr-FR", {
-                      year: "numeric",
-                      month: "long",
-                      day: "numeric",
-                    })}
-                  </StyledInfo>
-                </div>
-                <div>
-                  <StyledInfoLabel size="sm">Par</StyledInfoLabel>
-                  <StyledInfo size="sm">{author}</StyledInfo>
-                </div>
-                <ShareBlock articleUrl={shareUrl} />
-                <div>
-                  <Cta to="/contact">Nous contacter</Cta>
-                </div>
-              </StyledMobileInfo>
-              <StyledContentContainer>
-                <StyledDesktopContentInfo isNavHidden={context?.isNavHidden}>
-                  <StyledDesktopShareBlock>
-                    <ShareBlock articleUrl={shareUrl} />
-                    <div>
-                      <Cta to="/contact">Nous contacter</Cta>
-                    </div>
-                  </StyledDesktopShareBlock>
-                </StyledDesktopContentInfo>
-                <StyledContent>
-                  <PortableText
-                    value={_rawContent}
-                    components={createArticlePortableTextComponents(
-                      ctaMap,
-                      pageMap
-                    )}
-                  />
-                </StyledContent>
-              </StyledContentContainer>
-              <ALaUne article border />
-            </StyledContainer>
-          </Layout>
-        )}
-      </myContext.Consumer>
+      <Layout>
+        <StyledContainer>
+          {heroImage && <GatsbyImage image={heroImage} alt={title} />}
+          <Breadcrumb items={breadcrumbItems} />
+          <StyledHeader>
+            <h1
+              dangerouslySetInnerHTML={{
+                __html: nbspPonctuation(displayH1),
+              }}
+            ></h1>
+            <StyledDesktopInfo>
+              <StyledDesktopInfoItem $gridColumn="1 / span 2">
+                <StyledInfoLabel size="sm">Date</StyledInfoLabel>
+                <StyledInfo size="sm">
+                  {new Date(date).toLocaleDateString("fr-FR", {
+                    year: "numeric",
+                    month: "long",
+                    day: "numeric",
+                  })}
+                </StyledInfo>
+              </StyledDesktopInfoItem>
+              <StyledDesktopInfoItem $gridColumn="3 / span 2">
+                <StyledInfoLabel size="sm">Par</StyledInfoLabel>
+                <StyledInfo size="sm">{author}</StyledInfo>
+              </StyledDesktopInfoItem>
+            </StyledDesktopInfo>
+          </StyledHeader>
+          <StyledMobileInfo>
+            <div>
+              <StyledInfoLabel size="sm">Date</StyledInfoLabel>
+              <StyledInfo size="sm">
+                {new Date(date).toLocaleDateString("fr-FR", {
+                  year: "numeric",
+                  month: "long",
+                  day: "numeric",
+                })}
+              </StyledInfo>
+            </div>
+            <div>
+              <StyledInfoLabel size="sm">Par</StyledInfoLabel>
+              <StyledInfo size="sm">{author}</StyledInfo>
+            </div>
+          </StyledMobileInfo>
+          <StyledContentContainer>
+            <StyledContent>
+              <PortableText
+                value={_rawContent}
+                components={createArticlePortableTextComponents(
+                  ctaMap,
+                  pageMap,
+                )}
+              />
+            </StyledContent>
+            <StyledDesktopContentInfo>
+              <StyledSidebarSticky>
+                <SidebarCtaCard />
+              </StyledSidebarSticky>
+            </StyledDesktopContentInfo>
+          </StyledContentContainer>
+          <ALaUne article border />
+        </StyledContainer>
+
+        {/* Mobile Sticky CTA */}
+        <CTASticky />
+      </Layout>
     </>
   );
 };

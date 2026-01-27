@@ -13,6 +13,9 @@ import TeamSection from "components/Seo/TeamSection";
 import CTASection from "components/Seo/CTASection";
 import Breadcrumb from "components/Seo/Breadcrumb";
 import GoogleReviews from "components/Seo/GoogleReviews";
+import CTASticky from "components/Seo/CTASticky";
+import SidebarCtaCard from "components/Seo/SidebarCtaCard";
+import InternalLinksBlock from "components/Seo/InternalLinksBlock";
 
 const StyledContainer = styled.div`
   padding-top: 40px;
@@ -39,12 +42,12 @@ const StyledHeader = styled(Grid)`
       line-height: 50px;
     }
     @media ${(props) => props.theme.minWidth.md} {
-      grid-column: 3 / span 10;
+      grid-column: 2 / span 11;
       font-size: 48px;
       line-height: 56px;
     }
     @media ${(props) => props.theme.minWidth.lg} {
-      grid-column: 4 / span 9;
+      grid-column: 2 / span 11;
       font-size: 52px;
       line-height: 60px;
     }
@@ -68,73 +71,29 @@ const StyledSidebarInfo = styled.div`
   display: none;
   @media ${(props) => props.theme.minWidth.md} {
     display: block;
-    grid-column: 11 / span 2;
+    grid-column: 10 / span 3;
   }
   @media ${(props) => props.theme.minWidth.lg} {
-    grid-column: 11 / span 2;
+    grid-column: 10 / span 3;
   }
 `;
 
 const StyledSidebarSticky = styled.div`
   position: sticky;
-  top: ${({ theme }) => theme.headerHeight}px;
-`;
-
-const StyledSidebarContent = styled.div`
-  display: flex;
-  flex-direction: column;
-  gap: 10px;
-  text-align: center;
-  padding: 20px;
-`;
-
-const StyledSidebarTitle = styled.h3`
-  font-family: "Söhne Kräftig";
-  font-size: 18px;
-  line-height: 22px;
-  color: ${(props) => props.theme.colors.black};
-  margin: 0;
-`;
-
-const StyledSidebarDescription = styled.p`
-  font-family: "Signifier Light";
-  font-size: 16px;
-  line-height: 20px;
-  color: ${(props) => props.theme.colors.black};
-  margin: 0;
-  opacity: 0.9;
-`;
-
-const StyledSidebarCTA = styled(Link)`
-  display: inline-block;
-  padding: 8px 16px 9px;
-  border-radius: 100px;
-  background-color: ${(props) => props.theme.colors.blackLight};
-  color: white;
-  text-decoration: none;
-  font-family: "Signifier Light";
-  font-size: 16px;
-  line-height: 1.4;
-  text-align: center;
-  transition: background-color 0.2s ease;
-  word-wrap: break-word;
-
-  &:hover {
-    background-color: ${(props) => props.theme.colors.black};
-  }
+  top: ${({ theme }) => theme.headerHeight + 20}px;
 `;
 
 const StyledContent = styled.section`
   line-height: 28px;
   @media ${(props) => props.theme.minWidth.md} {
-    grid-column: 3 / span 8;
+    grid-column: 2 / span 7;
     line-height: 32px;
   }
   @media ${(props) => props.theme.minWidth.lg} {
-    grid-column: 4 / span 7;
+    grid-column: 2 / span 7;
   }
   @media ${(props) => props.theme.minWidth.xl} {
-    grid-column: 4 / span 6;
+    grid-column: 2 / span 6;
   }
 
   & > :first-child {
@@ -230,20 +189,20 @@ const StyledUpdateDate = styled.p`
   margin: 30px 0;
   text-align: center;
   @media ${(props) => props.theme.minWidth.md} {
-    grid-column: 3 / span 8;
+    grid-column: 2 / span 7;
   }
   @media ${(props) => props.theme.minWidth.lg} {
-    grid-column: 4 / span 7;
+    grid-column: 2 / span 7;
   }
 `;
 
 const StyledCustomHTML = styled.div`
   margin: 40px 0;
   @media ${(props) => props.theme.minWidth.md} {
-    grid-column: 3 / span 8;
+    grid-column: 2 / span 7;
   }
   @media ${(props) => props.theme.minWidth.lg} {
-    grid-column: 4 / span 7;
+    grid-column: 2 / span 7;
   }
 `;
 
@@ -336,6 +295,22 @@ const safeNbspPonctuation = (text) => {
   return text;
 };
 
+const getSanityAssetWidth = (asset) => {
+  const metaWidth = asset?.metadata?.dimensions?.width;
+  if (typeof metaWidth === "number" && metaWidth > 0) return metaWidth;
+
+  const assetWidth = asset?.width;
+  if (typeof assetWidth === "number" && assetWidth > 0) return assetWidth;
+
+  const ref = asset?._ref || asset?._id;
+  if (typeof ref === "string") {
+    const match = ref.match(/-(\d+)x(\d+)-/);
+    if (match && match[1]) return Number(match[1]);
+  }
+
+  return null;
+};
+
 // Create Portable Text components with access to CTA map and page map
 const createPortableTextComponents = (ctaMap, pageMap) => ({
   block: {
@@ -349,7 +324,7 @@ const createPortableTextComponents = (ctaMap, pageMap) => ({
             />
           ) : (
             child
-          )
+          ),
         )}
       </h2>
     ),
@@ -363,7 +338,7 @@ const createPortableTextComponents = (ctaMap, pageMap) => ({
             />
           ) : (
             child
-          )
+          ),
         )}
       </h3>
     ),
@@ -418,18 +393,33 @@ const createPortableTextComponents = (ctaMap, pageMap) => ({
   types: {
     image: ({ value }) =>
       value.asset && (
-        <figure style={{ margin: "30px 0" }}>
-          <SanityImg
-            asset={value.asset}
-            alt={value.alt || ""}
-            width={800}
-            loading="lazy"
-            config={{
-              quality: 75,
-              fit: "max",
-            }}
-            style={{ width: "100%", height: "auto" }}
-          />
+        <figure style={{ margin: "30px 0", textAlign: "center" }}>
+          {(() => {
+            const originalWidth = getSanityAssetWidth(value.asset);
+            const requestedWidth = originalWidth
+              ? Math.min(originalWidth, 1200)
+              : 800;
+
+            return (
+              <SanityImg
+                asset={value.asset}
+                alt={value.alt || ""}
+                width={requestedWidth}
+                loading="lazy"
+                config={{
+                  quality: 75,
+                  fit: "max",
+                }}
+                style={{
+                  maxWidth: originalWidth ? `${originalWidth}px` : "100%",
+                  width: "100%",
+                  height: "auto",
+                  display: "block",
+                  margin: "0 auto",
+                }}
+              />
+            );
+          })()}
           {value.caption && (
             <figcaption
               style={{
@@ -491,7 +481,7 @@ const createPortableTextComponents = (ctaMap, pageMap) => ({
       if (process.env.NODE_ENV === "development" && value) {
         console.log(
           "ctaSectionDocument value:",
-          JSON.stringify(value, null, 2)
+          JSON.stringify(value, null, 2),
         );
       }
 
@@ -553,7 +543,7 @@ const createPortableTextComponents = (ctaMap, pageMap) => ({
             "Unresolved CTA reference:",
             value._ref,
             "Available CTAs:",
-            Array.from(ctaMap.keys())
+            Array.from(ctaMap.keys()),
           );
         }
         return null;
@@ -589,6 +579,17 @@ const createPortableTextComponents = (ctaMap, pageMap) => ({
         <RelatedSpecialties
           items={value.pages}
           sectionTitle={value.sectionTitle}
+        />
+      );
+    },
+    // Handle Internal Links Block (maillage interne)
+    internalLinksBlock: ({ value }) => {
+      if (!value?.links || value.links.length === 0) return null;
+      return (
+        <InternalLinksBlock
+          links={value.links}
+          sectionTitle={value.sectionTitle}
+          pageMap={pageMap}
         />
       );
     },
@@ -636,6 +637,11 @@ export const query = graphql`
       customTitle
       metaDescription
       canonicalUrl
+      ogImage {
+        asset {
+          url
+        }
+      }
 
       # Main content
       _rawMainContent
@@ -697,6 +703,7 @@ export const query = graphql`
       nodes {
         _id
         _type
+        customH1
         slug {
           current
         }
@@ -708,6 +715,7 @@ export const query = graphql`
       nodes {
         _id
         _type
+        title
         slug {
           current
         }
@@ -741,7 +749,7 @@ const MoneyPage = ({ data }) => {
   if (process.env.NODE_ENV === "development" && page._rawMainContent) {
     console.log(
       "Raw main content structure:",
-      JSON.stringify(page._rawMainContent, null, 2)
+      JSON.stringify(page._rawMainContent, null, 2),
     );
     console.log("Available CTA documents:", ctaMap);
   }
@@ -762,6 +770,7 @@ const MoneyPage = ({ data }) => {
         customTitle={page.customTitle}
         customMetaDescription={page.metaDescription}
         canonicalUrl={page.canonicalUrl}
+        imageUrl={page.ogImage?.asset?.url}
       />
       <Layout breadcrumb={<Breadcrumb items={breadcrumbItems} />}>
         <StyledContainer>
@@ -785,17 +794,7 @@ const MoneyPage = ({ data }) => {
             {/* Sidebar on the right - desktop only */}
             <StyledSidebarInfo>
               <StyledSidebarSticky>
-                <StyledSidebarContent>
-                  <StyledSidebarTitle>Besoin d'un avocat ?</StyledSidebarTitle>
-                  <StyledSidebarDescription>
-                    Contactez TLMR Avocats pour un premier échange confidentiel.
-                  </StyledSidebarDescription>
-                  <StyledSidebarCTA to="/contact">
-                    Prendre
-                    <br />
-                    rendez-vous
-                  </StyledSidebarCTA>
-                </StyledSidebarContent>
+                <SidebarCtaCard />
               </StyledSidebarSticky>
             </StyledSidebarInfo>
 
@@ -827,6 +826,9 @@ const MoneyPage = ({ data }) => {
           {/* Google Reviews Section */}
           {page.showGoogleReviews && <GoogleReviews />}
         </StyledContainer>
+
+        {/* Mobile Sticky CTA */}
+        <CTASticky />
       </Layout>
     </>
   );
