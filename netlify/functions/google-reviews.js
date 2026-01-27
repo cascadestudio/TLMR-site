@@ -95,34 +95,10 @@ async function getAccountName(accessToken) {
   return response.data.accounts[0].name;
 }
 
-// Get location name using Business Information API
-async function getLocationName(accessToken, accountName, locationId) {
-  // First try to list locations to find the correct one
-  const response = await makeRequest({
-    hostname: 'mybusinessbusinessinformation.googleapis.com',
-    path: `/v1/${accountName}/locations?readMask=name`,
-    method: 'GET',
-    headers: {
-      'Authorization': `Bearer ${accessToken}`,
-      'Content-Type': 'application/json',
-    },
-  });
-
-  if (response.data.error) {
-    // If listing fails, try direct location access
-    return `${accountName}/locations/${locationId}`;
-  }
-
-  // Find the location matching our ID
-  if (response.data.locations) {
-    for (const loc of response.data.locations) {
-      if (loc.name && loc.name.includes(locationId)) {
-        return loc.name;
-      }
-    }
-  }
-
-  // Default to constructed path
+// Build the full location path for the reviews API
+function buildLocationPath(accountName, locationId) {
+  // accountName is like "accounts/123456789"
+  // We need to return "accounts/123456789/locations/locationId"
   return `${accountName}/locations/${locationId}`;
 }
 
@@ -231,8 +207,8 @@ exports.handler = async (event) => {
     const accountName = await getAccountName(accessToken);
     console.log('Account name:', accountName);
 
-    // Get location name using Business Information API
-    const locationName = await getLocationName(accessToken, accountName, locationId);
+    // Build the full location path
+    const locationName = buildLocationPath(accountName, locationId);
     console.log('Location name:', locationName);
 
     // Fetch reviews
