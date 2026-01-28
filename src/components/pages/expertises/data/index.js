@@ -1,6 +1,7 @@
 const ExpertiseData = [
   {
     title: "Innovation, Propriété intellectuelle et industrielle",
+    categoryId: "innovation-pi",
     description: [
       "La création et l’innovation exigent une compétence juridique spécifique pour laquelle le Cabinet Touati La Motte Rouge dispose d’un savoir&#8209faire reconnu et d’une excellente maîtrise des enjeux en matière de propriété intellectuelle, sur les supports traditionnels, comme sur les nouveaux médias et réseaux sociaux.",
       "Le cabinet intervient en matière de conseil et de contentieux sur tous les volets de la propriété intellectuelle (droits d’auteur, logiciels, marques, dessins et modèles, brevets, noms de domaine, bases de données) et accompagne les entreprises dans la sécurisation de leurs actifs immatériels mais aussi les créateurs, artistes, développeurs, musiciens et inventeurs dans la défense de leurs droits.",
@@ -47,6 +48,7 @@ const ExpertiseData = [
   },
   {
     title: "Internet, plateformes et e&#8209commerce",
+    categoryId: "internet-ecommerce",
     description: [
       "Accompagner les entreprises dans leur transition numérique, les entrepreneurs du web (e&#8209commerçants, infopreneurs, youtubeurs, influenceurs, blogueurs, instagrammeurs …) ou les start&#8209ups et plateformes de l’internet demande un savoir&#8209faire spécifique dont le cabinet est leader.",
       "L’excellence en droit du web exige non seulement d’appréhender l’ensemble des droits applicables en la matière, et de veiller attentivement aux modifications constantes des réglementations dans ce domaine, mais aussi de comprendre l’environnement digital extrêmement changeant dans lequel évolue les plateformes et ceux qui font l’économie d’aujourd’hui et de demain.",
@@ -89,6 +91,7 @@ const ExpertiseData = [
   },
   {
     title: "Affaires complexes et contentieux à risque",
+    categoryId: "affaires-contentieux",
     description: [
       "Agir à vos côtés avec efficacité et de manière opérationnelle dans la gestion de crises, dans le cadre de vos opérations sensibles et à enjeux sur le plan national et international, est notre quotidien.",
       "Le cabinet accompagne de nombreuses entreprises de tailles diverses et leurs dirigeants sur l’ensemble de leurs problématiques en droit des affaires et s’est forgé une réputation sur la résolution de litiges complexes.",
@@ -138,6 +141,7 @@ const ExpertiseData = [
   },
   {
     title: "Droit immobilier, copropriété, baux et construction",
+    categoryId: "immobilier",
     description: [
       "Disposant d’une forte expérience dans le domaine, le cabinet accompagne de nombreuses sociétés et groupes du secteur de l’immobilier (syndics, copropriétés, investisseurs, marchands de biens, administrateurs et gestionnaires de baux d’habitation et commerciaux) dans la diversité de leurs problématiques immobilières tant en matière de conseil que de contentieux.",
     ],
@@ -196,6 +200,7 @@ const ExpertiseData = [
   },
   {
     title: "Pénal, Cybercriminalité et e&#8209réputation",
+    categoryId: "penal-cyber",
     description: [
       "Faire face à vos côtés et défendre avec vigueur vos intérêts dans un monde en mouvement et digitalisé, où, plus que jamais, associer compétences juridiques et technologiques est primordial.",
       "Le cabinet vous assiste, que vous soyez décideurs, particuliers ou chefs entreprises, auteurs présumés d’infractions ou parties civiles, à tous les stades de l’enquête et devant les juridictions pénales et pour vos problématiques d’e&#8209réputation.",
@@ -246,6 +251,7 @@ const ExpertiseData = [
   },
   {
     title: "Informatique, logiciel, Intelligence artificielle, Blockchain",
+    categoryId: "it-ia-blockchain",
     description: [
       "Vous accompagner vers le succès grâce à la compréhension de vos enjeux techniques et juridiques liés aux technologies, à l’environnement digital et informatique. Autant d’atouts pour vous offrir un accompagnement de pointe et des solutions pragmatiques et opérationnelles.",
     ],
@@ -303,6 +309,7 @@ const ExpertiseData = [
   },
   {
     title: "Données personnelles et conformité CNIL/RGPD",
+    categoryId: "rgpd-cnil",
     description: [
       "A l’ère du numérique, les données personnelles, devenues l’« or noir » pour d’innombrables technologies, font l’objet de régulations protections légitimes. Le cabinet, disposant d’une expertise reconnue en la matière, vous accompagne sur ces enjeux fondamentaux.",
       "Intervenant aux côtés de nombreuses sociétés pour leur mise en conformité avec le Règlement Général Européen sur la Protection des Données (RGPD) applicable depuis le 25 mai 2018, le cabinet a développé une expertise particulière en qualité de Délégué à la protection des données (DPO externalisé).",
@@ -340,6 +347,7 @@ const ExpertiseData = [
   },
   {
     title: "Droit du travail numérique et de la formation",
+    categoryId: "travail-formation",
     description: [
       "Les outils numériques ont un impact conséquent sur la vie en entreprise et au travail. Le cabinet intervient notamment sur les dossiers s’inscrivant dans des environnements technologiques complexes. Il accompagne aussi bien des entreprises que des salariés en conseil et en contentieux. Accompagnant de nombreux acteurs de la formation, il a également développé une compétence spécifique en droit de la formation dont les règles sont principalement issues du Code du travail.",
       "La formation, en présentiel ou en ligne, répond à une réglementation complexe que les acteurs du secteur se doivent de respecter scrupuleusement pour pouvoir prétendre aux financements publics. Le cabinet accompagne de nombreuses entreprises intervenant dans le domaine de la formation, sur les problématiques suivantes :<ul><li>– Mise en conformité des organismes de formation.</li><li>– Création des contrats et assistance à l’obtention des agréments (CPF, Qualiopi…).</li><li>– Fiscalité et exonération de la TVA.</li><li>– Assistance en cas de contrôle (DREETS, Caisse des Dépôts et Consignation) et litiges.</li></ul>",

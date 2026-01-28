@@ -205,11 +205,9 @@ exports.handler = async (event) => {
 
     // Get account name using Account Management API
     const accountName = await getAccountName(accessToken);
-    console.log('Account name:', accountName);
 
     // Build the full location path
     const locationName = buildLocationPath(accountName, locationId);
-    console.log('Location name:', locationName);
 
     // Fetch reviews
     const gmbData = await fetchGoogleReviews(accessToken, locationName);

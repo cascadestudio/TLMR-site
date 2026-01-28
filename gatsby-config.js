@@ -1,6 +1,8 @@
 /**
  * @type {import('gatsby').GatsbyConfig}
  */
+require("dotenv").config();
+
 module.exports = {
   siteMetadata: {
     title: `Touati La Motte Rouge Avocats`,
@@ -10,6 +12,37 @@ module.exports = {
       "Vous simplifier l’accès à l’excellence en particulier dans les domaines des technologies, de l’informatique de l’innovation, du digital, et d’internet.",
     author: "Adrien Lapasset",
     lang: "fr",
+  },
+  developMiddleware: (app) => {
+    app.get("/.netlify/functions/google-reviews", async (req, res) => {
+      try {
+        const { handler } = require("./netlify/functions/google-reviews");
+        const result = await handler({
+          httpMethod: "GET",
+          headers: req.headers,
+          queryStringParameters: req.query,
+        });
+
+        if (result && result.headers) {
+          Object.entries(result.headers).forEach(([key, value]) => {
+            if (typeof value !== "undefined") {
+              res.setHeader(key, value);
+            }
+          });
+        }
+
+        res.status(result?.statusCode || 200).send(result?.body || "");
+      } catch (error) {
+        res.status(500).json({
+          error: "Failed to fetch reviews",
+          message: error.message,
+        });
+      }
+    });
+
+    app.options("/.netlify/functions/google-reviews", (req, res) => {
+      res.status(200).send("");
+    });
   },
   plugins: [
     {
