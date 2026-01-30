@@ -510,8 +510,8 @@ const createPortableTextComponents = (ctaMap, pageMap) => ({
         );
       }
 
-      // If it's an unresolved reference, try to resolve it manually and see if it works
-      if (value?._type === "reference" && value?._ref) {
+      // If it's an unresolved reference (has _ref), try to resolve it from ctaMap
+      if (value?._ref) {
         const referencedCta = ctaMap.get(value._ref);
         if (referencedCta) {
           return (
@@ -525,6 +525,7 @@ const createPortableTextComponents = (ctaMap, pageMap) => ({
           );
         }
 
+        // Reference not found in ctaMap - return null silently
         return null;
       }
 
