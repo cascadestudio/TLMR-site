@@ -80,7 +80,7 @@ const StyledSidebarInfo = styled.div`
 
 const StyledSidebarSticky = styled.div`
   position: sticky;
-  top: ${({ theme }) => theme.headerHeight + 20}px;
+  top: calc(50vh - 150px);
 `;
 
 const StyledContent = styled.section`
@@ -477,14 +477,6 @@ const createPortableTextComponents = (ctaMap, pageMap) => ({
     // Handle referenced CTAs from library
     // When a reference is resolved, it becomes the document itself
     ctaSectionDocument: ({ value }) => {
-      // Debug in development
-      if (process.env.NODE_ENV === "development" && value) {
-        console.log(
-          "ctaSectionDocument value:",
-          JSON.stringify(value, null, 2),
-        );
-      }
-
       if (!value?.buttonText || !value?.buttonLink) return null;
 
       return (
@@ -500,11 +492,6 @@ const createPortableTextComponents = (ctaMap, pageMap) => ({
     // Handle reference type (when reference is in Portable Text array)
     // In Portable Text, references can come through as type 'reference'
     reference: ({ value }) => {
-      // Debug: log the reference structure
-      if (process.env.NODE_ENV === "development" && value) {
-        console.log("Reference type value:", JSON.stringify(value, null, 2));
-      }
-
       // Check if it's a resolved CTA document reference
       // When resolved, it should have the document fields directly
       // OR it might have _type: 'ctaSectionDocument' when resolved
@@ -523,8 +510,8 @@ const createPortableTextComponents = (ctaMap, pageMap) => ({
         );
       }
 
-      // If it's an unresolved reference, try to resolve it manually and see if it works
-      if (value?._type === "reference" && value?._ref) {
+      // If it's an unresolved reference (has _ref), try to resolve it from ctaMap
+      if (value?._ref) {
         const referencedCta = ctaMap.get(value._ref);
         if (referencedCta) {
           return (
@@ -538,14 +525,7 @@ const createPortableTextComponents = (ctaMap, pageMap) => ({
           );
         }
 
-        if (process.env.NODE_ENV === "development") {
-          console.warn(
-            "Unresolved CTA reference:",
-            value._ref,
-            "Available CTAs:",
-            Array.from(ctaMap.keys()),
-          );
-        }
+        // Reference not found in ctaMap - return null silently
         return null;
       }
 
@@ -744,15 +724,6 @@ const MoneyPage = ({ data }) => {
   allArticles.forEach((article) => {
     pageMap.set(article._id, article);
   });
-
-  // Debug: log the raw content structure in development
-  if (process.env.NODE_ENV === "development" && page._rawMainContent) {
-    console.log(
-      "Raw main content structure:",
-      JSON.stringify(page._rawMainContent, null, 2),
-    );
-    console.log("Available CTA documents:", ctaMap);
-  }
 
   const displayH1 = page.customH1;
 

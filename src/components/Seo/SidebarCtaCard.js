@@ -29,7 +29,7 @@ const GoogleReviewsSection = styled.div`
   display: flex;
   align-items: center;
   justify-content: center;
-  gap: 10px;
+  gap: 8px;
   padding-bottom: 14px;
   border-bottom: 1px solid rgba(255, 255, 255, 0.15);
 `;
@@ -41,26 +41,14 @@ const StarsContainer = styled.div`
 
 const StarIcon = styled.span`
   color: ${(props) => (props.$filled ? "#fbbc04" : "rgba(255, 255, 255, 0.3)")};
-  font-size: 14px;
+  font-size: 16px;
 `;
 
-const ReviewInfo = styled.div`
-  display: flex;
-  flex-direction: column;
-  align-items: flex-start;
-  gap: 2px;
-`;
-
-const RatingText = styled.span`
+const ReviewText = styled.span`
   font-family: "Söhne Kräftig";
-  font-size: 13px;
+  font-size: 14px;
   color: white;
-`;
-
-const ReviewCount = styled.span`
-  font-family: "Signifier Light";
-  font-size: 11px;
-  color: rgba(255, 255, 255, 0.7);
+  white-space: nowrap;
 `;
 
 const ContentSection = styled.div`
@@ -83,12 +71,12 @@ const CardDescription = styled.p`
   margin: 0;
 `;
 
-const CtaButton = styled(Link)`
+// Shared button styles
+const buttonStyles = `
   display: block;
   padding: 12px 16px;
   border-radius: 100px;
   background-color: white;
-  color: ${(props) => props.theme.colors.blackLight};
   text-decoration: none;
   font-family: "Söhne Kräftig";
   font-size: 14px;
@@ -97,6 +85,12 @@ const CtaButton = styled(Link)`
   transition: background-color 0.2s ease, transform 0.2s ease;
   position: relative;
   overflow: hidden;
+  cursor: pointer;
+`;
+
+const CtaButtonInternal = styled(Link)`
+  ${buttonStyles}
+  color: ${(props) => props.theme.colors.blackLight};
 
   &::before {
     content: "";
@@ -120,6 +114,36 @@ const CtaButton = styled(Link)`
   }
 `;
 
+const CtaButtonExternal = styled.a`
+  ${buttonStyles}
+  color: ${(props) => props.theme.colors.blackLight};
+
+  &::before {
+    content: "";
+    position: absolute;
+    top: 0;
+    left: -100%;
+    width: 100%;
+    height: 100%;
+    background: linear-gradient(
+      90deg,
+      transparent,
+      rgba(255, 255, 255, 0.5),
+      transparent
+    );
+    animation: ${shineAnimation} 3s infinite;
+  }
+
+  &:hover {
+    background-color: #f0f0f0;
+    transform: scale(1.02);
+  }
+`;
+
+// Helper to detect external URLs
+const isExternalUrl = (url) =>
+  url?.startsWith("http://") || url?.startsWith("https://");
+
 // Stars component
 const Stars = ({ rating }) => {
   return (
@@ -135,12 +159,13 @@ const Stars = ({ rating }) => {
 
 const SidebarCtaCard = ({
   title = "Besoin d'un avocat ?",
-  description = "Contactez TLMR Avocats pour un premier echange confidentiel.",
+  description = "Contactez TLMR Avocats pour un premier échange confidentiel.",
   buttonText = "Prendre rendez-vous",
   buttonLink = "/contact",
   showGoogleReviews = true,
 }) => {
   const [reviewData, setReviewData] = useState(null);
+  const isExternal = isExternalUrl(buttonLink);
 
   useEffect(() => {
     if (showGoogleReviews) {
@@ -166,17 +191,26 @@ const SidebarCtaCard = ({
       {showGoogleReviews && reviewData && (
         <GoogleReviewsSection>
           <Stars rating={Math.round(reviewData.averageRating)} />
-          <ReviewInfo>
-            <RatingText>{reviewData.averageRating}/5</RatingText>
-            <ReviewCount>{reviewData.totalReviewCount} avis Google</ReviewCount>
-          </ReviewInfo>
+          <ReviewText>
+            {reviewData.averageRating}/5 ({reviewData.totalReviewCount} avis)
+          </ReviewText>
         </GoogleReviewsSection>
       )}
       <ContentSection>
         <CardTitle>{title}</CardTitle>
         <CardDescription>{description}</CardDescription>
       </ContentSection>
-      <CtaButton to={buttonLink}>{buttonText}</CtaButton>
+      {isExternal ? (
+        <CtaButtonExternal
+          href={buttonLink}
+          target="_blank"
+          rel="noopener noreferrer"
+        >
+          {buttonText}
+        </CtaButtonExternal>
+      ) : (
+        <CtaButtonInternal to={buttonLink}>{buttonText}</CtaButtonInternal>
+      )}
     </CardWrapper>
   );
 };

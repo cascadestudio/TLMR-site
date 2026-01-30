@@ -19,6 +19,7 @@ exports.createSchemaCustomization = ({ actions }) => {
       customH1: String
       metaDescription: String
       canonicalUrl: String
+      expertiseCategory: String
       _rawMainContent: JSON
       showGoogleReviews: Boolean
       showUpdateDate: Boolean
@@ -171,7 +172,7 @@ exports.createPages = async ({ graphql, actions, reporter }) => {
   if (articleQuery.errors) {
     reporter.panicOnBuild(
       `There was an error loading Sanity articles`,
-      articleQuery.errors
+      articleQuery.errors,
     );
     return;
   }
@@ -208,7 +209,7 @@ exports.createPages = async ({ graphql, actions, reporter }) => {
   if (moneyPageQuery.errors) {
     reporter.panicOnBuild(
       `There was an error loading Sanity Money Pages`,
-      moneyPageQuery.errors
+      moneyPageQuery.errors,
     );
     return;
   }
@@ -246,7 +247,7 @@ exports.createPages = async ({ graphql, actions, reporter }) => {
   if (categoryPageQuery.errors) {
     reporter.panicOnBuild(
       `There was an error loading Sanity Category Pages`,
-      categoryPageQuery.errors
+      categoryPageQuery.errors,
     );
     return;
   }

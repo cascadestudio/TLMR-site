@@ -18,18 +18,19 @@ const shineAnimation = keyframes`
 
 const CTAWrapper = styled.div`
   margin: 50px 0;
-  padding: 28px 24px;
-  background-color: ${(props) => props.theme.colors.blackLight};
+  padding: 24px 20px;
+  background-color: #fff;
+  border: 1px solid rgba(0, 0, 0, 0.12);
   border-radius: 16px;
-  box-shadow: 0 8px 30px rgba(0, 0, 0, 0.25);
+  box-shadow: 0 4px 16px rgba(0, 0, 0, 0.08);
   text-align: center;
 
   @media ${(props) => props.theme.minWidth.sm} {
-    padding: 32px 32px;
+    padding: 28px 28px;
   }
 
   @media ${(props) => props.theme.minWidth.md} {
-    padding: 40px 48px;
+    padding: 32px 40px;
     margin: 60px 0;
   }
 `;
@@ -39,7 +40,7 @@ const CTAHeading = styled.h3`
   line-height: 26px;
   margin-bottom: ${(props) => (props.$hasDescription ? "12px" : "20px")};
   font-family: "Söhne Kräftig";
-  color: white;
+  color: #000;
 
   @media ${(props) => props.theme.minWidth.sm} {
     font-size: 22px;
@@ -48,9 +49,9 @@ const CTAHeading = styled.h3`
   }
 
   @media ${(props) => props.theme.minWidth.md} {
-    font-size: 24px;
-    line-height: 30px;
-    margin-bottom: ${(props) => (props.$hasDescription ? "16px" : "24px")};
+    font-size: 16px;
+    line-height: 20px;
+    margin-bottom: ${(props) => (props.$hasDescription ? "12px" : "16px")};
   }
 `;
 
@@ -59,10 +60,10 @@ const CTADescription = styled.p`
   font-size: 15px;
   line-height: 22px;
   margin-bottom: 24px;
-  max-width: 520px;
+  max-width: 100%;
   margin-left: auto;
   margin-right: auto;
-  color: rgba(255, 255, 255, 0.85);
+  color: #333;
 
   @media ${(props) => props.theme.minWidth.sm} {
     font-size: 16px;
@@ -70,38 +71,43 @@ const CTADescription = styled.p`
   }
 
   @media ${(props) => props.theme.minWidth.md} {
-    font-size: 17px;
-    line-height: 26px;
-    margin-bottom: 28px;
+    font-size: 14px;
+    line-height: 18px;
+    margin-bottom: 20px;
   }
 `;
 
-const CTAButton = styled(Link)`
+// Shared button styles
+const buttonStyles = `
+  width: 100%;
+  border-radius: 100px;
+  padding: 12px 24px;
+  text-align: center;
+  font-size: 14px;
+  text-decoration: none;
+  display: inline-block;
+  max-width: 320px;
+  font-family: "Söhne Kräftig";
+  line-height: 1.4;
+  white-space: nowrap;
+  background-color: #000;
+  color: #fff;
+  position: relative;
+  overflow: hidden;
+  transition: background-color 0.2s ease, transform 0.2s ease;
+  cursor: pointer;
+`;
+
+const CTAButtonInternal = styled(Link)`
   /* Override parent StyledContent styles with higher specificity */
   &&& {
-    width: 100%;
-    border-radius: 100px;
-    padding: 12px 24px;
-    text-align: center;
-    font-size: 16px;
-    text-decoration: none;
-    display: inline-block;
-    max-width: 320px;
-    font-family: "Söhne Kräftig";
-    line-height: 1.4;
-    background-color: white;
-    color: ${(props) => props.theme.colors.blackLight};
-    position: relative;
-    overflow: hidden;
-    transition: background-color 0.2s ease, transform 0.2s ease;
+    ${buttonStyles}
 
     @media ${(props) => props.theme.minWidth.sm} {
-      font-size: 17px;
       padding: 14px 28px;
     }
 
     @media ${(props) => props.theme.minWidth.md} {
-      font-size: 18px;
       padding: 14px 32px;
     }
 
@@ -116,18 +122,59 @@ const CTAButton = styled(Link)`
       background: linear-gradient(
         90deg,
         transparent,
-        rgba(255, 255, 255, 0.5),
+        rgba(255, 255, 255, 0.3),
         transparent
       );
       animation: ${shineAnimation} 3s infinite;
     }
 
     &:hover {
-      background-color: #f0f0f0;
+      background-color: #222;
       transform: scale(1.02);
     }
   }
 `;
+
+const CTAButtonExternal = styled.a`
+  /* Override parent StyledContent styles with higher specificity */
+  &&& {
+    ${buttonStyles}
+
+    @media ${(props) => props.theme.minWidth.sm} {
+      padding: 14px 28px;
+    }
+
+    @media ${(props) => props.theme.minWidth.md} {
+      padding: 14px 32px;
+    }
+
+    /* Shine animation */
+    &::before {
+      content: "";
+      position: absolute;
+      top: 0;
+      left: -100%;
+      width: 100%;
+      height: 100%;
+      background: linear-gradient(
+        90deg,
+        transparent,
+        rgba(255, 255, 255, 0.3),
+        transparent
+      );
+      animation: ${shineAnimation} 3s infinite;
+    }
+
+    &:hover {
+      background-color: #222;
+      transform: scale(1.02);
+    }
+  }
+`;
+
+// Helper to detect external URLs
+const isExternalUrl = (url) =>
+  url?.startsWith("http://") || url?.startsWith("https://");
 
 const CTASection = ({
   heading,
@@ -137,6 +184,8 @@ const CTASection = ({
   style = "primary",
 }) => {
   if (!buttonText || !buttonLink) return null;
+
+  const isExternal = isExternalUrl(buttonLink);
 
   return (
     <CTAWrapper>
@@ -153,9 +202,17 @@ const CTASection = ({
         />
       )}
 
-      <CTAButton to={buttonLink}>
-        {buttonText}
-      </CTAButton>
+      {isExternal ? (
+        <CTAButtonExternal
+          href={buttonLink}
+          target="_blank"
+          rel="noopener noreferrer"
+        >
+          {buttonText}
+        </CTAButtonExternal>
+      ) : (
+        <CTAButtonInternal to={buttonLink}>{buttonText}</CTAButtonInternal>
+      )}
     </CTAWrapper>
   );
 };

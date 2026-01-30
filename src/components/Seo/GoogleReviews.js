@@ -409,7 +409,7 @@ const GoogleReviews = ({ sectionTitle }) => {
             Basé sur {reviewData.totalReviewCount} avis Google
           </ReviewCount>
           <GoogleAttribution
-            href="https://g.page/r/CZ7gkwT2bQdkEAE/review"
+            href="https://www.google.com/search?sca_esv=09b1523b2d059e4c&hl=fr&authuser=0&sxsrf=ANbL-n5aCjoIrAxHMnakOHxRGPadEoT1_g:1769608649918&q=Touati+-+La+Motte+Rouge+Avocats&si=AL3DRZFIhG6pAqfNLal55wUTwygCG0fClF3UxiOmgw9Hq7nbWU_wHWr6q7auMcl9pMqF3ZPhzrgiSW6KDO5mbaJCu2eNGuAdyFtg8eIUqZhHImaXV4bfjW4%3D&uds=ALYpb_mVCDtJE7tUaAp18ol_X8XUN48DCPfN2Up4o1v6WmxOWfjjPvDukrxEKuYfLUZ4nMWY6M6UMAR6MLTz5Z0td0uHLUml2Sn0XOExprfI4ZmGknany6yUUmdhKox3mVNLls9bipI6&sa=X&ved=2ahUKEwjy7uD3sa6SAxXm9AIHHUkgFvsQ3PALegQIGRAE&biw=1440&bih=693&dpr=2&aic=0"
             target="_blank"
             rel="noopener noreferrer"
           >

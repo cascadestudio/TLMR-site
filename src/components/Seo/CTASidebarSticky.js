@@ -108,12 +108,12 @@ const SidebarDescription = styled.p`
   margin: 0;
 `;
 
-const SidebarCTA = styled(Link)`
+// Shared button styles
+const buttonStyles = `
   display: block;
   padding: 10px 16px;
   border-radius: 100px;
   background-color: white;
-  color: ${(props) => props.theme.colors.blackLight};
   text-decoration: none;
   font-family: "Söhne Kräftig";
   font-size: 14px;
@@ -122,6 +122,12 @@ const SidebarCTA = styled(Link)`
   transition: background-color 0.2s ease, transform 0.2s ease;
   position: relative;
   overflow: hidden;
+  cursor: pointer;
+`;
+
+const SidebarCTAInternal = styled(Link)`
+  ${buttonStyles}
+  color: ${(props) => props.theme.colors.blackLight};
 
   &::before {
     content: "";
@@ -145,6 +151,36 @@ const SidebarCTA = styled(Link)`
   }
 `;
 
+const SidebarCTAExternal = styled.a`
+  ${buttonStyles}
+  color: ${(props) => props.theme.colors.blackLight};
+
+  &::before {
+    content: "";
+    position: absolute;
+    top: 0;
+    left: -100%;
+    width: 100%;
+    height: 100%;
+    background: linear-gradient(
+      90deg,
+      transparent,
+      rgba(255, 255, 255, 0.5),
+      transparent
+    );
+    animation: ${shineAnimation} 3s infinite;
+  }
+
+  &:hover {
+    background-color: #f0f0f0;
+    transform: scale(1.02);
+  }
+`;
+
+// Helper to detect external URLs
+const isExternalUrl = (url) =>
+  url?.startsWith("http://") || url?.startsWith("https://");
+
 // Stars component
 const Stars = ({ rating }) => {
   return (
@@ -160,13 +196,14 @@ const Stars = ({ rating }) => {
 
 const CTASidebarSticky = ({
   title = "Besoin d'un avocat ?",
-  description = "Contactez TLMR Avocats pour un premier echange confidentiel.",
+  description = "Contactez TLMR Avocats pour un premier échange confidentiel.",
   text = "Prendre rendez-vous",
   to = "/contact",
   showGoogleReviews = true,
 }) => {
   const [isVisible, setIsVisible] = useState(false);
   const [reviewData, setReviewData] = useState(null);
+  const isExternal = isExternalUrl(to);
 
   useEffect(() => {
     const handleScroll = () => {
@@ -222,7 +259,17 @@ const CTASidebarSticky = ({
         )}
         {title && <SidebarTitle>{title}</SidebarTitle>}
         {description && <SidebarDescription>{description}</SidebarDescription>}
-        <SidebarCTA to={to}>{text}</SidebarCTA>
+        {isExternal ? (
+          <SidebarCTAExternal
+            href={to}
+            target="_blank"
+            rel="noopener noreferrer"
+          >
+            {text}
+          </SidebarCTAExternal>
+        ) : (
+          <SidebarCTAInternal to={to}>{text}</SidebarCTAInternal>
+        )}
       </SidebarContent>
     </SidebarWrapper>
   );

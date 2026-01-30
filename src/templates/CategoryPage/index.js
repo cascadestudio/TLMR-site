@@ -510,10 +510,6 @@ const CategoryPage = ({ data }) => {
   const page = data.sanityCategory;
   const articles = data.allSanityArticle?.nodes || [];
 
-  // Debug logging
-  console.log('CategoryPage - page data:', page);
-  console.log('CategoryPage - mainContent:', page?.mainContent);
-  console.log('CategoryPage - _rawMainContent:', page?._rawMainContent);
   const allCtaDocuments = data.allSanityCtaSectionDocument?.nodes || [];
   const allMoneyPages = data.allSanityMoneyPage?.nodes || [];
   const allArticles = data.allArticlesForLinks?.nodes || [];
