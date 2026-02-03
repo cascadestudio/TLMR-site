@@ -209,9 +209,11 @@ const StyledCustomHTML = styled.div`
 
 const StyledTableWrapper = styled.div`
   width: 100%;
+  max-width: 100%;
   margin: 40px 0;
   overflow-x: auto;
   -webkit-overflow-scrolling: touch;
+  box-sizing: border-box;
 
   @media ${(props) => props.theme.minWidth.md} {
     overflow-x: visible;
