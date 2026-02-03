@@ -1,6 +1,5 @@
 import React, { useEffect, useRef, useState } from "react";
 import styled from "styled-components";
-import { graphql } from "gatsby";
 import Layout from "components/Layout";
 import Expertise from "components/pages/expertises/Expertise";
 import ExpertisesData from "components/pages/expertises/data";
@@ -30,17 +29,9 @@ const StyledElement = styled.div`
   }
 `;
 
-const ExpertisesPage = ({ data }) => {
+const ExpertisesPage = () => {
   const [ScrollElement, setScrollElement] = useState(null);
   const twoPointsSectionRef = useRef(null);
-
-  // Get money pages from GraphQL query
-  const moneyPages = data?.allSanityMoneyPage?.nodes || [];
-
-  // Helper to get money pages for a specific category
-  const getMoneyPagesForCategory = (categoryId) => {
-    return moneyPages.filter((page) => page.expertiseCategory === categoryId);
-  };
 
   useEffect(() => {
     import("react-scroll")
@@ -79,10 +70,7 @@ const ExpertisesPage = ({ data }) => {
               name={expertise.title}
               id={expertise.title}
             >
-              <Expertise
-                expertise={expertise}
-                moneyPages={getMoneyPagesForCategory(expertise.categoryId)}
-              />
+              <Expertise expertise={expertise} />
             </StyledElement>
           ))}
           <TwoPointsSection
@@ -102,18 +90,3 @@ const ExpertisesPage = ({ data }) => {
 };
 
 export default ExpertisesPage;
-
-export const query = graphql`
-  query ExpertisesPageQuery {
-    allSanityMoneyPage {
-      nodes {
-        customH1
-        slug {
-          current
-        }
-        expertiseCategory
-        metaDescription
-      }
-    }
-  }
-`;

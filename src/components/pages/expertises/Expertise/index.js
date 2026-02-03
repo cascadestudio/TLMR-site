@@ -1,10 +1,10 @@
 import React, { useState } from "react";
 import styled from "styled-components";
-import { Link } from "gatsby";
 import Title from "components/global/Title";
 import Grid from "components/global/Grid";
 import Accordion from "../Accordion";
 import Paragraph from "components/global/Paragraph";
+import Cta from "components/global/Cta";
 import Dot from "components/global/Dot";
 
 const StyledContainer = styled.div`
@@ -79,7 +79,7 @@ const StyledContentGrid = styled(Grid)`
     }
   }
 `;
-const StyledMoneyPagesSection = styled.div`
+const StyledUseCases = styled.div`
   margin-top: 40px;
   padding-bottom: 70px;
   @media ${(props) => props.theme.minWidth.sm} {
@@ -91,68 +91,60 @@ const StyledMoneyPagesSection = styled.div`
       margin-bottom: 10px;
     }
   }
-`;
-
-const MoneyPagesGrid = styled.div`
-  padding-top: 7px;
-  border-top: ${(props) => props.theme.border.black};
-  display: flex;
-  flex-direction: column;
-  gap: 12px;
-  @media ${(props) => props.theme.minWidth.sm} {
-    padding-top: 10px;
-    display: grid;
-    grid-template-columns: repeat(2, 1fr);
-    grid-column-gap: ${(props) => props.theme.columnGap.mobile};
-    gap: 12px;
+  & > div {
+    padding-top: 7px;
+    border-top: ${(props) => props.theme.border.black};
+    @media ${(props) => props.theme.minWidth.sm} {
+      padding-top: 10px;
+      display: grid;
+      grid-template-columns: repeat(2, 1fr);
+      grid-column-gap: ${(props) => props.theme.columnGap.mobile};
+    }
+    @media ${(props) => props.theme.minWidth.xl} {
+      grid-column-gap: ${(props) => props.theme.columnGap.desktop};
+    }
+    & > ul {
+      &:last-of-type {
+        display: ${({ isSeeMoreUseCases }) =>
+          isSeeMoreUseCases ? "block" : "none"};
+        @media ${(props) => props.theme.minWidth.sm} {
+          display: block;
+        }
+      }
+      li {
+        font-size: 15px;
+        @media ${(props) => props.theme.minWidth.xl} {
+          font-size: 16px;
+        }
+      }
+      & > div {
+        display: flex;
+        margin-bottom: 10px;
+        display: ${({ isSeeMoreUseCases }) =>
+          isSeeMoreUseCases ? "flex" : "none"};
+        @media ${(props) => props.theme.minWidth.sm} {
+          margin-bottom: 15px;
+          display: flex;
+        }
+        & > aside {
+          margin-right: 7px;
+        }
+        &:nth-child(1),
+        &:nth-child(2) {
+          display: flex;
+        }
+      }
+    }
   }
-  @media ${(props) => props.theme.minWidth.xl} {
-    grid-column-gap: ${(props) => props.theme.columnGap.desktop};
-  }
-`;
-
-const MoneyPageCard = styled(Link)`
-  display: block;
-  padding: 16px 20px;
-  background: #fff;
-  border: 1px solid rgba(0, 0, 0, 0.1);
-  border-radius: 8px;
-  text-decoration: none;
-  transition:
-    box-shadow 0.2s ease,
-    transform 0.2s ease,
-    border-color 0.2s ease;
-
-  &:hover {
-    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
-    transform: translateY(-2px);
-    border-color: rgba(0, 0, 0, 0.2);
-  }
-`;
-
-const CardTitle = styled.h3`
-  font-family: "Söhne Kräftig";
-  font-size: 15px;
-  line-height: 1.4;
-  color: #000;
-  margin: 0 0 4px;
-  @media ${(props) => props.theme.minWidth.xl} {
-    font-size: 16px;
-  }
-`;
-
-const CardContent = styled.div`
-  display: flex;
-  align-items: flex-start;
-`;
-
-const CardArrow = styled.span`
-  display: inline-block;
-  margin-right: 6px;
-  flex-shrink: 0;
-  transition: transform 0.2s ease;
-  ${MoneyPageCard}:hover & {
-    transform: translateX(4px);
+  & > button {
+    margin-left: 17px;
+    font-size: 15px;
+    @media ${(props) => props.theme.minWidth.sm} {
+      display: none;
+    }
+    @media ${(props) => props.theme.minWidth.xl} {
+      font-size: 16px;
+    }
   }
 `;
 const StyledAdditionalSection = styled.section`
@@ -194,8 +186,13 @@ const StyledAdditionalSection = styled.section`
   }
 `;
 
-const Expertise = ({ expertise, moneyPages = [] }) => {
+const Expertise = ({ expertise }) => {
+  const [isSeeMoreUseCases, setIsSeeMoreUseCases] = useState(false);
   const [accordionSectionIndex, setAccordionSectionIndex] = useState(null);
+
+  const handleSeeMoreUseCases = () => {
+    setIsSeeMoreUseCases(!isSeeMoreUseCases);
+  };
 
   const handleAccordion = (index) => {
     setAccordionSectionIndex(accordionSectionIndex !== index && index);
@@ -243,25 +240,39 @@ const Expertise = ({ expertise, moneyPages = [] }) => {
             />
           ))}
         </StyledAccordionContainer>
-        {moneyPages && moneyPages.length > 0 && (
-          <StyledMoneyPagesSection>
-            <h2>Nos services</h2>
-            <MoneyPagesGrid>
-              {moneyPages.map((page) => (
-                <MoneyPageCard
-                  key={page.slug.current}
-                  to={`/expertises/${page.slug.current}`}
-                >
-                  <CardTitle>
-                    <CardContent>
-                      <CardArrow>→</CardArrow>
-                      <span>{page.customH1}</span>
-                    </CardContent>
-                  </CardTitle>
-                </MoneyPageCard>
-              ))}
-            </MoneyPagesGrid>
-          </StyledMoneyPagesSection>
+        {expertise?.useCases && (
+          <StyledUseCases isSeeMoreUseCases={isSeeMoreUseCases}>
+            <h2>Exemples de cas traités</h2>
+            <div>
+              <ul>
+                {expertise?.useCases[0]?.map((li, index) => (
+                  <div key={index}>
+                    <aside>→</aside>
+                    <Paragraph
+                      color="greyLight"
+                      as="li"
+                      html={{ __html: li }}
+                    ></Paragraph>
+                  </div>
+                ))}
+              </ul>
+              <ul>
+                {expertise?.useCases[1]?.map((li, index) => (
+                  <div key={index}>
+                    <aside>→</aside>
+                    <Paragraph
+                      color="greyLight"
+                      as="li"
+                      html={{ __html: li }}
+                    ></Paragraph>
+                  </div>
+                ))}
+              </ul>
+            </div>
+            <Cta as="button" onClick={handleSeeMoreUseCases}>
+              Voir {isSeeMoreUseCases ? "moins" : "plus"}
+            </Cta>
+          </StyledUseCases>
         )}
         {expertise.additionalSection && (
           <StyledAdditionalSection>
