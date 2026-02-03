@@ -42,6 +42,41 @@ const StyledAccordionContainer = styled.div`
     margin-top: 0;
   }
 `;
+const StyledUseCasesGrid = styled.div`
+  display: grid;
+  grid-template-columns: 1fr;
+  gap: 10px;
+  @media ${(props) => props.theme.minWidth.sm} {
+    grid-template-columns: repeat(2, 1fr);
+    grid-column-gap: ${(props) => props.theme.columnGap.mobile};
+    gap: 15px;
+  }
+  @media ${(props) => props.theme.minWidth.xl} {
+    grid-column-gap: ${(props) => props.theme.columnGap.desktop};
+  }
+  ul {
+    list-style: none;
+    padding: 0;
+    margin: 0;
+  }
+  li {
+    font-size: 15px;
+    @media ${(props) => props.theme.minWidth.xl} {
+      font-size: 16px;
+    }
+  }
+  & > ul > div {
+    display: flex;
+    margin-bottom: 10px;
+    @media ${(props) => props.theme.minWidth.sm} {
+      margin-bottom: 15px;
+    }
+    & > aside {
+      margin-right: 7px;
+      flex-shrink: 0;
+    }
+  }
+`;
 const StyledTitleGrid = styled(Grid)`
   h1 {
     margin-bottom: 20px;
@@ -53,30 +88,41 @@ const StyledTitleGrid = styled(Grid)`
     }
   }
 `;
-const StyledContentGrid = styled(Grid)`
+const StyledContentGrid = styled.div`
   display: block;
   border-top: ${(props) => props.theme.border.black};
   padding-top: 7px;
   @media ${(props) => props.theme.minWidth.md} {
     border-top: none;
     padding-top: 0;
-    display: grid;
-    grid-template-rows: repeat(2, auto);
-    & > * {
-      &:nth-child(1) {
-        grid-column: 1 / 7;
-        border-top: ${(props) => props.theme.border.black};
-        padding-top: 7px;
-      }
-      &:nth-child(2) {
-        grid-column: 7 / 13;
-        grid-row: 1 / span 2;
-      }
-      &:nth-child(3) {
-        align-self: start;
-        grid-column: 1 / 7;
-      }
+    display: flex;
+    gap: ${(props) => props.theme.columnGap.mobile};
+    align-items: flex-start;
+  }
+  @media ${(props) => props.theme.minWidth.xl} {
+    gap: ${(props) => props.theme.columnGap.desktop};
+  }
+`;
+
+const StyledLeftColumn = styled.div`
+  @media ${(props) => props.theme.minWidth.md} {
+    flex: 0 0 calc(50% - 12px);
+    & > *:first-child {
+      border-top: ${(props) => props.theme.border.black};
+      padding-top: 7px;
     }
+  }
+  @media ${(props) => props.theme.minWidth.xl} {
+    flex: 0 0 calc(50% - 22px);
+  }
+`;
+
+const StyledRightColumn = styled.div`
+  @media ${(props) => props.theme.minWidth.md} {
+    flex: 0 0 calc(50% - 12px);
+  }
+  @media ${(props) => props.theme.minWidth.xl} {
+    flex: 0 0 calc(50% - 22px);
   }
 `;
 const StyledMoneyPagesSection = styled.div`
@@ -222,69 +268,111 @@ const Expertise = ({ expertise, moneyPages = [] }) => {
         </Paragraph>
       </StyledPoint>
       <StyledContentGrid>
-        <div>
-          {expertise.description.map((paragraph) => (
-            <StyledParagraph
-              key={paragraph}
-              html={{ __html: paragraph }}
-              size="xl"
-            ></StyledParagraph>
-          ))}
-        </div>
-        <StyledAccordionContainer>
-          {expertise.accordion.map(({ title, content }, index) => (
-            <Accordion
-              key={title}
-              title={title}
-              content={content}
-              index={index}
-              toggle={handleAccordion}
-              isOpen={accordionSectionIndex === index}
-            />
-          ))}
-        </StyledAccordionContainer>
-        {moneyPages && moneyPages.length > 0 && (
-          <StyledMoneyPagesSection>
-            <h2>Nos services</h2>
-            <MoneyPagesGrid>
-              {moneyPages.map((page) => (
-                <MoneyPageCard
-                  key={page.slug.current}
-                  to={`/expertises/${page.slug.current}`}
-                >
-                  <CardTitle>
-                    <CardContent>
-                      <CardArrow>→</CardArrow>
-                      <span>{page.customH1}</span>
-                    </CardContent>
-                  </CardTitle>
-                </MoneyPageCard>
-              ))}
-            </MoneyPagesGrid>
-          </StyledMoneyPagesSection>
-        )}
-        {expertise.additionalSection && (
-          <StyledAdditionalSection>
-            <Grid>
-              <StyledPoint>
-                <Dot />
-                <Paragraph
-                  size="md"
-                  as="h2"
-                  html={{ __html: expertise.additionalSection.title }}
-                ></Paragraph>
-              </StyledPoint>
-              {expertise.additionalSection.description.map((paragraph) => (
-                <Paragraph
-                  key={paragraph}
-                  size="md"
-                  html={{ __html: paragraph }}
-                ></Paragraph>
-              ))}
-            </Grid>
-          </StyledAdditionalSection>
-        )}
+        <StyledLeftColumn>
+          <div>
+            {expertise.description.map((paragraph) => (
+              <StyledParagraph
+                key={paragraph}
+                html={{ __html: paragraph }}
+                size="xl"
+              ></StyledParagraph>
+            ))}
+          </div>
+          {moneyPages && moneyPages.length > 0 && (
+            <StyledMoneyPagesSection>
+              <h2>Nos services</h2>
+              <MoneyPagesGrid>
+                {moneyPages.map((page) => (
+                  <MoneyPageCard
+                    key={page.slug.current}
+                    to={`/expertises/${page.slug.current}`}
+                  >
+                    <CardTitle>
+                      <CardContent>
+                        <CardArrow>→</CardArrow>
+                        <span>{page.customH1}</span>
+                      </CardContent>
+                    </CardTitle>
+                  </MoneyPageCard>
+                ))}
+              </MoneyPagesGrid>
+            </StyledMoneyPagesSection>
+          )}
+        </StyledLeftColumn>
+        <StyledRightColumn>
+          <StyledAccordionContainer>
+            {/* Original accordion items - kept for future revert */}
+            {/* {expertise.accordion.map(({ title, content }, index) => (
+              <Accordion
+                key={title}
+                title={title}
+                content={content}
+                index={index}
+                toggle={handleAccordion}
+                isOpen={accordionSectionIndex === index}
+              />
+            ))} */}
+
+            {/* Single accordion with use cases */}
+            {expertise?.useCases && (
+              <Accordion
+                title="Exemples de cas traités"
+                index={0}
+                toggle={handleAccordion}
+                isOpen={accordionSectionIndex === 0}
+              >
+                <StyledUseCasesGrid>
+                  <ul>
+                    {expertise?.useCases[0]?.map((li, index) => (
+                      <div key={index}>
+                        <aside>→</aside>
+                        <Paragraph
+                          color="greyLight"
+                          as="li"
+                          html={{ __html: li }}
+                        ></Paragraph>
+                      </div>
+                    ))}
+                  </ul>
+                  <ul>
+                    {expertise?.useCases[1]?.map((li, index) => (
+                      <div key={index}>
+                        <aside>→</aside>
+                        <Paragraph
+                          color="greyLight"
+                          as="li"
+                          html={{ __html: li }}
+                        ></Paragraph>
+                      </div>
+                    ))}
+                  </ul>
+                </StyledUseCasesGrid>
+              </Accordion>
+            )}
+          </StyledAccordionContainer>
+        </StyledRightColumn>
       </StyledContentGrid>
+      {expertise.additionalSection && (
+        <StyledAdditionalSection>
+          <Grid>
+            <StyledPoint>
+              <Dot />
+              <Paragraph
+                size="md"
+                as="h2"
+                html={{ __html: expertise.additionalSection.title }}
+              ></Paragraph>
+            </StyledPoint>
+            {expertise.additionalSection.description.map((paragraph) => (
+              <Paragraph
+                key={paragraph}
+                size="md"
+                html={{ __html: paragraph }}
+              ></Paragraph>
+            ))}
+          </Grid>
+        </StyledAdditionalSection>
+      )}
     </StyledContainer>
   );
 };

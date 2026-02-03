@@ -43,7 +43,7 @@ const StyledContent = styled.div`
   overflow-y: hidden;
 `;
 
-const Accordion = ({ title, content, isOpen, toggle, index }) => {
+const Accordion = ({ title, content, isOpen, toggle, index, children }) => {
   const [contentHeight, setContentHeight] = useState(0);
   const contentRef = useRef(null);
 
@@ -63,7 +63,11 @@ const Accordion = ({ title, content, isOpen, toggle, index }) => {
         contentHeight={contentHeight}
         ref={contentRef}
       >
-        <Paragraph color={"greyLight"} html={{ __html: content }}></Paragraph>
+        {children ? (
+          children
+        ) : (
+          <Paragraph color={"greyLight"} html={{ __html: content }}></Paragraph>
+        )}
       </StyledContent>
     </StyledContainer>
   );
