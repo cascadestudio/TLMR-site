@@ -161,18 +161,19 @@ const MoneyPageCard = styled(Link)`
   display: block;
   padding: 16px 20px;
   background: #fff;
-  border: 1px solid rgba(0, 0, 0, 0.1);
+  border: 1px solid #aaaaaa;
   border-radius: 8px;
   text-decoration: none;
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.12);
   transition:
     box-shadow 0.2s ease,
     transform 0.2s ease,
     border-color 0.2s ease;
 
   &:hover {
-    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+    box-shadow: 0 6px 20px rgba(0, 0, 0, 0.18);
     transform: translateY(-2px);
-    border-color: rgba(0, 0, 0, 0.2);
+    border-color: #888888;
   }
 `;
 
