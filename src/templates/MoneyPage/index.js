@@ -7,6 +7,8 @@ import Grid from "components/global/Grid";
 import { PortableText } from "@portabletext/react";
 import SanityImg from "gatsby-plugin-sanity-image";
 import nbspPonctuation from "components/utils/nbspPonctuation";
+import slugify from "components/utils/slugify";
+import TableOfContents from "components/Seo/TableOfContents";
 import FAQSection from "components/Seo/FAQSection";
 import RelatedSpecialties from "components/Seo/RelatedSpecialties";
 import TeamSection from "components/Seo/TeamSection";
@@ -314,23 +316,33 @@ const getSanityAssetWidth = (asset) => {
   return null;
 };
 
+// Extract plain text from Portable Text block
+const getBlockText = (block) => {
+  if (!block?.children) return "";
+  return block.children.map((child) => child.text || "").join("");
+};
+
 // Create Portable Text components with access to CTA map and page map
 const createPortableTextComponents = (ctaMap, pageMap) => ({
   block: {
-    h2: ({ children }) => (
-      <h2>
-        {children.map((child, i) =>
-          typeof child === "string" ? (
-            <span
-              key={i}
-              dangerouslySetInnerHTML={{ __html: safeNbspPonctuation(child) }}
-            />
-          ) : (
-            child
-          ),
-        )}
-      </h2>
-    ),
+    h2: ({ children, value }) => {
+      const text = getBlockText(value);
+      const id = slugify(text);
+      return (
+        <h2 id={id}>
+          {children.map((child, i) =>
+            typeof child === "string" ? (
+              <span
+                key={i}
+                dangerouslySetInnerHTML={{ __html: safeNbspPonctuation(child) }}
+              />
+            ) : (
+              child
+            ),
+          )}
+        </h2>
+      );
+    },
     h3: ({ children }) => (
       <h3>
         {children.map((child, i) =>
@@ -758,6 +770,9 @@ const MoneyPage = ({ data }) => {
 
           <StyledContentContainer>
             <StyledContent>
+              {/* Table of Contents */}
+              <TableOfContents content={page._rawMainContent} />
+
               {/* Main Content */}
               {page._rawMainContent && (
                 <PortableText
