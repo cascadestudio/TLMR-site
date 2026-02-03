@@ -288,7 +288,7 @@ const StyledContent = styled.section`
 `;
 const StyledSidebarSticky = styled.div`
   position: sticky;
-  top: ${({ theme }) => theme.headerHeight + 20}px;
+  top: calc(50vh - 150px);
 `;
 
 const StyledTable = styled.table`
