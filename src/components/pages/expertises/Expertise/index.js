@@ -42,41 +42,6 @@ const StyledAccordionContainer = styled.div`
     margin-top: 0;
   }
 `;
-const StyledUseCasesGrid = styled.div`
-  display: grid;
-  grid-template-columns: 1fr;
-  gap: 10px;
-  @media ${(props) => props.theme.minWidth.sm} {
-    grid-template-columns: repeat(2, 1fr);
-    grid-column-gap: ${(props) => props.theme.columnGap.mobile};
-    gap: 15px;
-  }
-  @media ${(props) => props.theme.minWidth.xl} {
-    grid-column-gap: ${(props) => props.theme.columnGap.desktop};
-  }
-  ul {
-    list-style: none;
-    padding: 0;
-    margin: 0;
-  }
-  li {
-    font-size: 15px;
-    @media ${(props) => props.theme.minWidth.xl} {
-      font-size: 16px;
-    }
-  }
-  & > ul > div {
-    display: flex;
-    margin-bottom: 10px;
-    @media ${(props) => props.theme.minWidth.sm} {
-      margin-bottom: 15px;
-    }
-    & > aside {
-      margin-right: 7px;
-      flex-shrink: 0;
-    }
-  }
-`;
 const StyledTitleGrid = styled(Grid)`
   h1 {
     margin-bottom: 20px;
@@ -302,54 +267,17 @@ const Expertise = ({ expertise, moneyPages = [] }) => {
         </StyledLeftColumn>
         <StyledRightColumn>
           <StyledAccordionContainer>
-            {/* Original accordion items - kept for future revert */}
-            {/* {expertise.accordion.map(({ title, content }, index) => (
+            {expertise.accordion.map(({ title, content, useCases }, index) => (
               <Accordion
                 key={title}
                 title={title}
                 content={content}
+                useCases={useCases}
                 index={index}
                 toggle={handleAccordion}
                 isOpen={accordionSectionIndex === index}
               />
-            ))} */}
-
-            {/* Single accordion with use cases */}
-            {expertise?.useCases && (
-              <Accordion
-                title="Exemples de cas traités"
-                index={0}
-                toggle={handleAccordion}
-                isOpen={accordionSectionIndex === 0}
-              >
-                <StyledUseCasesGrid>
-                  <ul>
-                    {expertise?.useCases[0]?.map((li, index) => (
-                      <div key={index}>
-                        <aside>→</aside>
-                        <Paragraph
-                          color="greyLight"
-                          as="li"
-                          html={{ __html: li }}
-                        ></Paragraph>
-                      </div>
-                    ))}
-                  </ul>
-                  <ul>
-                    {expertise?.useCases[1]?.map((li, index) => (
-                      <div key={index}>
-                        <aside>→</aside>
-                        <Paragraph
-                          color="greyLight"
-                          as="li"
-                          html={{ __html: li }}
-                        ></Paragraph>
-                      </div>
-                    ))}
-                  </ul>
-                </StyledUseCasesGrid>
-              </Accordion>
-            )}
+            ))}
           </StyledAccordionContainer>
         </StyledRightColumn>
       </StyledContentGrid>

@@ -43,7 +43,39 @@ const StyledContent = styled.div`
   overflow-y: hidden;
 `;
 
-const Accordion = ({ title, content, isOpen, toggle, index, children }) => {
+const StyledUseCasesList = styled.div`
+  margin-top: 15px;
+  padding-top: 12px;
+  border-top: 1px solid ${(props) => props.theme.colors.greyLight};
+`;
+
+const UseCasesTitle = styled.h4`
+  font-size: 13px;
+  font-weight: 600;
+  margin-bottom: 10px;
+  color: ${(props) => props.theme.colors.grey};
+  @media ${(props) => props.theme.minWidth.xl} {
+    font-size: 14px;
+  }
+`;
+
+const UseCaseItem = styled.div`
+  display: flex;
+  align-items: flex-start;
+  margin-bottom: 8px;
+
+  &:last-child {
+    margin-bottom: 0;
+  }
+`;
+
+const Arrow = styled.span`
+  margin-right: 8px;
+  flex-shrink: 0;
+  color: ${(props) => props.theme.colors.greyLight};
+`;
+
+const Accordion = ({ title, content, useCases, isOpen, toggle, index, children }) => {
   const [contentHeight, setContentHeight] = useState(0);
   const contentRef = useRef(null);
 
@@ -66,7 +98,24 @@ const Accordion = ({ title, content, isOpen, toggle, index, children }) => {
         {children ? (
           children
         ) : (
-          <Paragraph color={"greyLight"} html={{ __html: content }}></Paragraph>
+          <>
+            <Paragraph color={"greyLight"} html={{ __html: content }}></Paragraph>
+            {useCases && useCases.length > 0 && (
+              <StyledUseCasesList>
+                <UseCasesTitle>Exemples de cas traités</UseCasesTitle>
+                {useCases.map((useCase, idx) => (
+                  <UseCaseItem key={idx}>
+                    <Arrow>→</Arrow>
+                    <Paragraph
+                      color="greyLight"
+                      as="span"
+                      html={{ __html: useCase }}
+                    />
+                  </UseCaseItem>
+                ))}
+              </StyledUseCasesList>
+            )}
+          </>
         )}
       </StyledContent>
     </StyledContainer>
