@@ -155,6 +155,20 @@ exports.createPages = async ({ graphql, actions, reporter }) => {
     isPermanent: true,
   });
 
+  // Malformed URLs (typos in Sanity slugs)
+  createRedirect({
+    fromPath: "/-achat-vente-de-donnees-de-prospection-la-cnil-consacre-l-opt-in-informe/",
+    toPath: "/achat-vente-de-donnees-de-prospection-la-cnil-consacre-l-opt-in-informe/",
+    isPermanent: true,
+  });
+
+  // Duplicate URL without trailing slash
+  createRedirect({
+    fromPath: "/regulation-de-l-ia-l-union-europeenne-adopte-son-reglement",
+    toPath: "/regulation-de-l-ia-l-union-europeenne-adopte-son-reglement/",
+    isPermanent: true,
+  });
+
   const Article = path.resolve("./src/templates/Article/index.js");
 
   const articleQuery = await graphql(`
