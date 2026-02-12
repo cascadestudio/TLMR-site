@@ -162,10 +162,15 @@ exports.createPages = async ({ graphql, actions, reporter }) => {
     isPermanent: true,
   });
 
-  // Duplicate URL without trailing slash
+  // Duplicate URLs without trailing slash
   createRedirect({
     fromPath: "/regulation-de-l-ia-l-union-europeenne-adopte-son-reglement",
     toPath: "/regulation-de-l-ia-l-union-europeenne-adopte-son-reglement/",
+    isPermanent: true,
+  });
+  createRedirect({
+    fromPath: "/ces-3-enseignements-cles-de-la-regate-et-des-phases-de-petole-pour-traverser-une-crise-comme-le-covid",
+    toPath: "/ces-3-enseignements-cles-de-la-regate-et-des-phases-de-petole-pour-traverser-une-crise-comme-le-covid/",
     isPermanent: true,
   });
 
