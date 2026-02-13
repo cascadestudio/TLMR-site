@@ -161,7 +161,7 @@ const SidebarCtaCard = ({
   title = "Besoin d'un avocat ?",
   description = "Contactez TLMR Avocats pour un premier échange confidentiel.",
   buttonText = "Prendre rendez-vous",
-  buttonLink = "/contact",
+  buttonLink = "https://www.tlmr-avocats.com/reserver/?origine=site",
   showGoogleReviews = true,
 }) => {
   const [reviewData, setReviewData] = useState(null);

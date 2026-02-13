@@ -121,7 +121,7 @@ const StickyButtonExternal = styled.a`
 const isExternalUrl = (url) =>
   url?.startsWith("http://") || url?.startsWith("https://");
 
-const CTASticky = ({ text = "Prendre rendez-vous", to = "/contact" }) => {
+const CTASticky = ({ text = "Prendre rendez-vous", to = "https://www.tlmr-avocats.com/reserver/?origine=site" }) => {
   const [isVisible, setIsVisible] = useState(true);
   const isExternal = isExternalUrl(to);
 
