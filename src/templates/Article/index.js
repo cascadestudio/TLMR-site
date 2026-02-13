@@ -17,6 +17,8 @@ import Breadcrumb from "components/Seo/Breadcrumb";
 import CTASection from "components/Seo/CTASection";
 import CTASticky from "components/Seo/CTASticky";
 import SidebarCtaCard from "components/Seo/SidebarCtaCard";
+import slugify from "components/utils/slugify";
+import TableOfContents from "components/Seo/TableOfContents";
 
 const getSanityAssetWidth = (asset) => {
   const metaWidth = asset?.metadata?.dimensions?.width;
@@ -412,22 +414,31 @@ export const query = graphql`
   }
 `;
 
+const getBlockText = (block) => {
+  if (!block?.children) return "";
+  return block.children.map((child) => child.text || "").join("");
+};
+
 const createArticlePortableTextComponents = (ctaMap, pageMap) => ({
   block: {
-    h2: ({ children }) => (
-      <h2>
-        {children.map((child, i) =>
-          typeof child === "string" ? (
-            <span
-              key={i}
-              dangerouslySetInnerHTML={{ __html: nbspPonctuation(child) }}
-            />
-          ) : (
-            child
-          ),
-        )}
-      </h2>
-    ),
+    h2: ({ children, value }) => {
+      const text = getBlockText(value);
+      const id = slugify(text);
+      return (
+        <h2 id={id}>
+          {children.map((child, i) =>
+            typeof child === "string" ? (
+              <span
+                key={i}
+                dangerouslySetInnerHTML={{ __html: nbspPonctuation(child) }}
+              />
+            ) : (
+              child
+            ),
+          )}
+        </h2>
+      );
+    },
     h3: ({ children }) => (
       <h3>
         {children.map((child, i) =>
@@ -750,6 +761,7 @@ const Article = ({ data }) => {
           </StyledMobileInfo>
           <StyledContentContainer>
             <StyledContent>
+              <TableOfContents content={_rawContent} />
               <PortableText
                 value={_rawContent}
                 components={createArticlePortableTextComponents(

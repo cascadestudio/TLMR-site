@@ -124,7 +124,7 @@ const Actualites = () => {
                 <Title type="h2">{year}</Title>
                 <StyledGrid>
                   {articlesByYear.map(({ date, title, heroImg, slug }) => {
-                    const thumbImg = getImage(heroImg.asset);
+                    const thumbImg = heroImg?.asset ? getImage(heroImg.asset) : null;
                     return (
                       <StyledArticleCard key={title} to={"/" + slug.current}>
                         <div>

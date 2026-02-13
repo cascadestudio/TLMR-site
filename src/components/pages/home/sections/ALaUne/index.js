@@ -172,7 +172,7 @@ const ALaUne = ({ className, border }) => {
       </StyledDesktopCta>
       <StyledColumns>
         {articles.map(({ title, date, heroImg, slug }) => {
-          const thumbImg = getImage(heroImg.asset);
+          const thumbImg = heroImg?.asset ? getImage(heroImg.asset) : null;
           return (
             <StyledNews to={"/" + slug.current} key={title}>
               <div>
