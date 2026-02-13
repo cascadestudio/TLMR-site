@@ -22,6 +22,7 @@ const StyledContainer = styled.section`
     display: block;
     margin: 100px -45px -40px;
     padding: 20px 45px 10px;
+    overflow: hidden;
   }
 `;
 const StyledGrid = styled(Grid)`

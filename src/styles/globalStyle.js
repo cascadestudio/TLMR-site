@@ -52,6 +52,7 @@ html, body {
 body {
   width: 100%;
   position: relative;
+  overflow-x: hidden;
 }
 
 h1,

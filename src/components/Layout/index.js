@@ -11,6 +11,7 @@ const StyledContainer = styled.div`
   padding: 0 15px;
   box-sizing: border-box;
   max-width: 100%;
+  overflow-x: hidden;
   @media ${(props) => props.theme.minWidth.sm} {
     padding: 0 24px;
   }
