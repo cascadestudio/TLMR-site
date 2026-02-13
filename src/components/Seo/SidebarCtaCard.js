@@ -19,10 +19,10 @@ const CardWrapper = styled.div`
   background-color: ${(props) => props.theme.colors.blackLight};
   border-radius: 12px;
   box-shadow: 0 8px 30px rgba(0, 0, 0, 0.25);
-  padding: 20px;
+  padding: 32px 24px;
   display: flex;
   flex-direction: column;
-  gap: 14px;
+  gap: 30px;
 `;
 
 const GoogleReviewsSection = styled.div`
@@ -30,7 +30,7 @@ const GoogleReviewsSection = styled.div`
   align-items: center;
   justify-content: center;
   gap: 8px;
-  padding-bottom: 14px;
+  padding-bottom: 20px;
   border-bottom: 1px solid rgba(255, 255, 255, 0.15);
 `;
 
@@ -57,16 +57,16 @@ const ContentSection = styled.div`
 
 const CardTitle = styled.h3`
   font-family: "Söhne Kräftig";
-  font-size: 17px;
-  line-height: 22px;
+  font-size: 18px;
+  line-height: 24px;
   color: white;
-  margin: 0 0 8px;
+  margin: 0 0 12px;
 `;
 
 const CardDescription = styled.p`
   font-family: "Signifier Light";
-  font-size: 14px;
-  line-height: 19px;
+  font-size: 15px;
+  line-height: 20px;
   color: rgba(255, 255, 255, 0.85);
   margin: 0;
 `;

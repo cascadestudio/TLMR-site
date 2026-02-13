@@ -18,6 +18,7 @@ import GoogleReviews from "components/Seo/GoogleReviews";
 import CTASticky from "components/Seo/CTASticky";
 import SidebarCtaCard from "components/Seo/SidebarCtaCard";
 import InternalLinksBlock from "components/Seo/InternalLinksBlock";
+import BottomLinksSection from "components/Seo/BottomLinksSection";
 
 const StyledContainer = styled.div`
   padding-top: 40px;
@@ -210,9 +211,11 @@ const StyledCustomHTML = styled.div`
 
 const StyledTableWrapper = styled.div`
   width: 100%;
+  max-width: 100%;
   margin: 40px 0;
   overflow-x: auto;
   -webkit-overflow-scrolling: touch;
+  box-sizing: border-box;
 
   @media ${(props) => props.theme.minWidth.md} {
     overflow-x: visible;
@@ -638,22 +641,13 @@ export const query = graphql`
       # Main content
       _rawMainContent
 
-      # FAQ Section
+      # FAQ Section (deprecated - use FAQ Block in mainContent)
       faqItems {
         question
         _rawAnswer
       }
 
-      # Related Specialties
-      relatedSpecialties {
-        title
-        customH1
-        slug {
-          current
-        }
-      }
-
-      # Team Members
+      # Team Members (deprecated - use Team Block in mainContent)
       teamMembers {
         teamType
         name
@@ -675,6 +669,10 @@ export const query = graphql`
       showUpdateDate
       enableCustomHTML
       customHTML
+
+      # Bottom Internal Links (maillage)
+      bottomLinksTitle
+      _rawBottomLinks
     }
 
     # Fetch all CTA documents for reference resolution
@@ -694,8 +692,10 @@ export const query = graphql`
     allSanityMoneyPage {
       nodes {
         _id
+        id
         _type
         customH1
+        metaDescription
         slug {
           current
         }
@@ -706,8 +706,10 @@ export const query = graphql`
     allSanityArticle {
       nodes {
         _id
+        id
         _type
         title
+        metaDescription
         slug {
           current
         }
@@ -729,12 +731,15 @@ const MoneyPage = ({ data }) => {
   });
 
   // Create a map of all pages for internal link resolution
+  // Index by both _id (Sanity ID) and id (Gatsby ID with dash prefix)
   const pageMap = new Map();
   allMoneyPages.forEach((page) => {
     pageMap.set(page._id, page);
+    if (page.id) pageMap.set(page.id, page);
   });
   allArticles.forEach((article) => {
     pageMap.set(article._id, article);
+    if (article.id) pageMap.set(article.id, article);
   });
 
   const displayH1 = page.customH1;
@@ -801,12 +806,18 @@ const MoneyPage = ({ data }) => {
             <FAQSection items={page.faqItems} pageMap={pageMap} />
           )}
 
-          {page.relatedSpecialties && page.relatedSpecialties.length > 0 && (
-            <RelatedSpecialties items={page.relatedSpecialties} />
-          )}
-
           {page.teamMembers && page.teamMembers.length > 0 && (
             <TeamSection members={page.teamMembers} />
+          )}
+
+          {/* Bottom Internal Links Section (maillage) */}
+          {page._rawBottomLinks && page._rawBottomLinks.length > 0 && (
+            <BottomLinksSection
+              rawLinks={page._rawBottomLinks}
+              sectionTitle={page.bottomLinksTitle}
+              currentPageSlug={page.slug?.current}
+              pageMap={pageMap}
+            />
           )}
 
           {/* Google Reviews Section */}

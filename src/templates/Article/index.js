@@ -290,12 +290,25 @@ const StyledContent = styled.section`
 `;
 const StyledSidebarSticky = styled.div`
   position: sticky;
-  top: ${({ theme }) => theme.headerHeight + 20}px;
+  top: calc(50vh - 150px);
+`;
+
+const StyledTableWrapper = styled.div`
+  width: 100%;
+  max-width: 100%;
+  margin: 40px 0;
+  overflow-x: auto;
+  -webkit-overflow-scrolling: touch;
+  box-sizing: border-box;
+
+  @media ${(props) => props.theme.minWidth.md} {
+    overflow-x: visible;
+  }
 `;
 
 const StyledTable = styled.table`
+  min-width: 600px;
   width: 100%;
-  margin: 40px 0;
   border-collapse: collapse;
   font-family: "Signifier Light";
   font-size: 18px;
@@ -304,6 +317,10 @@ const StyledTable = styled.table`
   @media ${(props) => props.theme.minWidth.sm} {
     font-size: 20px;
     line-height: 32px;
+  }
+
+  @media ${(props) => props.theme.minWidth.md} {
+    min-width: auto;
   }
 
   thead {
@@ -527,26 +544,28 @@ const createArticlePortableTextComponents = (ctaMap, pageMap) => ({
       const [headerRow, ...bodyRows] = value.rows;
 
       return (
-        <StyledTable>
-          {headerRow?.cells && (
-            <thead>
-              <tr>
-                {headerRow.cells.map((cell, i) => (
-                  <th key={i}>{cell}</th>
-                ))}
-              </tr>
-            </thead>
-          )}
-          <tbody>
-            {bodyRows.map((row, rowIndex) => (
-              <tr key={rowIndex}>
-                {row.cells?.map((cell, cellIndex) => (
-                  <td key={cellIndex}>{cell}</td>
-                ))}
-              </tr>
-            ))}
-          </tbody>
-        </StyledTable>
+        <StyledTableWrapper>
+          <StyledTable>
+            {headerRow?.cells && (
+              <thead>
+                <tr>
+                  {headerRow.cells.map((cell, i) => (
+                    <th key={i}>{cell}</th>
+                  ))}
+                </tr>
+              </thead>
+            )}
+            <tbody>
+              {bodyRows.map((row, rowIndex) => (
+                <tr key={rowIndex}>
+                  {row.cells?.map((cell, cellIndex) => (
+                    <td key={cellIndex}>{cell}</td>
+                  ))}
+                </tr>
+              ))}
+            </tbody>
+          </StyledTable>
+        </StyledTableWrapper>
       );
     },
     // Handle referenced CTAs from library

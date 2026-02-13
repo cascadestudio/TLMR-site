@@ -38,20 +38,30 @@ const CTAWrapper = styled.div`
 const CTAHeading = styled.h3`
   font-size: 20px;
   line-height: 26px;
-  margin-bottom: ${(props) => (props.$hasDescription ? "12px" : "20px")};
   font-family: "Söhne Kräftig";
   color: #000;
+
+  /* Override parent StyledContent margin with higher specificity */
+  && {
+    margin-bottom: ${(props) => (props.$hasDescription ? "12px" : "30px")};
+  }
 
   @media ${(props) => props.theme.minWidth.sm} {
     font-size: 22px;
     line-height: 28px;
-    margin-bottom: ${(props) => (props.$hasDescription ? "14px" : "22px")};
+
+    && {
+      margin-bottom: ${(props) => (props.$hasDescription ? "14px" : "32px")};
+    }
   }
 
   @media ${(props) => props.theme.minWidth.md} {
     font-size: 16px;
     line-height: 20px;
-    margin-bottom: ${(props) => (props.$hasDescription ? "12px" : "16px")};
+
+    && {
+      margin-bottom: ${(props) => (props.$hasDescription ? "12px" : "24px")};
+    }
   }
 `;
 

@@ -1,7 +1,7 @@
 const path = require("path");
 
 // Define GraphQL schema for optional SEO fields
-exports.createSchemaCustomization = ({ actions }) => {
+exports.createSchemaCustomization = ({ actions, schema }) => {
   const { createTypes } = actions;
 
   const typeDefs = `
@@ -28,7 +28,9 @@ exports.createSchemaCustomization = ({ actions }) => {
       faqItems: [SanityMoneyPageFaqItem]
       relatedSpecialties: [SanityMoneyPage]
       teamMembers: [SanityTeamMember]
+      bottomLinksTitle: String
     }
+
 
     type SanityCategory implements Node {
       customH1: String!
@@ -59,6 +61,22 @@ exports.createSchemaCustomization = ({ actions }) => {
   `;
 
   createTypes(typeDefs);
+};
+
+// Add resolver for _rawBottomLinks to access the internal Sanity data
+exports.createResolvers = ({ createResolvers }) => {
+  createResolvers({
+    SanityMoneyPage: {
+      _rawBottomLinks: {
+        type: "JSON",
+        resolve: (source, args, context, info) => {
+          // Access the internal Sanity data structure
+          // The data is stored in the internal content digest
+          return source._rawBottomLinks || source.bottomLinks || null;
+        },
+      },
+    },
+  });
 };
 
 exports.createPages = async ({ graphql, actions, reporter }) => {

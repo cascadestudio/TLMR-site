@@ -46,6 +46,12 @@ export default createGlobalStyle`
 
 html, body {
   overscroll-behavior-y: none;
+  box-sizing: border-box;
+}
+
+body {
+  width: 100%;
+  position: relative;
 }
 
 h1,
@@ -99,6 +105,11 @@ button {
   &:hover {
     color: ${(props) => props.theme.colors.grey};
   }
+}
+
+main {
+  width: 100%;
+  box-sizing: border-box;
 }
 
 .pageAnimation {

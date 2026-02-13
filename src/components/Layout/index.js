@@ -9,6 +9,8 @@ import CTASticky from "components/Seo/CTASticky";
 const StyledContainer = styled.div`
   position: relative;
   padding: 0 15px;
+  box-sizing: border-box;
+  max-width: 100%;
   @media ${(props) => props.theme.minWidth.sm} {
     padding: 0 24px;
   }
@@ -33,10 +35,7 @@ const Layout = ({ children, breadcrumb }) => {
         </StyledContainer>
 
         {/* Global Sticky CTA - appears on mobile/tablet only, on all pages */}
-        <CTASticky
-          text="Réservez un rendez-vous avec un avocat"
-          to="/contact"
-        />
+        <CTASticky text="Prendre rendez-vous" to="/contact" />
       </ThemeProvider>
     </main>
   );

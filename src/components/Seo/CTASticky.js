@@ -18,18 +18,19 @@ const shineAnimation = keyframes`
 const StickyWrapper = styled.div`
   position: fixed;
   bottom: 24px;
-  left: 16px;
-  right: 16px;
+  left: 50%;
+  transform: translateX(-50%) translateY(${(props) => (props.$isVisible ? "0" : "120%")});
   z-index: 1000;
   transition:
     transform 0.3s ease,
     opacity 0.3s ease;
-  transform: translateY(${(props) => (props.$isVisible ? "0" : "120%")});
   opacity: ${(props) => (props.$isVisible ? "1" : "0")};
-  padding: 0 20px;
+  width: calc(100vw - 32px);
+  max-width: 320px;
+  box-sizing: border-box;
 
   @media ${(props) => props.theme.minWidth.sm} {
-    padding: 0 28px;
+    width: calc(100vw - 56px);
   }
 
   @media ${(props) => props.theme.minWidth.md} {
@@ -49,14 +50,14 @@ const buttonStyles = `
   font-family: "Söhne Kräftig";
   font-size: 14px;
   line-height: 1.4;
-  white-space: nowrap;
+  white-space: normal;
   position: relative;
   overflow: hidden;
-  transition: background-color 0.2s ease, transform 0.2s ease;
+  transition: background-color 0.2s ease;
   box-shadow: 0 8px 24px rgba(0, 0, 0, 0.25);
-  max-width: 320px;
-  margin: 0 auto;
+  width: 100%;
   cursor: pointer;
+  box-sizing: border-box;
 `;
 
 const StickyButtonInternal = styled(Link)`
@@ -80,7 +81,6 @@ const StickyButtonInternal = styled(Link)`
 
   &:hover {
     background-color: #222;
-    transform: scale(1.02);
   }
 
   @media ${(props) => props.theme.minWidth.sm} {
@@ -109,7 +109,6 @@ const StickyButtonExternal = styled.a`
 
   &:hover {
     background-color: #222;
-    transform: scale(1.02);
   }
 
   @media ${(props) => props.theme.minWidth.sm} {

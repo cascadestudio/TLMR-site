@@ -8,6 +8,7 @@ import { useLocation } from "@reach/router";
 
 const StyledNav = styled.nav`
   overflow: hidden;
+  box-sizing: border-box;
   transition: height ${({ theme }) => theme.transitionTime}s,
     transform
       ${({ theme, isPageChange }) =>
@@ -17,6 +18,8 @@ const StyledNav = styled.nav`
   top: 0;
   left: 0;
   right: 0;
+  width: 100%;
+  max-width: 100vw;
   background-color: white;
   z-index: 2;
   display: flex;
