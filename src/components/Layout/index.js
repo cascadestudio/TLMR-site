@@ -35,7 +35,7 @@ const Layout = ({ children, breadcrumb }) => {
         </StyledContainer>
 
         {/* Global Sticky CTA - appears on mobile/tablet only, on all pages */}
-        <CTASticky text="Prendre rendez-vous" to="/contact" />
+        <CTASticky text="Prendre rendez-vous" to="https://www.tlmr-avocats.com/reserver/?origine=site" />
       </ThemeProvider>
     </main>
   );
