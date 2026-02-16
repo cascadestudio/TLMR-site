@@ -465,7 +465,7 @@ export const query = graphql`
         slug {
           current
         }
-        _rawHeroImg(resolveReferences: { maxDepth: 1 })
+        _rawHeroImg
       }
     }
 

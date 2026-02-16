@@ -139,12 +139,7 @@ const ALaUne = ({ className, border }) => {
           nodes {
             title
             date
-            heroImg {
-              asset {
-                _id
-                url
-              }
-            }
+            _rawHeroImg
             slug {
               current
             }
@@ -174,8 +169,8 @@ const ALaUne = ({ className, border }) => {
         Toutes les actualités
       </StyledDesktopCta>
       <StyledColumns>
-        {articles.map(({ title, date, heroImg, slug }) => {
-          const thumbAsset = heroImg?.asset;
+        {articles.map(({ title, date, _rawHeroImg, slug }) => {
+          const thumbAsset = _rawHeroImg?.asset;
           return (
             <StyledNews to={"/" + slug.current} key={title}>
               {thumbAsset && (

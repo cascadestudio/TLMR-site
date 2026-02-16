@@ -80,12 +80,7 @@ const Actualites = () => {
           nodes {
             title
             date
-            heroImg {
-              asset {
-                _id
-                url
-              }
-            }
+            _rawHeroImg
             slug {
               current
             }
@@ -126,8 +121,8 @@ const Actualites = () => {
               <StyledYearContainer key={year}>
                 <Title type="h2">{year}</Title>
                 <StyledGrid>
-                  {articlesByYear.map(({ date, title, heroImg, slug }) => {
-                    const thumbAsset = heroImg?.asset;
+                  {articlesByYear.map(({ date, title, _rawHeroImg, slug }) => {
+                    const thumbAsset = _rawHeroImg?.asset;
                     return (
                       <StyledArticleCard key={title} to={"/" + slug.current}>
                         {thumbAsset && (

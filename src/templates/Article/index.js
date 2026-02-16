@@ -375,9 +375,9 @@ export const query = graphql`
       date
       author
       _rawContent
+      _rawHeroImg
       heroImg {
         asset {
-          _id
           url
         }
       }
@@ -674,6 +674,7 @@ const Article = ({ data }) => {
     date,
     author,
     _rawContent,
+    _rawHeroImg,
     heroImg,
     categories,
     customTitle,
@@ -685,7 +686,7 @@ const Article = ({ data }) => {
   const allArticles = data.allSanityArticle?.nodes || [];
   const allCtaDocuments = data.allSanityCtaSectionDocument?.nodes || [];
 
-  const heroAsset = heroImg?.asset;
+  const heroAsset = _rawHeroImg?.asset;
   const articleDescription = _rawContent?.[0]?.children?.[0]?.text || "";
 
   // Create a map of CTA documents by _id for quick lookup
