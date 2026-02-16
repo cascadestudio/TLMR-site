@@ -52,7 +52,7 @@ html, body {
 body {
   width: 100%;
   position: relative;
-  overflow-x: hidden;
+  overflow-x: clip;
 }
 
 h1,
