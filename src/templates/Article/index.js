@@ -5,7 +5,6 @@ import Seo from "components/Seo";
 import Paragraph from "components/global/Paragraph";
 import Grid from "components/global/Grid";
 import ALaUne from "components/pages/home/sections/ALaUne";
-import { GatsbyImage, getImage } from "gatsby-plugin-image";
 import styled from "styled-components";
 import { PortableText } from "@portabletext/react";
 import SanityImg from "gatsby-plugin-sanity-image";
@@ -37,9 +36,10 @@ const getSanityAssetWidth = (asset) => {
 };
 
 const StyledContainer = styled.div`
-  & > .gatsby-image-wrapper {
+  & > img {
     width: 100%;
     aspect-ratio: 1;
+    object-fit: cover;
     margin-bottom: 10px;
     @media ${(props) => props.theme.minWidth.sm} {
       aspect-ratio: 2.25;
@@ -375,9 +375,9 @@ export const query = graphql`
       date
       author
       _rawContent
+      _rawHeroImg(resolveReferences: { maxDepth: 1 })
       heroImg {
         asset {
-          gatsbyImageData
           url
         }
       }
@@ -674,6 +674,7 @@ const Article = ({ data }) => {
     date,
     author,
     _rawContent,
+    _rawHeroImg,
     heroImg,
     categories,
     customTitle,
@@ -685,7 +686,7 @@ const Article = ({ data }) => {
   const allArticles = data.allSanityArticle?.nodes || [];
   const allCtaDocuments = data.allSanityCtaSectionDocument?.nodes || [];
 
-  const heroImage = heroImg?.asset ? getImage(heroImg.asset) : null;
+  const heroAsset = _rawHeroImg?.asset;
   const articleDescription = _rawContent?.[0]?.children?.[0]?.text || "";
 
   // Create a map of CTA documents by _id for quick lookup
@@ -737,7 +738,20 @@ const Article = ({ data }) => {
       />
       <Layout>
         <StyledContainer>
-          {heroImage && <GatsbyImage image={heroImage} alt={title} />}
+          {heroAsset && (
+            <SanityImg
+              asset={heroAsset}
+              alt={title}
+              width={1200}
+              loading="eager"
+              config={{ quality: 75, fit: "max" }}
+              style={{
+                width: "100%",
+                height: "auto",
+                display: "block",
+              }}
+            />
+          )}
           <Breadcrumb items={breadcrumbItems} />
           <StyledHeader>
             <h1

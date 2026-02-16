@@ -6,7 +6,7 @@ import styled from "styled-components";
 import Grid from "components/global/Grid";
 import Paragraph from "components/global/Paragraph";
 import { PortableText } from "@portabletext/react";
-import { GatsbyImage, getImage } from "gatsby-plugin-image";
+import SanityImg from "gatsby-plugin-sanity-image";
 import nbspPonctuation from "components/utils/nbspPonctuation";
 import Breadcrumb from "components/Seo/Breadcrumb";
 import CTASection from "components/Seo/CTASection";
@@ -266,7 +266,11 @@ const StyledArticleCard = styled(Link)`
     overflow: hidden;
   }
 
-  .gatsby-image-wrapper {
+  img {
+    width: 100%;
+    height: auto;
+    display: block;
+    object-fit: cover;
     transition: transform 0.3s ${(props) => props.theme.cubicBezier.base};
     aspect-ratio: 1.6;
     @media ${(props) => props.theme.minWidth.md} {
@@ -275,7 +279,7 @@ const StyledArticleCard = styled(Link)`
   }
 
   &:hover {
-    .gatsby-image-wrapper {
+    img {
       transform: scale(1.05);
     }
   }
@@ -461,11 +465,7 @@ export const query = graphql`
         slug {
           current
         }
-        heroImg {
-          asset {
-            gatsbyImageData(width: 600, placeholder: BLURRED)
-          }
-        }
+        _rawHeroImg(resolveReferences: { maxDepth: 1 })
       }
     }
 
@@ -570,15 +570,21 @@ const CategoryPage = ({ data }) => {
           <StyledArticlesSection>
             <StyledArticlesGrid>
               {articles.map((article) => {
-                const thumbImg = getImage(article.heroImg?.asset);
+                const thumbAsset = article._rawHeroImg?.asset;
                 return (
                   <StyledArticleCard
                     key={article.slug.current}
                     to={`/${article.slug.current}`}
                   >
-                    {thumbImg && (
+                    {thumbAsset && (
                       <div>
-                        <GatsbyImage image={thumbImg} alt={article.title} />
+                        <SanityImg
+                          asset={thumbAsset}
+                          alt={article.title}
+                          width={600}
+                          loading="lazy"
+                          config={{ quality: 75, fit: "max" }}
+                        />
                       </div>
                     )}
                     <Paragraph className="date" size="sm">

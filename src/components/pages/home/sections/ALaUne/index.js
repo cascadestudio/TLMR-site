@@ -5,7 +5,7 @@ import Cta from "components/global/Cta";
 import Paragraph from "components/global/Paragraph";
 import Title from "components/global/Title";
 import { graphql, useStaticQuery, Link } from "gatsby";
-import { GatsbyImage, getImage } from "gatsby-plugin-image";
+import SanityImg from "gatsby-plugin-sanity-image";
 import { useLocation } from "@reach/router";
 import nbspPonctuation from "components/utils/nbspPonctuation";
 
@@ -94,11 +94,19 @@ const StyledNews = styled(Link)`
   & > div {
     overflow: hidden;
   }
-  .gatsby-image-wrapper {
+  img {
+    width: 100%;
+    height: auto;
+    display: block;
+    object-fit: cover;
     transition: transform 0.3s ${(props) => props.theme.cubicBezier.base};
+    aspect-ratio: 1.6;
+    @media ${(props) => props.theme.minWidth.md} {
+      aspect-ratio: 1;
+    }
   }
   &:hover {
-    .gatsby-image-wrapper {
+    img {
       transform: scale(1.05);
     }
   }
@@ -121,12 +129,6 @@ const StyledNews = styled(Link)`
       display: block;
     }
   }
-  .gatsby-image-wrapper {
-    aspect-ratio: 1.6;
-    @media ${(props) => props.theme.minWidth.md} {
-      aspect-ratio: 1;
-    }
-  }
 `;
 
 const ALaUne = ({ className, border }) => {
@@ -139,7 +141,8 @@ const ALaUne = ({ className, border }) => {
             date
             heroImg {
               asset {
-                gatsbyImageData
+                _id
+                url
               }
             }
             slug {
@@ -172,12 +175,20 @@ const ALaUne = ({ className, border }) => {
       </StyledDesktopCta>
       <StyledColumns>
         {articles.map(({ title, date, heroImg, slug }) => {
-          const thumbImg = heroImg?.asset ? getImage(heroImg.asset) : null;
+          const thumbAsset = heroImg?.asset;
           return (
             <StyledNews to={"/" + slug.current} key={title}>
-              <div>
-                <GatsbyImage image={thumbImg} alt={title} />
-              </div>
+              {thumbAsset && (
+                <div>
+                  <SanityImg
+                    asset={thumbAsset}
+                    alt={title}
+                    width={600}
+                    loading="lazy"
+                    config={{ quality: 75, fit: "max" }}
+                  />
+                </div>
+              )}
               <Paragraph as="aside" size="sm">
                 {new Date(date).toLocaleDateString("fr-FR", {
                   year: "numeric",

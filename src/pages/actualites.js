@@ -5,7 +5,7 @@ import Grid from "components/global/Grid";
 import Title from "components/global/Title";
 import Paragraph from "components/global/Paragraph";
 import { graphql, useStaticQuery, Link } from "gatsby";
-import { GatsbyImage, getImage } from "gatsby-plugin-image";
+import SanityImg from "gatsby-plugin-sanity-image";
 import Seo from "components/Seo";
 import nbspPonctuation from "components/utils/nbspPonctuation";
 
@@ -45,22 +45,24 @@ const StyledArticleCard = styled(Link)`
   & > div {
     overflow: hidden;
   }
-  .gatsby-image-wrapper {
+  img {
+    width: 100%;
+    height: auto;
+    display: block;
+    object-fit: cover;
     transition: transform 0.3s ${(props) => props.theme.cubicBezier.base};
+    aspect-ratio: 1.6;
+    @media ${(props) => props.theme.minWidth.md} {
+      aspect-ratio: 1;
+    }
   }
   &:hover {
-    .gatsby-image-wrapper {
+    img {
       transform: scale(1.05);
     }
   }
   @media ${(props) => props.theme.minWidth.md} {
     margin-bottom: 50px;
-  }
-  .gatsby-image-wrapper {
-    aspect-ratio: 1.6;
-    @media ${(props) => props.theme.minWidth.md} {
-      aspect-ratio: 1;
-    }
   }
   p {
     margin: 7px 0 5px;
@@ -80,7 +82,8 @@ const Actualites = () => {
             date
             heroImg {
               asset {
-                gatsbyImageData
+                _id
+                url
               }
             }
             slug {
@@ -124,12 +127,20 @@ const Actualites = () => {
                 <Title type="h2">{year}</Title>
                 <StyledGrid>
                   {articlesByYear.map(({ date, title, heroImg, slug }) => {
-                    const thumbImg = heroImg?.asset ? getImage(heroImg.asset) : null;
+                    const thumbAsset = heroImg?.asset;
                     return (
                       <StyledArticleCard key={title} to={"/" + slug.current}>
-                        <div>
-                          <GatsbyImage image={thumbImg} alt={title} />
-                        </div>
+                        {thumbAsset && (
+                          <div>
+                            <SanityImg
+                              asset={thumbAsset}
+                              alt={title}
+                              width={600}
+                              loading="lazy"
+                              config={{ quality: 75, fit: "max" }}
+                            />
+                          </div>
+                        )}
                         <Paragraph className="date" size="sm">
                           {new Date(date).toLocaleDateString("fr-FR", {
                             year: "numeric",
