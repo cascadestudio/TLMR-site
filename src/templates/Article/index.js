@@ -375,9 +375,9 @@ export const query = graphql`
       date
       author
       _rawContent
-      _rawHeroImg(resolveReferences: { maxDepth: 1 })
       heroImg {
         asset {
+          _id
           url
         }
       }
@@ -674,7 +674,6 @@ const Article = ({ data }) => {
     date,
     author,
     _rawContent,
-    _rawHeroImg,
     heroImg,
     categories,
     customTitle,
@@ -686,7 +685,7 @@ const Article = ({ data }) => {
   const allArticles = data.allSanityArticle?.nodes || [];
   const allCtaDocuments = data.allSanityCtaSectionDocument?.nodes || [];
 
-  const heroAsset = _rawHeroImg?.asset;
+  const heroAsset = heroImg?.asset;
   const articleDescription = _rawContent?.[0]?.children?.[0]?.text || "";
 
   // Create a map of CTA documents by _id for quick lookup
