@@ -17,6 +17,7 @@ import CTASection from "components/Seo/CTASection";
 import CTASticky from "components/Seo/CTASticky";
 import SidebarCtaCard from "components/Seo/SidebarCtaCard";
 import slugify from "components/utils/slugify";
+import resolveSanityRef from "components/utils/resolveSanityRef";
 import TableOfContents from "components/Seo/TableOfContents";
 
 const getSanityAssetWidth = (asset) => {
@@ -602,7 +603,7 @@ const createArticlePortableTextComponents = (ctaMap, pageMap) => ({
 
       // If it's an unresolved reference, try to resolve it manually
       if (value?._type === "reference" && value?._ref) {
-        const referencedCta = ctaMap.get(value._ref);
+        const referencedCta = resolveSanityRef(ctaMap, value._ref);
         if (referencedCta) {
           return (
             <CTASection
@@ -612,6 +613,13 @@ const createArticlePortableTextComponents = (ctaMap, pageMap) => ({
               buttonLink={referencedCta.buttonLink}
               style={referencedCta.style || "primary"}
             />
+          );
+        }
+
+        if (process.env.NODE_ENV === "development") {
+          console.warn(
+            `[Article] Unresolved CTA reference: _ref="${value._ref}". ` +
+              `Available CTA IDs: [${Array.from(ctaMap.keys()).join(", ")}]`
           );
         }
       }

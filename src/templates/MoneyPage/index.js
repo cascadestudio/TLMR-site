@@ -8,6 +8,7 @@ import { PortableText } from "@portabletext/react";
 import SanityImg from "gatsby-plugin-sanity-image";
 import nbspPonctuation from "components/utils/nbspPonctuation";
 import slugify from "components/utils/slugify";
+import resolveSanityRef from "components/utils/resolveSanityRef";
 import TableOfContents from "components/Seo/TableOfContents";
 import FAQSection from "components/Seo/FAQSection";
 import RelatedSpecialties from "components/Seo/RelatedSpecialties";
@@ -527,7 +528,7 @@ const createPortableTextComponents = (ctaMap, pageMap) => ({
 
       // If it's an unresolved reference (has _ref), try to resolve it from ctaMap
       if (value?._ref) {
-        const referencedCta = ctaMap.get(value._ref);
+        const referencedCta = resolveSanityRef(ctaMap, value._ref);
         if (referencedCta) {
           return (
             <CTASection
@@ -540,7 +541,13 @@ const createPortableTextComponents = (ctaMap, pageMap) => ({
           );
         }
 
-        // Reference not found in ctaMap - return null silently
+        if (process.env.NODE_ENV === "development") {
+          console.warn(
+            `[MoneyPage] Unresolved CTA reference: _ref="${value._ref}". ` +
+              `Available CTA IDs: [${Array.from(ctaMap.keys()).join(", ")}]`
+          );
+        }
+
         return null;
       }
 

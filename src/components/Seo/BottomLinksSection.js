@@ -2,6 +2,7 @@ import React from "react";
 import styled from "styled-components";
 import { Link } from "gatsby";
 import nbspPonctuation from "components/utils/nbspPonctuation";
+import resolveSanityRef from "components/utils/resolveSanityRef";
 
 const SectionWrapper = styled.section`
   margin: 80px 0;
@@ -162,18 +163,8 @@ const BottomLinksSection = ({
       let pageRef = link.page?._ref;
       if (!pageRef || !pageMap) return null;
 
-      // Try to find the page with the reference ID (Gatsby uses 'id' field with dash prefix)
-      let resolvedPage = pageMap.get(pageRef);
-
-      // If not found, try without leading dash (Sanity draft ID format)
-      if (!resolvedPage && pageRef.startsWith("-")) {
-        resolvedPage = pageMap.get(pageRef.substring(1));
-      }
-
-      // If still not found, try with "drafts." prefix removed
-      if (!resolvedPage && pageRef.startsWith("drafts.")) {
-        resolvedPage = pageMap.get(pageRef.replace("drafts.", ""));
-      }
+      // Resolve with fallbacks for ID format mismatches (drafts., dash prefix, etc.)
+      let resolvedPage = resolveSanityRef(pageMap, pageRef);
       if (!resolvedPage?.slug?.current) return null;
 
       // Exclude current page to prevent self-referencing

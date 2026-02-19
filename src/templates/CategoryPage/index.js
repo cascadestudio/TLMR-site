@@ -10,6 +10,7 @@ import SanityImg from "gatsby-plugin-sanity-image";
 import nbspPonctuation from "components/utils/nbspPonctuation";
 import Breadcrumb from "components/Seo/Breadcrumb";
 import CTASection from "components/Seo/CTASection";
+import resolveSanityRef from "components/utils/resolveSanityRef";
 
 const StyledContainer = styled.div`
   padding-top: 40px;
@@ -415,7 +416,7 @@ const createPortableTextComponents = (ctaMap, pageMap) => ({
       }
 
       if (value?._type === "reference" && value?._ref) {
-        const referencedCta = ctaMap.get(value._ref);
+        const referencedCta = resolveSanityRef(ctaMap, value._ref);
         if (referencedCta) {
           return (
             <CTASection
@@ -425,6 +426,13 @@ const createPortableTextComponents = (ctaMap, pageMap) => ({
               buttonLink={referencedCta.buttonLink}
               style={referencedCta.style || "primary"}
             />
+          );
+        }
+
+        if (process.env.NODE_ENV === "development") {
+          console.warn(
+            `[CategoryPage] Unresolved CTA reference: _ref="${value._ref}". ` +
+              `Available CTA IDs: [${Array.from(ctaMap.keys()).join(", ")}]`
           );
         }
       }

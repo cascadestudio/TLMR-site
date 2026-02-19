@@ -89,14 +89,12 @@ const CTADescription = styled.p`
 
 // Shared button styles
 const buttonStyles = `
-  width: 100%;
   border-radius: 100px;
   padding: 12px 24px;
   text-align: center;
   font-size: 14px;
   text-decoration: none;
   display: inline-block;
-  max-width: 320px;
   font-family: "Söhne Kräftig";
   line-height: 1.4;
   white-space: nowrap;
