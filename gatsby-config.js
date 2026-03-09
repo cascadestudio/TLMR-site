@@ -51,7 +51,7 @@ module.exports = {
         projectId: "i7u835te",
         dataset: "production",
         token: process.env.SANITY_TOKEN,
-        watchMode: true,
+        watchMode: false,
         overlayDrafts: true,
       },
     },
