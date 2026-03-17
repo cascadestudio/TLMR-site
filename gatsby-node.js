@@ -82,26 +82,17 @@ exports.createResolvers = ({ createResolvers }) => {
 exports.createPages = async ({ graphql, actions, reporter }) => {
   const { createPage, createRedirect } = actions;
 
-  createRedirect({
-    fromPath:
-      "/e-services/generateur-de-politique-de-confidentialite-conforme-rgpd/",
-    toPath:
-      "/e-services#Générateur de politique de confidentialité conforme RGPD/",
-    isPermanent: true,
-  });
-  createRedirect({
-    fromPath: "/e-services/protection-des-creations/",
-    toPath: "/e-services#Protection des créations/",
-    isPermanent: true,
-  });
-  createRedirect({
-    fromPath: "/e-services/signatureelectronique/",
-    toPath: "/e-services#Signature électronique/",
-    isPermanent: true,
-  });
+  // -----------------------------------------------------------
+  // Redirects for /competence/ and /e-services/ sub-pages are
+  // handled as server-side 301s in netlify.toml (force = true).
+  // Do NOT add createRedirect calls here for those paths —
+  // gatsby-plugin-client-side-redirect would generate static HTML
+  // files that override the Netlify redirects.
+  // -----------------------------------------------------------
+
   createRedirect({
     fromPath: "/e-services/legal-design/",
-    toPath: "/e-services#Legal design/",
+    toPath: "/e-services/",
     isPermanent: true,
   });
   createRedirect({
@@ -110,66 +101,20 @@ exports.createPages = async ({ graphql, actions, reporter }) => {
     isPermanent: true,
   });
   createRedirect({
-    fromPath: "/e-services/avomarque-fr/",
-    toPath: "/e-services/",
-    isPermanent: true,
-  });
-  createRedirect({
     fromPath:
       "/competence/droit-de-linformatique-et-des-technologies-ia-blockchain-iot/",
-    toPath:
-      "/expertises#Informatique, logiciel, Intelligence artificielle, Blockchain",
-    isPermanent: true,
-  });
-  createRedirect({
-    fromPath: "/competence/propriete-intellectuelle-et-industrielle/",
-    toPath: "/expertises#Innovation, Propriété intellectuelle et industrielle",
-    isPermanent: true,
-  });
-  createRedirect({
-    fromPath: "/competence/donnees-personnelles-et-conformite-cnil-rgpd/",
-    toPath: "/expertises#Données personnelles et conformité CNIL/RGPD",
-    isPermanent: true,
-  });
-  createRedirect({
-    fromPath: "/competence/penal-et-cybercriminalite/",
-    toPath: "/expertises#Pénal, Cybercriminalité et e‑réputation",
+    toPath: "/expertises/",
     isPermanent: true,
   });
   createRedirect({
     fromPath:
       "/competence/droit-de-linternet-e-commerce-plafeforme-infopreneuriat/",
-    toPath: "/expertises#Internet, plateformes et e‑commerce",
+    toPath: "/expertises/",
     isPermanent: true,
   });
   createRedirect({
     fromPath: "/competence/droits-a-limage-e-reputation-medias-et-vie-privee/",
-    toPath: "/expertises#Pénal, Cybercriminalité et e‑réputation",
-    isPermanent: true,
-  });
-  createRedirect({
-    fromPath: "/competence/fiscalite-du-web-et-de-linnovation/",
-    toPath: "/expertises#Innovation, Propriété intellectuelle et industrielle",
-    isPermanent: true,
-  });
-  createRedirect({
-    fromPath: "/competence/droit-des-affaires-et-des-entreprises/",
-    toPath: "/expertises#Affaires complexes et contentieux à risque",
-    isPermanent: true,
-  });
-  createRedirect({
-    fromPath: "/competence/droit-immobilier/",
-    toPath: "/expertises#Droit immobilier, copropriété, baux et construction",
-    isPermanent: true,
-  });
-  createRedirect({
-    fromPath: "/competence/droit-du-travail-et-numerique/",
-    toPath: "/expertises#Droit du travail numérique et de la formation",
-    isPermanent: true,
-  });
-  createRedirect({
-    fromPath: "/competence/droit-de-la-formation/",
-    toPath: "/expertises#Droit du travail numérique et de la formation",
+    toPath: "/expertises/",
     isPermanent: true,
   });
 
