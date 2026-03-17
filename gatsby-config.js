@@ -7,7 +7,7 @@ module.exports = {
   siteMetadata: {
     title: `Touati La Motte Rouge Avocats`,
     titleTemplate: "Touati La Motte Rouge Avocats - %s",
-    siteUrl: "https://www.tlmr-avocats.com",
+    siteUrl: "https://tlmr-avocats.com",
     description:
       "Vous simplifier l’accès à l’excellence en particulier dans les domaines des technologies, de l’informatique de l’innovation, du digital, et d’internet.",
     author: "Adrien Lapasset",
@@ -105,9 +105,14 @@ module.exports = {
     {
       resolve: "gatsby-plugin-robots-txt",
       options: {
-        host: "https://www.tlmr-avocats.com",
-        sitemap: "https://www.tlmr-avocats.com/sitemap-index.xml",
-        policy: [{ userAgent: "*", allow: "/" }],
+        host: "https://tlmr-avocats.com",
+        sitemap: "https://tlmr-avocats.com/sitemap-index.xml",
+        policy: [
+          { userAgent: "*", allow: "/" },
+          { userAgent: "*", disallow: "/*?prenom=" },
+          { userAgent: "*", disallow: "/*?email=" },
+          { userAgent: "*", disallow: "/*?ev=" },
+        ],
       },
     },
   ],

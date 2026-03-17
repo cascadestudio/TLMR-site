@@ -12,3 +12,81 @@
 # - GOOGLE_CLIENT_SECRET
 # - GOOGLE_REFRESH_TOKEN
 # - GMB_LOCATION_ID
+
+# -----------------------------------------------
+# 301 redirects for competence sub-pages
+# -----------------------------------------------
+[[redirects]]
+  from = "/competence/donnees-personnelles-et-conformite-cnil-rgpd/"
+  to = "/expertises/"
+  status = 301
+  force = true
+
+[[redirects]]
+  from = "/competence/droit-des-affaires-et-des-entreprises/"
+  to = "/expertises/"
+  status = 301
+  force = true
+
+[[redirects]]
+  from = "/competence/droit-du-travail-et-numerique/"
+  to = "/expertises/"
+  status = 301
+  force = true
+
+[[redirects]]
+  from = "/competence/propriete-intellectuelle-et-industrielle/"
+  to = "/expertises/"
+  status = 301
+  force = true
+
+[[redirects]]
+  from = "/competence/droit-immobilier/"
+  to = "/expertises/"
+  status = 301
+  force = true
+
+[[redirects]]
+  from = "/competence/fiscalite-du-web-et-de-linnovation/"
+  to = "/expertises/"
+  status = 301
+  force = true
+
+[[redirects]]
+  from = "/competence/penal-et-cybercriminalite/"
+  to = "/expertises/"
+  status = 301
+  force = true
+
+[[redirects]]
+  from = "/competence/droit-de-la-formation/"
+  to = "/expertises/"
+  status = 301
+  force = true
+
+# -----------------------------------------------
+# 301 redirects for e-services sub-pages
+# -----------------------------------------------
+[[redirects]]
+  from = "/e-services/signatureelectronique/"
+  to = "/e-services/"
+  status = 301
+  force = true
+
+[[redirects]]
+  from = "/e-services/protection-des-creations/"
+  to = "/e-services/"
+  status = 301
+  force = true
+
+[[redirects]]
+  from = "/e-services/avomarque-fr/"
+  to = "/e-services/"
+  status = 301
+  force = true
+
+[[redirects]]
+  from = "/e-services/generateur-de-politique-de-confidentialite-conforme-rgpd/"
+  to = "/e-services/"
+  status = 301
+  force = true
