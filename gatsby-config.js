@@ -52,7 +52,7 @@ module.exports = {
         dataset: "production",
         token: process.env.SANITY_TOKEN,
         watchMode: false,
-        overlayDrafts: true,
+        overlayDrafts: false,
       },
     },
     {

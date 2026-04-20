@@ -3,6 +3,9 @@
   publish = "public"
   functions = "netlify/functions"
 
+[build.environment]
+  NETLIFY_USE_GATSBY_CACHE = "false"
+
 [functions]
   node_bundler = "esbuild"
 
