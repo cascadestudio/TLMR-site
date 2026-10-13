@@ -1,2 +1,7 @@
-https://www.tlmr-avocats.com/    https://tlmr-avocats.com/              301!
-https://www.tlmr-avocats.com/*   https://site.tlmr-avocats.com/:splat   301!
+# Pages LearnyBox (prise de rendez-vous) -> sous-domaine site.
+https://www.tlmr-avocats.com/reserver        https://site.tlmr-avocats.com/reserver/            301!
+https://www.tlmr-avocats.com/reserver/*      https://site.tlmr-avocats.com/reserver/:splat      301!
+https://www.tlmr-avocats.com/consultation    https://site.tlmr-avocats.com/consultation/        301!
+https://www.tlmr-avocats.com/consultation/*  https://site.tlmr-avocats.com/consultation/:splat  301!
+# Tout le reste du www -> domaine principal
+https://www.tlmr-avocats.com/*               https://tlmr-avocats.com/:splat                    301!

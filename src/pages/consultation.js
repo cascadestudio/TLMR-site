@@ -17,7 +17,7 @@ const Consultation = () => {
     <Layout>
       <StyledIframe
         title="consultation"
-        src="https://www.tlmr-avocats.com/consultation/"
+        src="https://site.tlmr-avocats.com/consultation/"
       ></StyledIframe>
     </Layout>
   );

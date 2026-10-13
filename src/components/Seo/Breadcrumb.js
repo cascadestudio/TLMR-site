@@ -78,7 +78,7 @@ const Breadcrumb = ({ items }) => {
 
   if (validItems.length === 0) return null;
 
-  const siteUrl = "https://www.tlmr-avocats.com";
+  const siteUrl = "https://tlmr-avocats.com";
 
   // Generate Schema.org BreadcrumbList structured data
   const breadcrumbSchema = {
