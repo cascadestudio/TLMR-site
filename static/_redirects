@@ -1,4 +1,8 @@
-# Prise de rendez-vous LearnyBox -> sous-domaine site.
+# Pages LearnyBox -> sous-domaine site.
 # (www -> tlmr-avocats.com est géré automatiquement par Netlify, en conservant le chemin)
-/reserver     https://site.tlmr-avocats.com/reserver/        301!
-/reserver/*   https://site.tlmr-avocats.com/reserver/:splat  301!
+/reserver                     https://site.tlmr-avocats.com/reserver/                     301!
+/reserver/*                   https://site.tlmr-avocats.com/reserver/:splat               301!
+/cyberattaque                 https://site.tlmr-avocats.com/cyberattaque/                 301!
+/cyberattaque/*               https://site.tlmr-avocats.com/cyberattaque/:splat           301!
+/concurrence-deloyale-tlmr    https://site.tlmr-avocats.com/concurrence-deloyale-tlmr/    301!
+/concurrence-deloyale-tlmr/*  https://site.tlmr-avocats.com/concurrence-deloyale-tlmr/:splat  301!
