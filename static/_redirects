@@ -1,8 +1,20 @@
 # Pages LearnyBox -> sous-domaine site.
 # (www -> tlmr-avocats.com est géré automatiquement par Netlify, en conservant le chemin)
-/reserver                     https://site.tlmr-avocats.com/reserver/                     301!
-/reserver/*                   https://site.tlmr-avocats.com/reserver/:splat               301!
-/cyberattaque                 https://site.tlmr-avocats.com/cyberattaque/                 301!
-/cyberattaque/*               https://site.tlmr-avocats.com/cyberattaque/:splat           301!
-/concurrence-deloyale-tlmr    https://site.tlmr-avocats.com/concurrence-deloyale-tlmr/    301!
-/concurrence-deloyale-tlmr/*  https://site.tlmr-avocats.com/concurrence-deloyale-tlmr/:splat  301!
+/reserver                     https://site.tlmr-avocats.com/reserver/                            301!
+/reserver/*                   https://site.tlmr-avocats.com/reserver/:splat                      301!
+/cyberattaque                 https://site.tlmr-avocats.com/cyberattaque/                        301!
+/cyberattaque/*               https://site.tlmr-avocats.com/cyberattaque/:splat                  301!
+/concurrence-deloyale-tlmr    https://site.tlmr-avocats.com/concurrence-deloyale-tlmr/           301!
+/concurrence-deloyale-tlmr/*  https://site.tlmr-avocats.com/concurrence-deloyale-tlmr/:splat     301!
+/conditions-generales         https://site.tlmr-avocats.com/conditions-generales/                301!
+/conditions-generales/*       https://site.tlmr-avocats.com/conditions-generales/:splat          301!
+/consultation-juridique       https://site.tlmr-avocats.com/consultation-juridique/              301!
+/consultation-juridique/*     https://site.tlmr-avocats.com/consultation-juridique/:splat        301!
+/consultationavocat           https://site.tlmr-avocats.com/consultationavocat/                  301!
+/consultationavocat/*         https://site.tlmr-avocats.com/consultationavocat/:splat            301!
+/avocatconsultation           https://site.tlmr-avocats.com/avocatconsultation/                  301!
+/avocatconsultation/*         https://site.tlmr-avocats.com/avocatconsultation/:splat            301!
+/consultation-avocat          https://site.tlmr-avocats.com/consultation-avocat/                 301!
+/consultation-avocat/*        https://site.tlmr-avocats.com/consultation-avocat/:splat           301!
+/conseil-juridique            https://site.tlmr-avocats.com/conseil-juridique/                   301!
+/conseil-juridique/*          https://site.tlmr-avocats.com/conseil-juridique/:splat             301!
